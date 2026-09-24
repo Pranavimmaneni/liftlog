@@ -113,11 +113,12 @@ export async function loadFixture(opts: FixtureOptions = {}): Promise<void> {
   }
 
   for (let i = 0; i < plans.length; i++) {
-    const { t } = plans[i]!;
+    const leaveOpen = opts.active && i === plans.length - 1;
+    // An open session must be recent, or the 3 h idle rule (FR-WRK-12) finishes it on load.
+    const t = leaveOpen ? now - 15 * 60_000 : plans[i]!.t;
     const rs = sessions[rot % sessions.length]!;
     rot++;
     const ids = [...rs.items].sort((a, b) => a.order - b.order).map((x) => x.exerciseId);
-    const leaveOpen = opts.active && i === plans.length - 1;
     const s = await startSession({
       routineId: routine.id,
       routineSessionId: rs.id,

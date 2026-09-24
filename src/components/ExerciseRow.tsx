@@ -25,7 +25,7 @@ export function ExerciseRow({
   dimmed = false,
   right,
   onClick,
-  thumbClass = 'h-[58px] w-[84px]',
+  thumbClass = 'h-[42px] w-[58px]',
 }: {
   exercise: Exercise;
   meta?: string;
@@ -38,9 +38,14 @@ export function ExerciseRow({
   const body = (
     <>
       <ExerciseThumb exercise={exercise} className={`${thumbClass} ${dimmed ? 'opacity-45' : ''}`} />
-      <span className={`min-w-0 grow ${dimmed ? 'opacity-60' : ''}`}>
-        <span className="block text-[17px] font-bold leading-tight tracking-[-0.01em]">{exercise.name}</span>
-        <span className="t-mono mt-1 block text-[12.5px] text-ink2">{meta ?? exerciseMeta(exercise)}</span>
+      {/* Dimmed rows keep text at full contrast (NFR-A11Y-1); only the picture fades. */}
+      <span className="min-w-0 grow">
+        <span
+          className={`block text-[15px] font-bold leading-tight tracking-[-0.01em] ${dimmed ? 'text-ink2' : ''}`}
+        >
+          {exercise.name}
+        </span>
+        <span className="t-mono mt-0.5 block text-[11px] text-ink2">{meta ?? exerciseMeta(exercise)}</span>
         {alias && <span className="mt-0.5 block text-[13px] italic text-ink2">{en.library.also(alias)}</span>}
       </span>
       {dimmed && (

@@ -80,7 +80,7 @@ export default function Library() {
             exercise={r.exercise}
             alias={r.alias}
             dimmed={!r.available}
-            thumbClass="h-[64px] w-[92px]"
+            thumbClass="h-[42px] w-[58px]"
           />
         </Link>
       </li>,
@@ -90,7 +90,7 @@ export default function Library() {
   return (
     <main className="px-5 pt-4">
       <div className="flex items-center justify-between gap-3">
-        <h1 className="t-display text-[48px]">{en.library.title}</h1>
+        <h1 className="t-display text-[40px]">{en.library.title}</h1>
         <Chip variant="soft" className="!px-4 !py-2.5 !text-[13px]">
           {en.library.count(total)}
         </Chip>

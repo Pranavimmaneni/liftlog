@@ -11,3 +11,12 @@ Checks from `docs/PROMPTS.md`. ✅ = covered by Playwright e2e (Pixel 7 Chromium
 | 4 | Airplane mode, close and reopen → still loads | ✅ on Chromium (real offline). WebKit: precache verified (Playwright limitation, DECISIONS D34). 📱 Do it once on the iPhone |
 
 URL: https://liftlog-jade.vercel.app · components page: https://liftlog-jade.vercel.app/dev/components
+
+## M1
+| # | Check | Automated? |
+|---|---|---|
+| 1 | Fresh install: onboard and log the first set in under 3 minutes | ✅ e2e #1 on all 4 projects (well under 3 min). 📱 Time yourself once |
+| 2 | Log a whole real workout: meter fills, rest timer counts down, ticket shows totals | ✅ e2e #2 (every set, meter full, ticket, rotation advances). 📱 The rest alert sound/vibration at zero |
+| 3 | Swipe the app away mid-exercise and reopen: back in the session, sets intact | ✅ e2e #4 (page closed and reopened on the same storage). 📱 Real swipe-away on both phones |
+| 4 | Back up, delete the app, reinstall, restore | ✅ e2e #5 (export → typed DELETE → restore → data back). 📱 The share sheet / Files save on iOS and the real reinstall |
+| 5 | Dumbbell exercises say "kg / hand" | ✅ unit + e2e |

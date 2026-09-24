@@ -156,9 +156,14 @@ export default function Home() {
                 )}
               </p>
               <div className="mt-3 flex gap-[5px] overflow-hidden" aria-hidden="true">
-                {preview.exs.slice(0, 6).map((e) => (
+                {preview.exs.slice(0, preview.exs.length > 5 ? 4 : 5).map((e) => (
                   <ExerciseThumb key={e.id} exercise={e} className="h-10 w-14" />
                 ))}
+                {preview.exs.length > 5 && (
+                  <span className="t-num flex h-10 w-14 items-center justify-center rounded bg-panel text-[13px] text-ink2">
+                    +{preview.exs.length - 4}
+                  </span>
+                )}
               </div>
               <p className="mt-3 flex items-start gap-2 text-[13px] leading-snug">
                 <Icon name="check" size={18} strokeWidth={2.6} className="mt-px shrink-0" />

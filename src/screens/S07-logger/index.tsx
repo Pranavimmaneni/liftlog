@@ -126,7 +126,8 @@ export default function Logger() {
   const isMachine = !!ex.machineId;
   const done = item.complete && !extra;
   const idx = item.nextIdx;
-  const pendingWarmups = g.warmups.slice(item.warmupsLogged.length);
+  // Warm-ups are offered until the first work set; after that they're skipped, not nagged about.
+  const pendingWarmups = item.work.length ? [] : g.warmups.slice(item.warmupsLogged.length);
   const unitLabel = loadUnitLabel(lt, units);
   const incDisplay = incrementIn(units, ex.incrementKg, lt) || (units === 'kg' ? 1 : 2);
   const doneCount = Math.min(item.progress.logged, g.sets);

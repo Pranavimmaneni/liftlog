@@ -16,7 +16,7 @@ export default function Progress() {
   );
   return (
     <main className="px-5 pt-4">
-      <h1 className="t-display text-[48px]">{en.progress.title}</h1>
+      <h1 className="t-display text-[40px]">{en.progress.title}</h1>
       <h2 className="t-label mt-5">{en.progress.history}</h2>
       {sessions && sessions.length === 0 && (
         <div className="mt-2">

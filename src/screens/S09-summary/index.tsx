@@ -3,7 +3,7 @@ import { Button } from '@/components/Button';
 import { en } from '@/copy/en';
 import { formatInt, longDate } from '@/copy/format';
 import { bonusPercent } from '@/engine/summary';
-import { displayNumber, formatLoad, hasLoad, toDisplay } from '@/engine/units';
+import { displayNumber, formatLoad, fromDisplay, hasLoad, toDisplay } from '@/engine/units';
 import { useTicket } from './useTicket';
 
 /** S09 session ticket (FR-SUM-1). XP, share and milestones join in M5. */
@@ -46,7 +46,14 @@ export default function Summary() {
       <article className="ll-card ll-card-hard relative mt-4" aria-label={`${model.session.name} ticket`}>
         <div className="relative px-5 pb-5 pt-5">
           <p className="t-label">{en.summary.ticket(String(t.number).padStart(3, '0'))}</p>
-          <h1 className="t-display mt-1 break-words pr-[120px] text-[64px]">{model.session.name}</h1>
+          <h1
+            className="t-display mt-1 break-words pr-[104px]"
+            style={{
+              fontSize: model.session.name.length <= 7 ? 58 : model.session.name.length <= 10 ? 46 : 36,
+            }}
+          >
+            {model.session.name}
+          </h1>
           <p className="t-mono mt-2 text-[14px] font-semibold uppercase text-ink2">
             {longDate(model.session.startedAt)} · {en.summary.week(model.weekNumber)}
           </p>
@@ -119,9 +126,14 @@ export default function Summary() {
                 {p.exercise?.name} · {displayNumber(p.loadKg, units)} {units} × {p.reps}
               </p>
               <p className="t-mono text-[12px] text-ink2">
+                {/* e1RMs are estimates: whole numbers, like the mockup ("35 kg / hand (was 32)"). */}
                 {en.summary.prLine(
-                  formatLoad(p.e1rm, p.exercise?.loadType ?? 'barbell', units),
-                  displayNumber(p.prevE1rm, units),
+                  formatLoad(
+                    fromDisplay(Math.round(toDisplay(p.e1rm, units)), units),
+                    p.exercise?.loadType ?? 'barbell',
+                    units,
+                  ),
+                  String(Math.round(toDisplay(p.prevE1rm, units))),
                 )}
               </p>
             </div>

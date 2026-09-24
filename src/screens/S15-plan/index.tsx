@@ -30,7 +30,7 @@ export default function Plan() {
   if (!routine) {
     return (
       <main className="px-5 pt-4">
-        <h1 className="t-display text-[48px]">{en.plan.title}</h1>
+        <h1 className="t-display text-[40px]">{en.plan.title}</h1>
         <div className="mt-4">
           <EmptyState
             action={
@@ -50,7 +50,7 @@ export default function Plan() {
   return (
     <main className="px-5 pt-4">
       <div className="flex items-center justify-between gap-3">
-        <h1 className="t-display text-[48px]">{en.plan.title}</h1>
+        <h1 className="t-display text-[40px]">{en.plan.title}</h1>
         <Chip variant="soft" className="!px-4 !py-2.5 !text-[13px]">
           {splitById(routine.splitId)?.name ?? ''}
         </Chip>

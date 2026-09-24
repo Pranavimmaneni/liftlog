@@ -92,7 +92,7 @@ export function RoutineBuilder({
   return (
     <>
       <div className="flex items-center justify-between gap-3 px-5 pt-4">
-        <h1 className="t-display text-[48px]">{en.routine.title}</h1>
+        <h1 className="t-display whitespace-nowrap text-[38px]">{en.routine.title}</h1>
         <Chip variant="soft" className="!px-4 !py-2.5 !text-[13px]">
           {splitName}
         </Chip>
@@ -158,10 +158,10 @@ export function RoutineBuilder({
                 >
                   <Icon name="drag" />
                 </button>
-                <ExerciseThumb exercise={ex} className="h-[80px] w-[108px]" />
+                <ExerciseThumb exercise={ex} className="h-10 w-[54px]" />
                 <span className="min-w-0 grow">
-                  <span className="block text-[18px] font-bold leading-tight">{ex.name}</span>
-                  <span className="t-mono mt-1 block text-[13px] text-ink2">
+                  <span className="block text-[15px] font-bold leading-tight">{ex.name}</span>
+                  <span className="t-mono mt-0.5 block text-[11px] text-ink2">
                     {muscleName(ex.primary[0])} · {p.sets} × {p.repMin}–{p.repMax}
                   </span>
                 </span>

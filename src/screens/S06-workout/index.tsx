@@ -55,7 +55,7 @@ export default function Workout() {
     <main className="flex grow flex-col pb-[calc(20px+env(safe-area-inset-bottom))]">
       <ScreenHeader
         title={model.session.name}
-        size={48}
+        size={34}
         subtitle={en.workout.sessionWeek(model.sessionNumber, model.weekNumber)}
         backTo="/"
       />
@@ -101,12 +101,12 @@ export default function Workout() {
                       : 'border-[1.5px] border-rule'
                 }`}
               >
-                <ExerciseThumb exercise={it.exercise} className="h-[64px] w-[88px]" />
+                <ExerciseThumb exercise={it.exercise} className="h-[42px] w-[58px]" />
                 <span className="min-w-0 grow">
-                  <span className="block text-[19px] font-bold leading-tight tracking-[-0.01em]">
+                  <span className="block text-[15px] font-bold leading-tight tracking-[-0.01em]">
                     {it.exercise.name}
                   </span>
-                  <span className="t-mono mt-1 block text-[13px] text-ink2">{targetLine(it, units)}</span>
+                  <span className="t-mono mt-0.5 block text-[11px] text-ink2">{targetLine(it, units)}</span>
                 </span>
                 <span className="flex shrink-0 flex-col items-end gap-2">
                   {chip}
@@ -119,10 +119,14 @@ export default function Workout() {
       </ul>
 
       <div className="grid grid-cols-2 gap-2.5 px-5 pt-3">
-        <Button variant="ghost" onClick={() => setAdding(true)} className="h-14">
+        <Button
+          variant="ghost"
+          onClick={() => setAdding(true)}
+          className="h-14 whitespace-nowrap !px-3 !text-[16px]"
+        >
           <Icon name="list" /> {en.workout.addFromList}
         </Button>
-        <Link to="/scan" className="ll-btn h-14" data-variant="ghost">
+        <Link to="/scan" className="ll-btn h-14 whitespace-nowrap !px-3 !text-[16px]" data-variant="ghost">
           <Icon name="scan" /> {en.workout.scan}
         </Link>
       </div>

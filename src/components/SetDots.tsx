@@ -12,21 +12,19 @@ export function SetDots({ dots, currentIdx }: { dots: Dot[]; currentIdx?: number
           return (
             <span
               key={i}
-              className={`flex h-[22px] w-[22px] items-center justify-center rounded-full ${
+              className={`flex h-[18px] w-[18px] items-center justify-center rounded-full ${
                 d === 'bonus' ? 'bg-brass text-on-brass' : 'bg-ink text-card'
               }`}
             >
-              <Icon name="check" size={13} strokeWidth={3.4} />
+              <Icon name="check" size={11} strokeWidth={3.4} />
             </span>
           );
         if (d === 'missed')
-          return (
-            <span key={i} className="h-[22px] w-[22px] rounded-full border-[2.5px] border-ink2 bg-panel" />
-          );
+          return <span key={i} className="h-[18px] w-[18px] rounded-full border-2 border-ink2 bg-panel" />;
         return (
           <span
             key={i}
-            className={`h-[22px] w-[22px] rounded-full border-[2.5px] ${cur ? 'border-accent' : 'border-rule'}`}
+            className={`h-[18px] w-[18px] rounded-full border-2 ${cur ? 'border-accent' : 'border-rule'}`}
           />
         );
       })}

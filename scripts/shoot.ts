@@ -31,8 +31,9 @@ for (const theme of ['paper', 'iron'] as const) {
   }
   for (const pair of pairs) {
     // name=/route or name=/route|css-selector-to-click-after-load
-    const [name, spec] = pair.split('=');
-    const [route, click] = spec!.split('|');
+    const eq = pair.indexOf('=');
+    const name = pair.slice(0, eq);
+    const [route, click] = pair.slice(eq + 1).split('|');
     await page.goto(base + route);
     await page.waitForLoadState('networkidle');
     if (click) {
