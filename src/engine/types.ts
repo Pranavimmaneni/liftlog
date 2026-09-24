@@ -83,6 +83,9 @@ export interface Exercise {
   limitationAreas: string[];
   level: Experience;
   isCustom?: boolean;
+  /** Deleted custom exercise: kept for history, hidden from pickers (FR-LIB-6). */
+  deleted?: boolean;
+  notes?: string;
 }
 
 /** A logged set as the engines see it. */

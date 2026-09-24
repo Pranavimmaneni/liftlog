@@ -56,3 +56,22 @@ export async function goOfflineAndReload(page: Page, browserName: string, url: s
   expect(missing, `not precached: ${missing.join(', ')}`).toEqual([]);
   await page.goto(url);
 }
+
+/** Reads LiftLog's local error log (NFR-REL-4), for debugging failed runs. */
+export async function appErrors(page: Page): Promise<{ message: string; stack?: string; route?: string }[]> {
+  return page.evaluate(
+    () =>
+      new Promise((res) => {
+        const r = indexedDB.open('liftlog');
+        r.onsuccess = () => {
+          try {
+            const q = r.result.transaction('errors').objectStore('errors').getAll();
+            q.onsuccess = () => res(q.result);
+          } catch {
+            res([]);
+          }
+        };
+        r.onerror = () => res([]);
+      }),
+  );
+}

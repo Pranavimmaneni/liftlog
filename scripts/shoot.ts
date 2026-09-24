@@ -30,9 +30,15 @@ for (const theme of ['paper', 'iron'] as const) {
     await page.waitForSelector('[data-fixture-done]', { timeout: 30_000 });
   }
   for (const pair of pairs) {
-    const [name, route] = pair.split('=');
+    // name=/route or name=/route|css-selector-to-click-after-load
+    const [name, spec] = pair.split('=');
+    const [route, click] = spec!.split('|');
     await page.goto(base + route);
     await page.waitForLoadState('networkidle');
+    if (click) {
+      await page.locator(click).first().click();
+      await page.waitForLoadState('networkidle');
+    }
     await page.waitForTimeout(400);
     const file = join(outDir, `${name}-${theme}.png`);
     await page.screenshot({ path: file, fullPage: process.env.SHOOT_FULL === '1' });

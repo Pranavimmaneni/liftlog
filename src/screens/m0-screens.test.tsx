@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { renderRoute, resetDb } from '@/test/render';
+import { seedOnboarded } from '@/test/seed';
 import { db } from '@/db/schema';
 import { getSettings } from '@/db/settings';
 import { CrashScreen } from '@/app/CrashScreen';
@@ -35,12 +36,14 @@ describe('M0 screens', () => {
   });
 
   it('home shows the app name and a labelled settings link', async () => {
+    await seedOnboarded();
     renderRoute('/');
     expect(await screen.findByRole('link', { name: 'Settings' })).toHaveAttribute('href', '/settings');
     expect(screen.getByRole('navigation', { name: 'Main' })).toBeInTheDocument();
   });
 
   it('unknown routes show the not-found message', async () => {
+    await seedOnboarded();
     renderRoute('/nope/here');
     expect(await screen.findByText('That page doesn’t exist.')).toBeInTheDocument();
   });
