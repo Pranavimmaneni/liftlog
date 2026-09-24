@@ -1,0 +1,15 @@
+design/
+data/
+dist/
+dev-dist/
+coverage/
+android/
+node_modules/
+playwright-report/
+test-results/
+src/data/*.json
+scripts/vendor/
+SEED-REPORT.md
+*.md
+package-lock.json
+.lighthouseci/

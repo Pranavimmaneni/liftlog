@@ -1,0 +1,63 @@
+{
+  "_note": "Increments are defaults; users can override per exercise or per machine (My Gym).",
+  "types": {
+    "barbell": {
+      "logAs": "total kg",
+      "defaultIncrementKg": 2.5,
+      "defaultIncrementLb": 5,
+      "bodyweightInVolume": false
+    },
+    "dumbbell": {
+      "logAs": "kg per hand",
+      "label": "kg / hand",
+      "defaultIncrementKg": 2,
+      "defaultIncrementLb": 5,
+      "volumeMultiplier": 2
+    },
+    "machine_stack": {
+      "logAs": "stack value in user units",
+      "defaultIncrementKg": 5,
+      "defaultIncrementLb": 10
+    },
+    "plate_loaded": {
+      "logAs": "total plates added (sled weight optional)",
+      "defaultIncrementKg": 5,
+      "defaultIncrementLb": 10
+    },
+    "cable": {
+      "logAs": "stack value",
+      "defaultIncrementKg": 2.5,
+      "defaultIncrementLb": 5
+    },
+    "bodyweight": {
+      "logAs": "reps",
+      "defaultIncrementKg": 0,
+      "volumeUsesBodyweight": true
+    },
+    "bodyweight_plus": {
+      "logAs": "added kg",
+      "defaultIncrementKg": 2.5,
+      "defaultIncrementLb": 5,
+      "volumeUsesBodyweight": true
+    },
+    "assisted": {
+      "logAs": "assistance kg",
+      "defaultIncrementKg": 5,
+      "defaultIncrementLb": 10,
+      "progressDirection": "decrease",
+      "volumeUsesBodyweightMinusAssist": true
+    },
+    "kettlebell": {
+      "logAs": "kg per bell",
+      "defaultIncrementKg": 4,
+      "defaultIncrementLb": 8
+    },
+    "timed": {
+      "logAs": "seconds",
+      "defaultIncrementKg": 0,
+      "progressBy": "seconds +5"
+    }
+  },
+  "unilateralFlag": "Exercises flagged unilateral are logged per side; goal sets count once per pair of sides.",
+  "bigJumpRule": "If next increment > 5% of current load, raise repMax by 2 before adding weight (double-progression widening)."
+}

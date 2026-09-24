@@ -1,0 +1,58 @@
+# Copy to .github/workflows/android-apk.yml
+# Builds an installable Android APK in the cloud (no Android Studio needed).
+# Run it from GitHub: Actions tab -> "Android APK" -> Run workflow.
+# Download the "liftlog-apk" artifact, unzip, copy the .apk to your phone and open it.
+#
+# Debug APK: works out of the box, fine for personal sideloading.
+# Release APK (optional): add these repository secrets first, then run with build_type=release:
+#   ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD
+name: Android APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'debug or release'
+        required: true
+        default: debug
+        type: choice
+        options: [debug, release]
+  push:
+    tags: ['v*']
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21 # match the JDK required by the Capacitor version in package.json
+      - uses: android-actions/setup-android@v3
+      - run: npm ci
+      - run: npm run build:native # vite build with base "./" and native flags (see PRD §11)
+      - run: npx cap sync android
+      - name: Build debug APK
+        if: ${{ github.event.inputs.build_type != 'release' }}
+        working-directory: android
+        run: ./gradlew assembleDebug
+      - name: Decode keystore
+        if: ${{ github.event.inputs.build_type == 'release' }}
+        run: echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/release.keystore
+      - name: Build signed release APK
+        if: ${{ github.event.inputs.build_type == 'release' }}
+        working-directory: android
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: ./gradlew assembleRelease
+      - uses: actions/upload-artifact@v4
+        with:
+          name: liftlog-apk
+          path: android/app/build/outputs/apk/**/*.apk

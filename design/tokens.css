@@ -1,0 +1,84 @@
+/* Paper & Iron tokens. Paper = light, Iron = dark. Generated from tokens.json. */
+:root, [data-theme="paper"] {
+  --ll-paper: #F2EADB;
+  --ll-card: #FBF7EF;
+  --ll-panel: #EDE3CF;
+  --ll-rule: #D9CDB6;
+  --ll-ink: #1D1B18;
+  --ll-ink2: #5E574C;
+  --ll-line: #1D1B18;
+  --ll-shadow: #1D1B18;
+  --ll-accent: #9E2B25;
+  --ll-onAccent: #FBF7EF;
+  --ll-brass: #B8862B;
+  --ll-onBrass: #1D1B18;
+  --ll-brassText: #7A5A12;
+  --ll-brassWash: #F1E1B8;
+  --ll-ghost: #CDBFA3;
+  --ll-equip: #8E7F66;
+  --ll-equipDark: #6B604E;
+  --ll-floor: #C9BA9C;
+  --ll-farLimb: #4A443B;
+  --ll-muscleBody: #E8DFCC;
+  --ll-muscleIdle: #D8CBB1;
+  --ll-musclePrimary: #9E2B25;
+  --ll-muscleSecondary: #D6A546;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="paper"]) {
+    --ll-paper: #151412;
+    --ll-card: #1F1D1A;
+    --ll-panel: #2A2723;
+    --ll-rule: #3B3731;
+    --ll-ink: #EFE6D4;
+    --ll-ink2: #B0A690;
+    --ll-line: #4D473E;
+    --ll-shadow: #000000;
+    --ll-accent: #E0654C;
+    --ll-onAccent: #151412;
+    --ll-brass: #D6A546;
+    --ll-onBrass: #151412;
+    --ll-brassText: #E5BC60;
+    --ll-brassWash: #3B3018;
+    --ll-ghost: #4E483F;
+    --ll-equip: #6E6352;
+    --ll-equipDark: #9C8D74;
+    --ll-floor: #3B3731;
+    --ll-farLimb: #BDB29C;
+    --ll-muscleBody: #36322C;
+    --ll-muscleIdle: #4A443B;
+    --ll-musclePrimary: #E0654C;
+    --ll-muscleSecondary: #D6A546;
+  }
+}
+
+[data-theme="iron"] {
+  --ll-paper: #151412;
+  --ll-card: #1F1D1A;
+  --ll-panel: #2A2723;
+  --ll-rule: #3B3731;
+  --ll-ink: #EFE6D4;
+  --ll-ink2: #B0A690;
+  --ll-line: #4D473E;
+  --ll-shadow: #000000;
+  --ll-accent: #E0654C;
+  --ll-onAccent: #151412;
+  --ll-brass: #D6A546;
+  --ll-onBrass: #151412;
+  --ll-brassText: #E5BC60;
+  --ll-brassWash: #3B3018;
+  --ll-ghost: #4E483F;
+  --ll-equip: #6E6352;
+  --ll-equipDark: #9C8D74;
+  --ll-floor: #3B3731;
+  --ll-farLimb: #BDB29C;
+  --ll-muscleBody: #36322C;
+  --ll-muscleIdle: #4A443B;
+  --ll-musclePrimary: #E0654C;
+  --ll-muscleSecondary: #D6A546;
+}
+
+:root { color-scheme: light dark; }
+[data-theme="paper"] { color-scheme: light; }
+[data-theme="iron"] { color-scheme: dark; }

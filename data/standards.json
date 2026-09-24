@@ -1,0 +1,189 @@
+{
+  "_note": "STARTER VALUES, NOT A CITED STANDARD. Approximate bodyweight-ratio bands for estimated 1RM, in the range commonly published by strength-standard tables. Before release, replace with a published source and record it in 'source'. The app must label these as general guidelines, not medical advice.",
+  "source": "TODO: cite published strength standards",
+  "bands": [
+    "beginner",
+    "novice",
+    "intermediate",
+    "advanced",
+    "elite"
+  ],
+  "benchmarks": {
+    "back_squat": {
+      "muscleGroups": [
+        "quads",
+        "glutes"
+      ],
+      "male": [
+        0.75,
+        1.25,
+        1.5,
+        2.0,
+        2.5
+      ],
+      "female": [
+        0.5,
+        0.75,
+        1.0,
+        1.5,
+        1.9
+      ]
+    },
+    "bench_press": {
+      "muscleGroups": [
+        "chest",
+        "triceps"
+      ],
+      "male": [
+        0.5,
+        0.75,
+        1.0,
+        1.5,
+        1.9
+      ],
+      "female": [
+        0.25,
+        0.5,
+        0.75,
+        1.0,
+        1.3
+      ]
+    },
+    "incline_db_press_per_hand": {
+      "muscleGroups": [
+        "chest"
+      ],
+      "male": [
+        0.15,
+        0.25,
+        0.35,
+        0.5,
+        0.65
+      ],
+      "female": [
+        0.08,
+        0.14,
+        0.2,
+        0.3,
+        0.4
+      ],
+      "note": "per-hand dumbbell 1RM / bodyweight"
+    },
+    "deadlift": {
+      "muscleGroups": [
+        "hamstrings",
+        "glutes",
+        "lower back"
+      ],
+      "male": [
+        1.0,
+        1.5,
+        2.0,
+        2.5,
+        3.0
+      ],
+      "female": [
+        0.5,
+        1.0,
+        1.25,
+        1.75,
+        2.25
+      ]
+    },
+    "romanian_deadlift": {
+      "muscleGroups": [
+        "hamstrings",
+        "glutes"
+      ],
+      "male": [
+        0.75,
+        1.1,
+        1.5,
+        1.9,
+        2.3
+      ],
+      "female": [
+        0.4,
+        0.75,
+        1.0,
+        1.3,
+        1.7
+      ]
+    },
+    "overhead_press": {
+      "muscleGroups": [
+        "shoulders"
+      ],
+      "male": [
+        0.35,
+        0.55,
+        0.75,
+        1.0,
+        1.3
+      ],
+      "female": [
+        0.2,
+        0.35,
+        0.5,
+        0.7,
+        0.9
+      ]
+    },
+    "barbell_row": {
+      "muscleGroups": [
+        "upper back",
+        "lats"
+      ],
+      "male": [
+        0.5,
+        0.75,
+        1.0,
+        1.25,
+        1.6
+      ],
+      "female": [
+        0.3,
+        0.45,
+        0.65,
+        0.85,
+        1.1
+      ]
+    },
+    "pull_up_reps": {
+      "muscleGroups": [
+        "lats",
+        "biceps"
+      ],
+      "unit": "bodyweight reps",
+      "male": [
+        1,
+        5,
+        10,
+        15,
+        22
+      ],
+      "female": [
+        0,
+        1,
+        5,
+        10,
+        15
+      ]
+    }
+  },
+  "ageAdjust": {
+    "_note": "Multiply thresholds by this factor for the lifter's age.",
+    "under_18": 0.85,
+    "18_39": 1.0,
+    "40_49": 0.93,
+    "50_59": 0.85,
+    "60_69": 0.76,
+    "70_plus": 0.67
+  },
+  "e1rm": {
+    "formula": "epley",
+    "maxRepsUsed": 12,
+    "expression": "weight * (1 + reps / 30)"
+  },
+  "machineOnlyMessage": "Machine-only right now. Machines differ by brand, so there is no fair comparison."
+}

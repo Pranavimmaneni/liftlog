@@ -1,0 +1,114 @@
+{
+  "_note": "XP rewards quality and consistency, never raw volume.",
+  "events": {
+    "goalSet": 10,
+    "bonusRep": 2,
+    "bonusRepCapPerExercise": 10,
+    "extraSetBonus": 5,
+    "pr": 50,
+    "sessionComplete": 40,
+    "weekComplete": 100,
+    "weeklyQuest": 75,
+    "firstSession": 100
+  },
+  "noXp": [
+    "warmup",
+    "calibration session",
+    "sets flagged hurts",
+    "extra sets beyond 1 per exercise"
+  ],
+  "sessionCap": 600,
+  "levels": {
+    "formula": "xpForLevel(n) = round(250 * n^1.35)",
+    "titles": [
+      [
+        1,
+        "Rookie"
+      ],
+      [
+        5,
+        "Iron"
+      ],
+      [
+        10,
+        "Steel"
+      ],
+      [
+        15,
+        "Bronze"
+      ],
+      [
+        20,
+        "Silver"
+      ],
+      [
+        30,
+        "Gold"
+      ],
+      [
+        40,
+        "Legend"
+      ]
+    ]
+  },
+  "streak": {
+    "unit": "week",
+    "counts": "weeks where completed sessions >= planned sessions per week",
+    "restWeekPassEveryWeeks": 8
+  },
+  "milestones": [
+    {
+      "id": "tonnage",
+      "thresholdsKg": [
+        1000,
+        5000,
+        10000,
+        25000,
+        50000,
+        100000,
+        250000
+      ],
+      "equivalents": [
+        [
+          "Honda Civic",
+          1300
+        ],
+        [
+          "grand piano",
+          450
+        ],
+        [
+          "African elephant",
+          6000
+        ],
+        [
+          "blue whale heart",
+          180
+        ]
+      ]
+    },
+    {
+      "id": "sessions",
+      "thresholds": [
+        1,
+        10,
+        25,
+        50,
+        100,
+        200
+      ]
+    },
+    {
+      "id": "first_bw_pullup"
+    }
+  ],
+  "quests": {
+    "perWeek": 1,
+    "generatedFrom": "lowest coverage muscle, stalled lift, or missed session pattern",
+    "examples": [
+      "Hit all hamstring sets this week",
+      "Add 1 rep to 3 exercises",
+      "Complete all 4 sessions"
+    ]
+  }
+}

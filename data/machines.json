@@ -1,0 +1,611 @@
+{
+  "_note": "Exercise names must be matched to seeded exercise ids by scripts/seed.ts (name or alias match). Add any missing exercises as custom seed entries.",
+  "muscleGroups": [
+    "chest",
+    "lats",
+    "upper back",
+    "shoulders",
+    "biceps",
+    "triceps",
+    "forearms",
+    "abs",
+    "lower back",
+    "quads",
+    "hamstrings",
+    "glutes",
+    "calves"
+  ],
+  "machines": [
+    {
+      "id": "lat-pulldown",
+      "name": "Lat pulldown",
+      "category": "cable_station",
+      "loadType": "machine_stack",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Lat Pulldown",
+        "Close-Grip Pulldown",
+        "Straight-Arm Pulldown"
+      ],
+      "primaryMuscles": [
+        "lats"
+      ]
+    },
+    {
+      "id": "seated-row",
+      "name": "Seated row machine",
+      "category": "selectorized",
+      "loadType": "machine_stack",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Seated Machine Row"
+      ],
+      "primaryMuscles": [
+        "upper back"
+      ]
+    },
+    {
+      "id": "cable-row-station",
+      "name": "Low cable row station",
+      "category": "cable_station",
+      "loadType": "cable",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Seated Cable Row"
+      ],
+      "primaryMuscles": [
+        "upper back",
+        "lats"
+      ]
+    },
+    {
+      "id": "cable-tower",
+      "name": "Cable tower / crossover",
+      "category": "cable_station",
+      "loadType": "cable",
+      "defaultIncrementKg": 2.5,
+      "exercises": [
+        "Cable Fly",
+        "Rope Pushdown",
+        "Face Pull",
+        "Cable Lateral Raise",
+        "Cable Curl",
+        "Overhead Cable Triceps Extension",
+        "Cable Crunch",
+        "Cable Pull-Through"
+      ],
+      "primaryMuscles": [
+        "chest",
+        "triceps",
+        "shoulders"
+      ]
+    },
+    {
+      "id": "functional-trainer",
+      "name": "Functional trainer (dual pulleys)",
+      "category": "cable_station",
+      "loadType": "cable",
+      "defaultIncrementKg": 2.5,
+      "exercises": [
+        "Cable Fly",
+        "Face Pull",
+        "Cable Lateral Raise",
+        "Cable Curl"
+      ],
+      "primaryMuscles": [
+        "chest",
+        "shoulders"
+      ]
+    },
+    {
+      "id": "chest-press",
+      "name": "Chest press machine",
+      "category": "selectorized",
+      "loadType": "machine_stack",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Machine Chest Press"
+      ],
+      "primaryMuscles": [
+        "chest"
+      ]
+    },
+    {
+      "id": "incline-chest-press",
+      "name": "Incline chest press machine",
+      "category": "selectorized",
+      "loadType": "machine_stack",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Machine Incline Chest Press"
+      ],
+      "primaryMuscles": [
+        "chest"
+      ]
+    },
+    {
+      "id": "pec-deck",
+      "name": "Pec deck / rear delt fly",
+      "category": "selectorized",
+      "loadType": "machine_stack",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Pec Deck Fly",
+        "Reverse Pec Deck"
+      ],
+      "primaryMuscles": [
+        "chest",
+        "shoulders"
+      ]
+    },
+    {
+      "id": "shoulder-press",
+      "name": "Shoulder press machine",
+      "category": "selectorized",
+      "loadType": "machine_stack",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Machine Shoulder Press"
+      ],
+      "primaryMuscles": [
+        "shoulders"
+      ]
+    },
+    {
+      "id": "lateral-raise-machine",
+      "name": "Lateral raise machine",
+      "category": "selectorized",
+      "loadType": "machine_stack",
+      "defaultIncrementKg": 2.5,
+      "exercises": [
+        "Machine Lateral Raise"
+      ],
+      "primaryMuscles": [
+        "shoulders"
+      ]
+    },
+    {
+      "id": "assisted-pullup",
+      "name": "Assisted pull-up / dip",
+      "category": "selectorized",
+      "loadType": "assisted",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Assisted Pull-Up",
+        "Assisted Dip"
+      ],
+      "primaryMuscles": [
+        "lats",
+        "triceps"
+      ]
+    },
+    {
+      "id": "biceps-curl-machine",
+      "name": "Biceps curl machine",
+      "category": "selectorized",
+      "loadType": "machine_stack",
+      "defaultIncrementKg": 2.5,
+      "exercises": [
+        "Machine Biceps Curl"
+      ],
+      "primaryMuscles": [
+        "biceps"
+      ]
+    },
+    {
+      "id": "triceps-extension-machine",
+      "name": "Triceps extension machine",
+      "category": "selectorized",
+      "loadType": "machine_stack",
+      "defaultIncrementKg": 2.5,
+      "exercises": [
+        "Machine Triceps Extension"
+      ],
+      "primaryMuscles": [
+        "triceps"
+      ]
+    },
+    {
+      "id": "dip-machine",
+      "name": "Seated dip machine",
+      "category": "selectorized",
+      "loadType": "machine_stack",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Seated Dip Machine"
+      ],
+      "primaryMuscles": [
+        "triceps",
+        "chest"
+      ]
+    },
+    {
+      "id": "ab-crunch-machine",
+      "name": "Ab crunch machine",
+      "category": "selectorized",
+      "loadType": "machine_stack",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Machine Crunch"
+      ],
+      "primaryMuscles": [
+        "abs"
+      ]
+    },
+    {
+      "id": "rotary-torso",
+      "name": "Rotary torso",
+      "category": "selectorized",
+      "loadType": "machine_stack",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Rotary Torso"
+      ],
+      "primaryMuscles": [
+        "abs"
+      ]
+    },
+    {
+      "id": "back-extension-machine",
+      "name": "Back extension machine",
+      "category": "selectorized",
+      "loadType": "machine_stack",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Machine Back Extension"
+      ],
+      "primaryMuscles": [
+        "lower back"
+      ]
+    },
+    {
+      "id": "roman-chair",
+      "name": "45° back extension bench",
+      "category": "bench",
+      "loadType": "bodyweight_plus",
+      "defaultIncrementKg": 2.5,
+      "exercises": [
+        "45 Degree Back Extension"
+      ],
+      "primaryMuscles": [
+        "lower back",
+        "glutes",
+        "hamstrings"
+      ]
+    },
+    {
+      "id": "leg-press",
+      "name": "45° leg press",
+      "category": "plate_loaded",
+      "loadType": "plate_loaded",
+      "defaultIncrementKg": 10,
+      "exercises": [
+        "Leg Press",
+        "Single-Leg Press",
+        "Leg Press Calf Raise"
+      ],
+      "primaryMuscles": [
+        "quads",
+        "glutes"
+      ]
+    },
+    {
+      "id": "horizontal-leg-press",
+      "name": "Seated leg press (selectorized)",
+      "category": "selectorized",
+      "loadType": "machine_stack",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Seated Leg Press"
+      ],
+      "primaryMuscles": [
+        "quads"
+      ]
+    },
+    {
+      "id": "hack-squat",
+      "name": "Hack squat",
+      "category": "plate_loaded",
+      "loadType": "plate_loaded",
+      "defaultIncrementKg": 10,
+      "exercises": [
+        "Hack Squat",
+        "Reverse Hack Squat"
+      ],
+      "primaryMuscles": [
+        "quads"
+      ]
+    },
+    {
+      "id": "pendulum-squat",
+      "name": "Pendulum squat",
+      "category": "plate_loaded",
+      "loadType": "plate_loaded",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Pendulum Squat"
+      ],
+      "primaryMuscles": [
+        "quads"
+      ]
+    },
+    {
+      "id": "belt-squat",
+      "name": "Belt squat",
+      "category": "plate_loaded",
+      "loadType": "plate_loaded",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Belt Squat"
+      ],
+      "primaryMuscles": [
+        "quads",
+        "glutes"
+      ]
+    },
+    {
+      "id": "leg-extension",
+      "name": "Leg extension",
+      "category": "selectorized",
+      "loadType": "machine_stack",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Leg Extension"
+      ],
+      "primaryMuscles": [
+        "quads"
+      ]
+    },
+    {
+      "id": "seated-leg-curl",
+      "name": "Seated leg curl",
+      "category": "selectorized",
+      "loadType": "machine_stack",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Seated Leg Curl"
+      ],
+      "primaryMuscles": [
+        "hamstrings"
+      ]
+    },
+    {
+      "id": "lying-leg-curl",
+      "name": "Lying leg curl",
+      "category": "selectorized",
+      "loadType": "machine_stack",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Lying Leg Curl"
+      ],
+      "primaryMuscles": [
+        "hamstrings"
+      ]
+    },
+    {
+      "id": "hip-abduction",
+      "name": "Hip abduction",
+      "category": "selectorized",
+      "loadType": "machine_stack",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Hip Abduction"
+      ],
+      "primaryMuscles": [
+        "glutes"
+      ]
+    },
+    {
+      "id": "hip-adduction",
+      "name": "Hip adduction",
+      "category": "selectorized",
+      "loadType": "machine_stack",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Hip Adduction"
+      ],
+      "primaryMuscles": [
+        "quads"
+      ]
+    },
+    {
+      "id": "glute-kickback",
+      "name": "Glute kickback machine",
+      "category": "selectorized",
+      "loadType": "machine_stack",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Machine Glute Kickback"
+      ],
+      "primaryMuscles": [
+        "glutes"
+      ]
+    },
+    {
+      "id": "hip-thrust-machine",
+      "name": "Hip thrust machine",
+      "category": "plate_loaded",
+      "loadType": "plate_loaded",
+      "defaultIncrementKg": 10,
+      "exercises": [
+        "Machine Hip Thrust"
+      ],
+      "primaryMuscles": [
+        "glutes"
+      ]
+    },
+    {
+      "id": "standing-calf",
+      "name": "Standing calf raise",
+      "category": "selectorized",
+      "loadType": "machine_stack",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Standing Calf Raise"
+      ],
+      "primaryMuscles": [
+        "calves"
+      ]
+    },
+    {
+      "id": "seated-calf",
+      "name": "Seated calf raise",
+      "category": "plate_loaded",
+      "loadType": "plate_loaded",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Seated Calf Raise"
+      ],
+      "primaryMuscles": [
+        "calves"
+      ]
+    },
+    {
+      "id": "smith-machine",
+      "name": "Smith machine",
+      "category": "rack",
+      "loadType": "barbell",
+      "defaultIncrementKg": 2.5,
+      "exercises": [
+        "Smith Squat",
+        "Smith Bench Press",
+        "Smith Incline Press",
+        "Smith Shoulder Press",
+        "Smith Calf Raise",
+        "Smith Romanian Deadlift"
+      ],
+      "primaryMuscles": [
+        "quads",
+        "chest",
+        "shoulders"
+      ]
+    },
+    {
+      "id": "t-bar-row",
+      "name": "T-bar row",
+      "category": "plate_loaded",
+      "loadType": "plate_loaded",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "T-Bar Row",
+        "Chest-Supported T-Bar Row"
+      ],
+      "primaryMuscles": [
+        "upper back"
+      ]
+    },
+    {
+      "id": "iso-lateral-row",
+      "name": "Iso-lateral row (plate loaded)",
+      "category": "plate_loaded",
+      "loadType": "plate_loaded",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Iso-Lateral Row"
+      ],
+      "primaryMuscles": [
+        "upper back",
+        "lats"
+      ]
+    },
+    {
+      "id": "iso-lateral-chest",
+      "name": "Iso-lateral chest press (plate loaded)",
+      "category": "plate_loaded",
+      "loadType": "plate_loaded",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Iso-Lateral Chest Press"
+      ],
+      "primaryMuscles": [
+        "chest"
+      ]
+    },
+    {
+      "id": "iso-lateral-pulldown",
+      "name": "Iso-lateral pulldown (plate loaded)",
+      "category": "plate_loaded",
+      "loadType": "plate_loaded",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Iso-Lateral Pulldown"
+      ],
+      "primaryMuscles": [
+        "lats"
+      ]
+    },
+    {
+      "id": "preacher-bench",
+      "name": "Preacher curl bench",
+      "category": "bench",
+      "loadType": "barbell",
+      "defaultIncrementKg": 2.5,
+      "exercises": [
+        "Preacher Curl",
+        "EZ-Bar Preacher Curl"
+      ],
+      "primaryMuscles": [
+        "biceps"
+      ]
+    },
+    {
+      "id": "pullup-bar",
+      "name": "Pull-up bar",
+      "category": "bodyweight_station",
+      "loadType": "bodyweight_plus",
+      "defaultIncrementKg": 2.5,
+      "exercises": [
+        "Pull-Up",
+        "Chin-Up",
+        "Hanging Knee Raise"
+      ],
+      "primaryMuscles": [
+        "lats",
+        "abs"
+      ]
+    },
+    {
+      "id": "dip-station",
+      "name": "Dip station / captain's chair",
+      "category": "bodyweight_station",
+      "loadType": "bodyweight_plus",
+      "defaultIncrementKg": 2.5,
+      "exercises": [
+        "Dip",
+        "Captain's Chair Leg Raise"
+      ],
+      "primaryMuscles": [
+        "triceps",
+        "chest",
+        "abs"
+      ]
+    },
+    {
+      "id": "glute-ham-raise",
+      "name": "Glute-ham developer",
+      "category": "bench",
+      "loadType": "bodyweight",
+      "defaultIncrementKg": 0,
+      "exercises": [
+        "Glute-Ham Raise"
+      ],
+      "primaryMuscles": [
+        "hamstrings"
+      ]
+    },
+    {
+      "id": "reverse-hyper",
+      "name": "Reverse hyperextension",
+      "category": "plate_loaded",
+      "loadType": "plate_loaded",
+      "defaultIncrementKg": 5,
+      "exercises": [
+        "Reverse Hyperextension"
+      ],
+      "primaryMuscles": [
+        "glutes",
+        "lower back"
+      ]
+    }
+  ]
+}

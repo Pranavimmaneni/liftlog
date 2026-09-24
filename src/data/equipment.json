@@ -1,0 +1,71 @@
+{
+  "_note": "Free-weight and station equipment ids used by My Gym presets.",
+  "equipment": [
+    {
+      "id": "barbell",
+      "name": "Barbell"
+    },
+    {
+      "id": "dumbbells",
+      "name": "Dumbbells"
+    },
+    {
+      "id": "ez-bar",
+      "name": "EZ bar"
+    },
+    {
+      "id": "kettlebells",
+      "name": "Kettlebells"
+    },
+    {
+      "id": "adjustable-bench",
+      "name": "Adjustable bench"
+    },
+    {
+      "id": "flat-bench",
+      "name": "Flat bench"
+    },
+    {
+      "id": "squat-rack",
+      "name": "Squat rack / power rack"
+    },
+    {
+      "id": "pullup-bar",
+      "name": "Pull-up bar"
+    },
+    {
+      "id": "dip-station",
+      "name": "Dip station"
+    },
+    {
+      "id": "resistance-bands",
+      "name": "Resistance bands"
+    },
+    {
+      "id": "trap-bar",
+      "name": "Trap bar"
+    }
+  ],
+  "presets": {
+    "full-gym": {
+      "equipment": "all",
+      "machines": "all"
+    },
+    "home-dumbbells": {
+      "equipment": [
+        "dumbbells",
+        "adjustable-bench",
+        "pullup-bar",
+        "resistance-bands"
+      ],
+      "machines": []
+    },
+    "bodyweight": {
+      "equipment": [
+        "pullup-bar",
+        "dip-station"
+      ],
+      "machines": []
+    }
+  }
+}

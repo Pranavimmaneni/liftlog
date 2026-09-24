@@ -1,0 +1,15 @@
+node_modules/
+dist/
+dev-dist/
+coverage/
+playwright-report/
+test-results/
+.vercel
+.lighthouseci/
+*.log
+.DS_Store
+android/app/build/
+android/.gradle/
+android/build/
+android/local.properties
+android/app/release.keystore

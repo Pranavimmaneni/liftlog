@@ -1,0 +1,102 @@
+{
+  "_note": "Seed aliases for search. Key = canonical name after seeding; values = alternative names. Extend freely.",
+  "aliases": {
+    "Lying Triceps Extension": [
+      "skull crusher",
+      "skullcrusher",
+      "french press"
+    ],
+    "Bent-Over Barbell Row": [
+      "pendlay row",
+      "barbell row"
+    ],
+    "Romanian Deadlift": [
+      "rdl",
+      "stiff leg deadlift"
+    ],
+    "Overhead Press": [
+      "ohp",
+      "military press",
+      "standing press"
+    ],
+    "Lat Pulldown": [
+      "pulldown",
+      "lat pull down"
+    ],
+    "Seated Cable Row": [
+      "cable row",
+      "low row"
+    ],
+    "Rope Pushdown": [
+      "triceps pushdown",
+      "tricep rope pushdown",
+      "pushdown"
+    ],
+    "Incline Dumbbell Press": [
+      "incline db press",
+      "incline dumbbell bench"
+    ],
+    "Bulgarian Split Squat": [
+      "bss",
+      "rear foot elevated split squat"
+    ],
+    "Hip Thrust": [
+      "barbell hip thrust",
+      "glute bridge (loaded)"
+    ],
+    "Face Pull": [
+      "rope face pull"
+    ],
+    "Pec Deck Fly": [
+      "pec deck",
+      "machine fly",
+      "butterfly"
+    ],
+    "Reverse Pec Deck": [
+      "rear delt fly machine",
+      "reverse fly"
+    ],
+    "Leg Extension": [
+      "quad extension"
+    ],
+    "Seated Leg Curl": [
+      "hamstring curl",
+      "leg curl"
+    ],
+    "Standing Calf Raise": [
+      "calf raise"
+    ],
+    "Pull-Up": [
+      "pullup",
+      "pull up"
+    ],
+    "Chin-Up": [
+      "chinup",
+      "chin up"
+    ],
+    "Dumbbell Lateral Raise": [
+      "side raise",
+      "lateral raise",
+      "side lateral"
+    ],
+    "Hammer Curl": [
+      "neutral grip curl"
+    ],
+    "Goblet Squat": [
+      "kb squat"
+    ],
+    "Trap Bar Deadlift": [
+      "hex bar deadlift"
+    ],
+    "Farmer's Carry": [
+      "farmers walk",
+      "farmer walk"
+    ],
+    "Ab Wheel Rollout": [
+      "ab roller"
+    ],
+    "Hanging Leg Raise": [
+      "hanging knee raise"
+    ]
+  }
+}

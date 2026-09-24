@@ -1,0 +1,598 @@
+{
+  "_note": "Slot-based templates. Auto-suggest fills each slot with the best exercise the user's gym allows (compound first, then machine/cable alternatives), respecting limitations. Sessions are a rotation queue, not weekdays.",
+  "patterns": [
+    "vertical_pull",
+    "horizontal_pull",
+    "horizontal_press",
+    "incline_press",
+    "overhead_press",
+    "lateral_raise",
+    "rear_delt",
+    "elbow_flexion",
+    "elbow_extension",
+    "chest_fly",
+    "squat",
+    "hinge",
+    "leg_press_or_lunge",
+    "knee_extension",
+    "knee_flexion",
+    "hip_extension",
+    "hip_abduction",
+    "calf_raise",
+    "core_flexion",
+    "core_antiextension",
+    "carry"
+  ],
+  "templates": [
+    {
+      "id": "upper-lower",
+      "name": "Upper / Lower",
+      "daysPerWeek": [
+        4
+      ],
+      "recommendedFor": {
+        "days": [
+          4
+        ],
+        "levels": [
+          "beginner",
+          "intermediate",
+          "advanced"
+        ]
+      },
+      "sessions": [
+        {
+          "name": "Upper A",
+          "slots": [
+            {
+              "pattern": "vertical_pull",
+              "role": "compound",
+              "muscle": "lats"
+            },
+            {
+              "pattern": "incline_press",
+              "role": "compound",
+              "muscle": "chest"
+            },
+            {
+              "pattern": "horizontal_pull",
+              "role": "compound",
+              "muscle": "upper back"
+            },
+            {
+              "pattern": "overhead_press",
+              "role": "compound",
+              "muscle": "shoulders"
+            },
+            {
+              "pattern": "elbow_extension",
+              "role": "isolation",
+              "muscle": "triceps"
+            },
+            {
+              "pattern": "elbow_flexion",
+              "role": "isolation",
+              "muscle": "biceps"
+            }
+          ]
+        },
+        {
+          "name": "Lower A",
+          "slots": [
+            {
+              "pattern": "squat",
+              "role": "compound",
+              "muscle": "quads"
+            },
+            {
+              "pattern": "hinge",
+              "role": "compound",
+              "muscle": "hamstrings"
+            },
+            {
+              "pattern": "knee_extension",
+              "role": "isolation",
+              "muscle": "quads"
+            },
+            {
+              "pattern": "knee_flexion",
+              "role": "isolation",
+              "muscle": "hamstrings"
+            },
+            {
+              "pattern": "calf_raise",
+              "role": "isolation",
+              "muscle": "calves"
+            },
+            {
+              "pattern": "core_flexion",
+              "role": "isolation",
+              "muscle": "abs"
+            }
+          ]
+        },
+        {
+          "name": "Upper B",
+          "slots": [
+            {
+              "pattern": "horizontal_press",
+              "role": "compound",
+              "muscle": "chest"
+            },
+            {
+              "pattern": "horizontal_pull",
+              "role": "compound",
+              "muscle": "upper back"
+            },
+            {
+              "pattern": "vertical_pull",
+              "role": "compound",
+              "muscle": "lats"
+            },
+            {
+              "pattern": "lateral_raise",
+              "role": "isolation",
+              "muscle": "shoulders"
+            },
+            {
+              "pattern": "elbow_flexion",
+              "role": "isolation",
+              "muscle": "biceps"
+            },
+            {
+              "pattern": "elbow_extension",
+              "role": "isolation",
+              "muscle": "triceps"
+            }
+          ]
+        },
+        {
+          "name": "Lower B",
+          "slots": [
+            {
+              "pattern": "hinge",
+              "role": "compound",
+              "muscle": "glutes"
+            },
+            {
+              "pattern": "leg_press_or_lunge",
+              "role": "compound",
+              "muscle": "quads"
+            },
+            {
+              "pattern": "hip_extension",
+              "role": "isolation",
+              "muscle": "glutes"
+            },
+            {
+              "pattern": "knee_flexion",
+              "role": "isolation",
+              "muscle": "hamstrings"
+            },
+            {
+              "pattern": "calf_raise",
+              "role": "isolation",
+              "muscle": "calves"
+            },
+            {
+              "pattern": "core_antiextension",
+              "role": "isolation",
+              "muscle": "abs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ppl",
+      "name": "Push / Pull / Legs",
+      "daysPerWeek": [
+        3,
+        6
+      ],
+      "recommendedFor": {
+        "days": [
+          3,
+          5,
+          6
+        ],
+        "levels": [
+          "intermediate",
+          "advanced"
+        ]
+      },
+      "sessions": [
+        {
+          "name": "Push",
+          "slots": [
+            {
+              "pattern": "horizontal_press",
+              "role": "compound",
+              "muscle": "chest"
+            },
+            {
+              "pattern": "overhead_press",
+              "role": "compound",
+              "muscle": "shoulders"
+            },
+            {
+              "pattern": "incline_press",
+              "role": "compound",
+              "muscle": "chest"
+            },
+            {
+              "pattern": "lateral_raise",
+              "role": "isolation",
+              "muscle": "shoulders"
+            },
+            {
+              "pattern": "elbow_extension",
+              "role": "isolation",
+              "muscle": "triceps"
+            },
+            {
+              "pattern": "chest_fly",
+              "role": "isolation",
+              "muscle": "chest"
+            }
+          ]
+        },
+        {
+          "name": "Pull",
+          "slots": [
+            {
+              "pattern": "vertical_pull",
+              "role": "compound",
+              "muscle": "lats"
+            },
+            {
+              "pattern": "horizontal_pull",
+              "role": "compound",
+              "muscle": "upper back"
+            },
+            {
+              "pattern": "rear_delt",
+              "role": "isolation",
+              "muscle": "shoulders"
+            },
+            {
+              "pattern": "elbow_flexion",
+              "role": "isolation",
+              "muscle": "biceps"
+            },
+            {
+              "pattern": "horizontal_pull",
+              "role": "compound",
+              "muscle": "lats"
+            },
+            {
+              "pattern": "elbow_flexion",
+              "role": "isolation",
+              "muscle": "forearms"
+            }
+          ]
+        },
+        {
+          "name": "Legs",
+          "slots": [
+            {
+              "pattern": "squat",
+              "role": "compound",
+              "muscle": "quads"
+            },
+            {
+              "pattern": "hinge",
+              "role": "compound",
+              "muscle": "hamstrings"
+            },
+            {
+              "pattern": "leg_press_or_lunge",
+              "role": "compound",
+              "muscle": "quads"
+            },
+            {
+              "pattern": "knee_flexion",
+              "role": "isolation",
+              "muscle": "hamstrings"
+            },
+            {
+              "pattern": "calf_raise",
+              "role": "isolation",
+              "muscle": "calves"
+            },
+            {
+              "pattern": "core_flexion",
+              "role": "isolation",
+              "muscle": "abs"
+            }
+          ]
+        }
+      ],
+      "sixDayNote": "At 6 days the rotation runs Push, Pull, Legs twice; second pass swaps the first compound in each session for an alternative."
+    },
+    {
+      "id": "full-body",
+      "name": "Full Body",
+      "daysPerWeek": [
+        2,
+        3
+      ],
+      "recommendedFor": {
+        "days": [
+          2,
+          3
+        ],
+        "levels": [
+          "beginner",
+          "intermediate"
+        ]
+      },
+      "sessions": [
+        {
+          "name": "Full A",
+          "slots": [
+            {
+              "pattern": "squat",
+              "role": "compound",
+              "muscle": "quads"
+            },
+            {
+              "pattern": "horizontal_press",
+              "role": "compound",
+              "muscle": "chest"
+            },
+            {
+              "pattern": "horizontal_pull",
+              "role": "compound",
+              "muscle": "upper back"
+            },
+            {
+              "pattern": "hinge",
+              "role": "compound",
+              "muscle": "hamstrings"
+            },
+            {
+              "pattern": "lateral_raise",
+              "role": "isolation",
+              "muscle": "shoulders"
+            },
+            {
+              "pattern": "core_antiextension",
+              "role": "isolation",
+              "muscle": "abs"
+            }
+          ]
+        },
+        {
+          "name": "Full B",
+          "slots": [
+            {
+              "pattern": "hinge",
+              "role": "compound",
+              "muscle": "glutes"
+            },
+            {
+              "pattern": "overhead_press",
+              "role": "compound",
+              "muscle": "shoulders"
+            },
+            {
+              "pattern": "vertical_pull",
+              "role": "compound",
+              "muscle": "lats"
+            },
+            {
+              "pattern": "leg_press_or_lunge",
+              "role": "compound",
+              "muscle": "quads"
+            },
+            {
+              "pattern": "elbow_flexion",
+              "role": "isolation",
+              "muscle": "biceps"
+            },
+            {
+              "pattern": "elbow_extension",
+              "role": "isolation",
+              "muscle": "triceps"
+            }
+          ]
+        },
+        {
+          "name": "Full C",
+          "slots": [
+            {
+              "pattern": "leg_press_or_lunge",
+              "role": "compound",
+              "muscle": "quads"
+            },
+            {
+              "pattern": "incline_press",
+              "role": "compound",
+              "muscle": "chest"
+            },
+            {
+              "pattern": "horizontal_pull",
+              "role": "compound",
+              "muscle": "lats"
+            },
+            {
+              "pattern": "knee_flexion",
+              "role": "isolation",
+              "muscle": "hamstrings"
+            },
+            {
+              "pattern": "calf_raise",
+              "role": "isolation",
+              "muscle": "calves"
+            },
+            {
+              "pattern": "core_flexion",
+              "role": "isolation",
+              "muscle": "abs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "body-part",
+      "name": "Body-part split",
+      "daysPerWeek": [
+        5,
+        6
+      ],
+      "recommendedFor": {
+        "days": [
+          5,
+          6
+        ],
+        "levels": [
+          "advanced"
+        ]
+      },
+      "sessions": [
+        {
+          "name": "Chest",
+          "slots": [
+            {
+              "pattern": "horizontal_press",
+              "role": "compound",
+              "muscle": "chest"
+            },
+            {
+              "pattern": "incline_press",
+              "role": "compound",
+              "muscle": "chest"
+            },
+            {
+              "pattern": "chest_fly",
+              "role": "isolation",
+              "muscle": "chest"
+            },
+            {
+              "pattern": "elbow_extension",
+              "role": "isolation",
+              "muscle": "triceps"
+            }
+          ]
+        },
+        {
+          "name": "Back",
+          "slots": [
+            {
+              "pattern": "vertical_pull",
+              "role": "compound",
+              "muscle": "lats"
+            },
+            {
+              "pattern": "horizontal_pull",
+              "role": "compound",
+              "muscle": "upper back"
+            },
+            {
+              "pattern": "horizontal_pull",
+              "role": "compound",
+              "muscle": "lats"
+            },
+            {
+              "pattern": "rear_delt",
+              "role": "isolation",
+              "muscle": "shoulders"
+            }
+          ]
+        },
+        {
+          "name": "Shoulders",
+          "slots": [
+            {
+              "pattern": "overhead_press",
+              "role": "compound",
+              "muscle": "shoulders"
+            },
+            {
+              "pattern": "lateral_raise",
+              "role": "isolation",
+              "muscle": "shoulders"
+            },
+            {
+              "pattern": "rear_delt",
+              "role": "isolation",
+              "muscle": "shoulders"
+            },
+            {
+              "pattern": "core_flexion",
+              "role": "isolation",
+              "muscle": "abs"
+            }
+          ]
+        },
+        {
+          "name": "Legs",
+          "slots": [
+            {
+              "pattern": "squat",
+              "role": "compound",
+              "muscle": "quads"
+            },
+            {
+              "pattern": "hinge",
+              "role": "compound",
+              "muscle": "hamstrings"
+            },
+            {
+              "pattern": "knee_extension",
+              "role": "isolation",
+              "muscle": "quads"
+            },
+            {
+              "pattern": "knee_flexion",
+              "role": "isolation",
+              "muscle": "hamstrings"
+            },
+            {
+              "pattern": "calf_raise",
+              "role": "isolation",
+              "muscle": "calves"
+            }
+          ]
+        },
+        {
+          "name": "Arms",
+          "slots": [
+            {
+              "pattern": "elbow_flexion",
+              "role": "isolation",
+              "muscle": "biceps"
+            },
+            {
+              "pattern": "elbow_extension",
+              "role": "isolation",
+              "muscle": "triceps"
+            },
+            {
+              "pattern": "elbow_flexion",
+              "role": "isolation",
+              "muscle": "forearms"
+            },
+            {
+              "pattern": "elbow_extension",
+              "role": "isolation",
+              "muscle": "triceps"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "custom",
+      "name": "Build your own",
+      "daysPerWeek": [
+        1,
+        7
+      ],
+      "sessions": []
+    }
+  ],
+  "recommendRule": "2-3 days -> full-body; 4 days -> upper-lower; 5 days -> ppl (advanced: body-part); 6 days -> ppl"
+}

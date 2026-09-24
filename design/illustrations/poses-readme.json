@@ -1,0 +1,33 @@
+{
+  "_note": "Tier 1 poses from design/illustrations/pictos.py. Port the rig (segment lengths, stroke widths, halos) exactly; pose angles are absolute directions in degrees (0 = right, 90 = down). Equipment drawing functions live in pictos.py per exercise.",
+  "rig": {
+    "lengths": {
+      "torso": 46,
+      "upperArm": 27,
+      "forearm": 25,
+      "thigh": 34,
+      "shin": 33,
+      "foot": 10
+    },
+    "strokes": {
+      "torso": 19,
+      "upperArm": 11,
+      "forearm": 10,
+      "thigh": 14,
+      "shin": 12,
+      "foot": 8
+    },
+    "head": {
+      "r": 10.5,
+      "gapAlongTorso": 17
+    },
+    "shoulderAlongTorso": 42,
+    "viewBox": [
+      0,
+      0,
+      240,
+      170
+    ],
+    "nearArmHalo": 5
+  }
+}

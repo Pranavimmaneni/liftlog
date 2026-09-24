@@ -1,0 +1,133 @@
+{
+  "_note": "Editable constants. Target effort maps to the one-tap effort chips: easy = RIR 3+, solid = RIR 1-2, hard = RIR 0.",
+  "levels": {
+    "beginner": {
+      "setsPerExercise": [
+        2,
+        3
+      ],
+      "compoundReps": [
+        10,
+        15
+      ],
+      "isolationReps": [
+        12,
+        15
+      ],
+      "restSec": {
+        "compound": 90,
+        "isolation": 60
+      },
+      "targetEffort": "easy-solid",
+      "weeklyHardSetsPerMuscle": [
+        8,
+        10
+      ],
+      "deloadEveryWeeks": null
+    },
+    "intermediate": {
+      "setsPerExercise": [
+        3,
+        4
+      ],
+      "compoundReps": [
+        8,
+        10
+      ],
+      "isolationReps": [
+        10,
+        12
+      ],
+      "restSec": {
+        "compound": 120,
+        "isolation": 90
+      },
+      "targetEffort": "solid",
+      "weeklyHardSetsPerMuscle": [
+        10,
+        16
+      ],
+      "deloadEveryWeeks": 6
+    },
+    "advanced": {
+      "setsPerExercise": [
+        4,
+        5
+      ],
+      "compoundReps": [
+        5,
+        8
+      ],
+      "isolationReps": [
+        8,
+        12
+      ],
+      "restSec": {
+        "compound": 150,
+        "isolation": 90
+      },
+      "targetEffort": "solid-hard",
+      "weeklyHardSetsPerMuscle": [
+        14,
+        20
+      ],
+      "deloadEveryWeeks": 5
+    }
+  },
+  "goalModifiers": {
+    "get_stronger": {
+      "compoundReps": [
+        4,
+        6
+      ],
+      "restSecCompound": 180
+    },
+    "build_muscle": {},
+    "recomp": {},
+    "general_fitness": {
+      "setsPerExercise": [
+        2,
+        3
+      ],
+      "weeklyHardSetsPerMuscle": [
+        6,
+        10
+      ]
+    }
+  },
+  "nudge": {
+    "easier": "move one level down for sets and effort, keep rep ranges",
+    "harder": "move one level up for sets and effort, keep rep ranges"
+  },
+  "secondaryMuscleSetWeight": 0.5,
+  "sessionMinutesTarget": 60,
+  "secondsPerSetIncludingRest": {
+    "compound": 180,
+    "isolation": 120
+  },
+  "warmup": {
+    "enabled": true,
+    "minWorkingKg": 20,
+    "ramp": [
+      {
+        "pct": 0.5,
+        "reps": 8
+      },
+      {
+        "pct": 0.75,
+        "reps": 4
+      }
+    ],
+    "onlyFirstCompoundPerMuscleGroup": true
+  },
+  "deload": {
+    "volumeFactor": 0.6,
+    "sameWeights": true,
+    "triggerStalledExercises": 3
+  },
+  "calibration": {
+    "stepUpIf": "reps >= repMax + 2 or effort == easy",
+    "stepDownIf": "reps < repMin or (effort == hard and reps < repMin)",
+    "sessionsCountTowardStreak": false
+  }
+}

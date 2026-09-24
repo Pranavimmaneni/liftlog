@@ -1,0 +1,362 @@
+@import 'tailwindcss';
+@import './tokens.css';
+
+/* Self-hosted fonts (NFR-SEC-1): latin subset only to keep the precache small. */
+@import '@fontsource/big-shoulders-display/latin-700';
+@import '@fontsource/big-shoulders-display/latin-800';
+@import '@fontsource/big-shoulders-display/latin-900';
+@import '@fontsource/instrument-sans/latin-400';
+@import '@fontsource/instrument-sans/latin-500';
+@import '@fontsource/instrument-sans/latin-600';
+@import '@fontsource/instrument-sans/latin-700';
+@import '@fontsource/ibm-plex-mono/latin-500';
+@import '@fontsource/ibm-plex-mono/latin-600';
+
+@custom-variant dark (&:where([data-theme='iron'], [data-theme='iron'] *));
+
+/* FR-THM-1: every colour is a token variable. */
+@theme inline {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-paper: var(--ll-paper);
+  --color-card: var(--ll-card);
+  --color-panel: var(--ll-panel);
+  --color-rule: var(--ll-rule);
+  --color-ink: var(--ll-ink);
+  --color-ink2: var(--ll-ink2);
+  --color-line: var(--ll-line);
+  --color-shadow: var(--ll-shadow);
+  --color-accent: var(--ll-accent);
+  --color-on-accent: var(--ll-onAccent);
+  --color-brass: var(--ll-brass);
+  --color-on-brass: var(--ll-onBrass);
+  --color-brass-text: var(--ll-brassText);
+  --color-brass-wash: var(--ll-brassWash);
+  --color-ghost: var(--ll-ghost);
+  --color-equip: var(--ll-equip);
+  --color-equip-dark: var(--ll-equipDark);
+  --color-floor: var(--ll-floor);
+
+  --font-display: 'Big Shoulders Display', 'Oswald', sans-serif;
+  --font-sans: 'Instrument Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 6px;
+  --shadow-hard: 3px 3px 0 var(--ll-shadow);
+  --shadow-hard-sm: 2px 2px 0 var(--ll-shadow);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    background: var(--ll-paper);
+  }
+  body {
+    margin: 0;
+    background: var(--ll-paper);
+    color: var(--ll-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none;
+  }
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+    color: inherit;
+  }
+  button {
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+  /* NFR-A11Y-1: visible focus in both themes. */
+  :focus-visible {
+    outline: 3px solid var(--ll-accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  a {
+    color: var(--ll-accent);
+  }
+}
+
+@layer components {
+  /* Type styles. Uppercase lives only here (NFR-UX-2). */
+  .t-display {
+    font-family: var(--font-display);
+    font-weight: 900;
+    line-height: 0.95;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+  }
+  .t-display-800 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .t-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ll-ink2);
+  }
+  .t-mono {
+    font-family: var(--font-mono);
+  }
+  .t-num {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ll-card {
+    background: var(--ll-card);
+    border: 1.5px solid var(--ll-line);
+    border-radius: 6px;
+  }
+  .ll-card-hard {
+    box-shadow: var(--shadow-hard);
+  }
+
+  .ll-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    border: 1.5px solid var(--ll-line);
+    background: var(--ll-card);
+    color: var(--ll-ink);
+    line-height: 1.3;
+  }
+  .ll-chip[data-variant='on'] {
+    background: var(--ll-ink);
+    border-color: var(--ll-ink);
+    color: var(--ll-card);
+  }
+  .ll-chip[data-variant='brass'] {
+    background: var(--ll-brassWash);
+    border-color: var(--ll-brass);
+    color: var(--ll-brassText);
+  }
+  .ll-chip[data-variant='red'] {
+    background: var(--ll-accent);
+    border-color: var(--ll-accent);
+    color: var(--ll-onAccent);
+  }
+  .ll-chip[data-variant='soft'] {
+    background: var(--ll-panel);
+    border-color: var(--ll-panel);
+    color: var(--ll-ink);
+  }
+  .ll-chip[data-variant='outline-red'] {
+    background: var(--ll-card);
+    border-color: var(--ll-accent);
+    color: var(--ll-accent);
+  }
+  .ll-chip[data-variant='dashed'] {
+    border-style: dashed;
+    background: transparent;
+  }
+
+  .ll-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 44px;
+    border-radius: 6px;
+    text-decoration: none;
+    box-sizing: border-box;
+    transition:
+      transform 150ms ease-out,
+      box-shadow 150ms ease-out,
+      background-color 150ms ease-out;
+  }
+  .ll-btn:active:not(:disabled) {
+    transform: translate(1px, 1px);
+  }
+  .ll-btn[data-variant='primary'] {
+    height: 56px;
+    width: 100%;
+    border: 2px solid var(--ll-ink);
+    background: var(--ll-accent);
+    color: var(--ll-onAccent);
+    box-shadow: var(--shadow-hard);
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .ll-btn:disabled {
+    opacity: 0.55;
+  }
+  .ll-btn[data-variant='secondary'] {
+    height: 56px;
+    width: 100%;
+    border: 1.5px solid var(--ll-line);
+    background: var(--ll-card);
+    color: var(--ll-ink);
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .ll-btn[data-variant='ghost'] {
+    border: 1.5px solid var(--ll-line);
+    background: var(--ll-card);
+    color: var(--ll-ink);
+    font-weight: 600;
+    font-size: 17px;
+    padding: 0 16px;
+  }
+  .ll-btn[data-variant='destructive'] {
+    height: 56px;
+    width: 100%;
+    border: 2px solid var(--ll-accent);
+    background: var(--ll-card);
+    color: var(--ll-accent);
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .ll-btn[data-size='sm'] {
+    height: 44px;
+    font-size: 17px;
+  }
+
+  .ll-icon-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+    border: 1.5px solid var(--ll-line);
+    background: var(--ll-card);
+    color: var(--ll-ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .ll-link {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ll-accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    background: none;
+    border: 0;
+    padding: 12px 0;
+    min-height: 44px;
+  }
+
+  .ll-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 3px 14px;
+    border-bottom: 1px solid var(--ll-rule);
+  }
+  .ll-row:last-child {
+    border-bottom: 0;
+  }
+
+  .ll-input {
+    width: 100%;
+    min-height: 48px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1.5px solid var(--ll-line);
+    background: var(--ll-card);
+    color: var(--ll-ink);
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+  .ll-input[aria-invalid='true'] {
+    border-color: var(--ll-accent);
+  }
+}
+
+@layer utilities {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* PRD §9 motion: stamp 400 ms, scale 1.4 → 1 with −12° rotation. */
+@keyframes ll-stamp {
+  from {
+    transform: scale(1.4) rotate(-12deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(-12deg);
+    opacity: 1;
+  }
+}
+@keyframes ll-flash {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+@keyframes ll-sheet-in {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.ll-stamp-anim {
+  animation: ll-stamp 400ms ease-out both;
+}
+.ll-flash {
+  animation: ll-flash 0.9s ease-in-out 3;
+}
+.ll-sheet-anim {
+  animation: ll-sheet-in 200ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
