@@ -44,7 +44,7 @@ export async function logCurrentExercise(page: Page, calibrationLoad = true) {
       const done = await back.isVisible();
       const next = done ? '' : ((await log.allTextContents())[0] ?? label);
       expect(done || next !== label).toBe(true);
-    }).toPass({ timeout: 10_000 });
+    }).toPass({ timeout: 10_000, intervals: [50, 100, 200] });
     if (await back.isVisible()) break;
   }
   await back.click();

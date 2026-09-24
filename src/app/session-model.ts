@@ -9,13 +9,18 @@ import { exerciseProgress, goalMeter, type ExerciseProgress, type Meter } from '
 import { bodyweightOn } from '@/engine/load';
 import { warmupEligible } from '@/engine/warmup';
 import { dateKey, weekNumber } from '@/engine/week';
-import type { Goal } from '@/engine/goal';
+import { exposuresFrom, goalFor, type Goal } from '@/engine/goal';
 import type { Exercise, Side } from '@/engine/types';
 
 export interface ItemModel {
   exercise: Exercise;
   planned: boolean;
   goal: Goal;
+  /** The engine's own pick, before any S24 override. */
+  coachGoal: Goal;
+  overridden: boolean;
+  /** Target for the next exposure if this one ended now (the "Next time" line). */
+  next: Goal | null;
   /** This session's sets for the exercise, in log order. */
   sets: SetRow[];
   warmupsLogged: SetRow[];
@@ -83,6 +88,7 @@ export function buildSessionModel(raw: SessionRaw, exMap: Map<string, Exercise>)
       warmupEligible: warm.has(ex.id),
       warmupsEnabled: raw.settings.warmups,
     });
+    const coachGoal = override ? goalFromHistory(ex, raw.history, profile, { deload: session.deload }) : goal;
     const sets = raw.sets.filter((s) => s.exerciseId === ex.id).sort((a, b) => a.loggedAt - b.loggedAt);
     const work = sets.filter((s) => s.kind !== 'warmup');
     const progress = exerciseProgress(work, goal, ex.loadType, ex.unilateral, bw);
@@ -103,6 +109,19 @@ export function buildSessionModel(raw: SessionRaw, exMap: Map<string, Exercise>)
       exercise: ex,
       planned: p.planned,
       goal,
+      coachGoal,
+      overridden: !!override,
+      next:
+        work.length > 0
+          ? goalFor(
+              ex,
+              [
+                ...exposuresFrom(own, raw.history.sessions),
+                { at: session.startedAt, deload: session.deload, sets: work },
+              ],
+              profile,
+            )
+          : null,
       sets,
       warmupsLogged: sets.filter((s) => s.kind === 'warmup'),
       work,

@@ -33,6 +33,7 @@ import { SwapSheet } from '../S23-swap/SwapSheet';
 import { EditSetSheet } from './EditSetSheet';
 import { IllustrationPanel } from './IllustrationPanel';
 import { MachinePanel } from '../S08-machine/MachinePanel';
+import { OverrideSheet } from '../S24-override/OverrideSheet';
 
 const EFFORTS: Effort[] = ['easy', 'solid', 'hard'];
 
@@ -93,6 +94,7 @@ export default function Logger() {
   const [swap, setSwap] = useState(false);
   const [busy, setBusy] = useState(false);
   const [nudgeUsed, setNudgeUsed] = useState<string | null>(null);
+  const [overrideOpen, setOverrideOpen] = useState(false);
 
   const lastWork = item?.work[item.work.length - 1];
   const key = item ? `${item.nextIdx}-${item.nextSide ?? ''}-${item.work.length}` : '';
@@ -223,20 +225,27 @@ export default function Logger() {
       {isMachine && <MachinePanel exercise={ex} units={units} />}
 
       <div className="grid grid-cols-2 gap-2.5 px-5 pt-3">
-        <div className="ll-card ll-card-hard px-3 py-2.5">
-          <p className="t-label !text-accent">{en.logger.goalToday}</p>
-          <p className="t-display mt-1.5 text-[28px]">
+        <button
+          type="button"
+          className="ll-card ll-card-hard px-3 py-2.5 text-left"
+          aria-label={`${en.override.edit}: ${g.sets} × ${repsText(g)}`}
+          onClick={() => setOverrideOpen(true)}
+        >
+          <span className="t-label block !text-accent">
+            {item.overridden ? en.override.yours : en.logger.goalToday}
+          </span>
+          <span className="t-display mt-1.5 block text-[28px]">
             {g.sets} × {repsText(g)}
             {lt === 'timed' ? ' s' : ''}
-          </p>
-          <p className="t-mono mt-1 text-[12px]">
+          </span>
+          <span className="t-mono mt-1 block text-[12px]">
             {hasLoad(lt)
               ? g.loadKg === null
                 ? en.logger.firstTime
                 : formatLoad(g.loadKg, lt, units)
               : formatLoad(0, lt, units)}
-          </p>
-        </div>
+          </span>
+        </button>
         <div className="ll-card px-3 py-2.5">
           <p className="t-label">
             {item.last ? en.logger.last(shortDate(item.last.at)) : en.logger.lastNone}
@@ -441,6 +450,18 @@ export default function Logger() {
             </button>
           </div>
         )}
+        {done && item.next && (
+          <p className="border-t border-rule px-3 py-2.5 text-[15px] leading-snug" data-testid="next-time">
+            <b>
+              {en.logger.nextTime}{' '}
+              {hasLoad(lt) && item.next.loadKg !== null
+                ? `${formatLoad(item.next.loadKg, lt, units)} × `
+                : ''}
+              {item.next.repMax}.
+            </b>{' '}
+            {formatReason(item.next.reason, units, lt)}.
+          </p>
+        )}
       </section>
 
       <div className="sticky bottom-0 mt-auto flex items-center gap-2.5 bg-paper px-5 pb-[calc(20px+env(safe-area-inset-bottom))] pt-5">
@@ -460,6 +481,15 @@ export default function Logger() {
         )}
       </div>
 
+      <OverrideSheet
+        open={overrideOpen}
+        onClose={() => setOverrideOpen(false)}
+        exercise={ex}
+        goal={g}
+        coachGoal={item.coachGoal}
+        overridden={item.overridden}
+        units={units}
+      />
       <EditSetSheet
         set={editing}
         exercise={ex}

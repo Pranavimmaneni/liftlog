@@ -3,6 +3,8 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from './schema';
 import type { ExerciseRow, MachineNoteRow } from './types';
 import type { Exercise } from '@/engine/types';
+import { registerPoses } from '@/illustration/svg';
+import { tier2Defs, type PoseData } from '@/illustration/tier2';
 
 /**
  * Exercise catalogue = the seeded library (a lazy JSON chunk, NFR-PERF-3, DECISIONS D12) merged with
@@ -12,9 +14,17 @@ import type { Exercise } from '@/engine/types';
 let catalog: Promise<Exercise[]> | null = null;
 let catalogSync: Exercise[] | null = null;
 
+/**
+ * Loads the seeded library and the Tier 2 pose data together (both lazy chunks). A Tier 2 pose is
+ * keyed by exercise id, so exercises with one get `poseId = id` here (DECISIONS D54).
+ */
 export function loadCatalog(): Promise<Exercise[]> {
-  catalog ??= import('@/data/exercises.json').then((m) => {
-    catalogSync = m.default as Exercise[];
+  catalog ??= Promise.all([import('@/data/exercises.json'), import('@/data/poses.json')]).then(([m, p]) => {
+    const poses = p.default as unknown as PoseData;
+    registerPoses(tier2Defs(poses));
+    catalogSync = (m.default as Exercise[]).map((e) =>
+      e.poseId || !poses.poses[e.id] ? e : { ...e, poseId: e.id },
+    );
     return catalogSync;
   });
   return catalog;

@@ -28,3 +28,12 @@ URL: https://liftlog-jade.vercel.app · components page: https://liftlog-jade.ve
 | 2 | Coverage flags a missing muscle and "+ Fix" adds something sensible | ✅ e2e + integration test. 📱 Judge whether the picks feel sensible to you |
 | 3 | Easy first set on a new exercise → heavier second set suggested | ✅ e2e ("Set 1 was easy… Use 25") |
 | 4 | Machine photo + seat settings show next time | ✅ e2e with a file upload, survives reload. 📱 Take a real photo with the camera on both phones |
+
+## M3
+| # | Check | Automated? |
+|---|---|---|
+| 1 | Repeat a session where you hit every rep → next time the weight goes up, with a reason | ✅ e2e #7 on all 4 projects ("Up 2.5 kg: every set hit 10", new target on the goal card) |
+| 2 | Miss reps twice in a row → weight drops 10% with a reason | ✅ e2e ("Down 10%: two tough sessions in a row") + unit tests for every §5.8 rule |
+| 3 | Override a target → it sticks; "Reset to coach's pick" undoes it | ✅ e2e (survives reload, axe clean) + screen test |
+| 4 | Look through the pose gallery and note any pose that looks wrong | Partly ✅: every pose stays in frame through the whole movement (unit test); contact sheets in docs/reports/poses/. 📱 Your judgement at /dev/poses |
+| 5 | "Log set" feels instant on the iPhone (NFR-PERF-2) | 📱 Chromium ~17 ms; Playwright WebKit on Windows ~250 ms (D58) |

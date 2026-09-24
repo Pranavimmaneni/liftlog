@@ -18,6 +18,9 @@ test.describe('M1 log a workout', () => {
   });
 
   test('e2e #2: full session → ticket (FR-WRK-3, FR-SUM-1, FR-RTN-4)', async ({ page }) => {
+    // A whole session is ~30 logged sets; Playwright's WebKit on Windows takes ~250 ms per IndexedDB
+    // write (Chromium ~17 ms), which puts this flow near the default 60 s timeout (DECISIONS D58).
+    test.slow();
     await onboard(page);
     await startWorkout(page);
     const items = page.locator('main ul > li a[href^="/workout/"]');

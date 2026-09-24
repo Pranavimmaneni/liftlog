@@ -14,6 +14,8 @@ import { useSettings } from '@/db/settings';
 import { upNextOf, useActiveRoutine, useProfile, useQueue } from '@/db/repo';
 import { goalFromHistory, historyFor, startSession } from '@/db/workout';
 import { useActiveSessionId } from '@/app/session-model';
+import { useDeload } from '@/db/deload';
+import { DeloadBanner } from '@/components/DeloadBanner';
 import { INTENSITY } from '@/engine/data';
 import { estimateMinutes } from '@/engine/summary';
 import { rotationOrder } from '@/engine/rotation';
@@ -33,6 +35,7 @@ export default function Home() {
   const settings = useSettings();
   const exMap = useExerciseMap();
   const activeId = useActiveSessionId();
+  const deload = useDeload();
   const [weighIn, setWeighIn] = useState(false);
   const [starting, setStarting] = useState(false);
   const now = Date.now();
@@ -108,6 +111,7 @@ export default function Home() {
       routineSessionId: next.session.id,
       name: next.session.name,
       exerciseIds: nextIds,
+      deload: deload?.thisWeek,
     });
     navigate('/workout');
   };
@@ -125,6 +129,8 @@ export default function Home() {
           </Link>
         </div>
       </header>
+
+      <DeloadBanner deload={deload} />
 
       {!routine || !next ? (
         <div className="ll-card ll-card-hard mt-4 p-4">

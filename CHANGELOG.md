@@ -1,5 +1,12 @@
 # Changelog
 
+## M3 Progression (2026-09-24)
+- Deload weeks (scheduled or after stalls), announced a week ahead on Home and Plan.
+- Change-the-target sheet with "Reset to coach's pick", and a "Next time" line with the reason.
+- Plan tab: week strip, drag/keyboard reorder, skip to, change split.
+- Exercise detail with history and an e1RM chart; custom exercises.
+- 219 Tier 2 pictograms from pose data, with a /dev/poses gallery.
+
 ## M2 Coach (2026-09-24)
 - Weekly hard-set coverage per muscle with "+ Fix", and routines that fill their own gaps.
 - Machine photos, named settings and stack increments on the machine logger; custom machines.

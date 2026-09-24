@@ -13,3 +13,5 @@ SEED-REPORT.md
 *.md
 package-lock.json
 .lighthouseci/
+# copied verbatim from design/ by scripts/copy-data.ts on every build
+src/styles/tokens.css

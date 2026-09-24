@@ -1,91 +1,84 @@
 /* Paper & Iron tokens. Paper = light, Iron = dark. Generated from tokens.json. */
-:root,
-[data-theme='paper'] {
-  --ll-paper: #f2eadb;
-  --ll-card: #fbf7ef;
-  --ll-panel: #ede3cf;
-  --ll-rule: #d9cdb6;
-  --ll-ink: #1d1b18;
-  --ll-ink2: #5e574c;
-  --ll-line: #1d1b18;
-  --ll-shadow: #1d1b18;
-  --ll-accent: #9e2b25;
-  --ll-onAccent: #fbf7ef;
-  --ll-brass: #b8862b;
-  --ll-onBrass: #1d1b18;
-  --ll-brassText: #7a5a12;
-  --ll-brassWash: #f1e1b8;
-  --ll-ghost: #cdbfa3;
-  --ll-equip: #8e7f66;
-  --ll-equipDark: #6b604e;
-  --ll-floor: #c9ba9c;
-  --ll-farLimb: #4a443b;
-  --ll-muscleBody: #e8dfcc;
-  --ll-muscleIdle: #d8cbb1;
-  --ll-musclePrimary: #9e2b25;
-  --ll-muscleSecondary: #d6a546;
+:root, [data-theme="paper"] {
+  --ll-paper: #F2EADB;
+  --ll-card: #FBF7EF;
+  --ll-panel: #EDE3CF;
+  --ll-rule: #D9CDB6;
+  --ll-ink: #1D1B18;
+  --ll-ink2: #5E574C;
+  --ll-line: #1D1B18;
+  --ll-shadow: #1D1B18;
+  --ll-accent: #9E2B25;
+  --ll-onAccent: #FBF7EF;
+  --ll-brass: #B8862B;
+  --ll-onBrass: #1D1B18;
+  --ll-brassText: #7A5A12;
+  --ll-brassWash: #F1E1B8;
+  --ll-ghost: #CDBFA3;
+  --ll-equip: #8E7F66;
+  --ll-equipDark: #6B604E;
+  --ll-floor: #C9BA9C;
+  --ll-farLimb: #4A443B;
+  --ll-muscleBody: #E8DFCC;
+  --ll-muscleIdle: #D8CBB1;
+  --ll-musclePrimary: #9E2B25;
+  --ll-muscleSecondary: #D6A546;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme='paper']) {
+  :root:not([data-theme="paper"]) {
     --ll-paper: #151412;
-    --ll-card: #1f1d1a;
-    --ll-panel: #2a2723;
-    --ll-rule: #3b3731;
-    --ll-ink: #efe6d4;
-    --ll-ink2: #b0a690;
-    --ll-line: #4d473e;
+    --ll-card: #1F1D1A;
+    --ll-panel: #2A2723;
+    --ll-rule: #3B3731;
+    --ll-ink: #EFE6D4;
+    --ll-ink2: #B0A690;
+    --ll-line: #4D473E;
     --ll-shadow: #000000;
-    --ll-accent: #e0654c;
+    --ll-accent: #E0654C;
     --ll-onAccent: #151412;
-    --ll-brass: #d6a546;
+    --ll-brass: #D6A546;
     --ll-onBrass: #151412;
-    --ll-brassText: #e5bc60;
-    --ll-brassWash: #3b3018;
-    --ll-ghost: #4e483f;
-    --ll-equip: #6e6352;
-    --ll-equipDark: #9c8d74;
-    --ll-floor: #3b3731;
-    --ll-farLimb: #bdb29c;
-    --ll-muscleBody: #36322c;
-    --ll-muscleIdle: #4a443b;
-    --ll-musclePrimary: #e0654c;
-    --ll-muscleSecondary: #d6a546;
+    --ll-brassText: #E5BC60;
+    --ll-brassWash: #3B3018;
+    --ll-ghost: #4E483F;
+    --ll-equip: #6E6352;
+    --ll-equipDark: #9C8D74;
+    --ll-floor: #3B3731;
+    --ll-farLimb: #BDB29C;
+    --ll-muscleBody: #36322C;
+    --ll-muscleIdle: #4A443B;
+    --ll-musclePrimary: #E0654C;
+    --ll-muscleSecondary: #D6A546;
   }
 }
 
-[data-theme='iron'] {
+[data-theme="iron"] {
   --ll-paper: #151412;
-  --ll-card: #1f1d1a;
-  --ll-panel: #2a2723;
-  --ll-rule: #3b3731;
-  --ll-ink: #efe6d4;
-  --ll-ink2: #b0a690;
-  --ll-line: #4d473e;
+  --ll-card: #1F1D1A;
+  --ll-panel: #2A2723;
+  --ll-rule: #3B3731;
+  --ll-ink: #EFE6D4;
+  --ll-ink2: #B0A690;
+  --ll-line: #4D473E;
   --ll-shadow: #000000;
-  --ll-accent: #e0654c;
+  --ll-accent: #E0654C;
   --ll-onAccent: #151412;
-  --ll-brass: #d6a546;
+  --ll-brass: #D6A546;
   --ll-onBrass: #151412;
-  --ll-brassText: #e5bc60;
-  --ll-brassWash: #3b3018;
-  --ll-ghost: #4e483f;
-  --ll-equip: #6e6352;
-  --ll-equipDark: #9c8d74;
-  --ll-floor: #3b3731;
-  --ll-farLimb: #bdb29c;
-  --ll-muscleBody: #36322c;
-  --ll-muscleIdle: #4a443b;
-  --ll-musclePrimary: #e0654c;
-  --ll-muscleSecondary: #d6a546;
+  --ll-brassText: #E5BC60;
+  --ll-brassWash: #3B3018;
+  --ll-ghost: #4E483F;
+  --ll-equip: #6E6352;
+  --ll-equipDark: #9C8D74;
+  --ll-floor: #3B3731;
+  --ll-farLimb: #BDB29C;
+  --ll-muscleBody: #36322C;
+  --ll-muscleIdle: #4A443B;
+  --ll-musclePrimary: #E0654C;
+  --ll-muscleSecondary: #D6A546;
 }
 
-:root {
-  color-scheme: light dark;
-}
-[data-theme='paper'] {
-  color-scheme: light;
-}
-[data-theme='iron'] {
-  color-scheme: dark;
-}
+:root { color-scheme: light dark; }
+[data-theme="paper"] { color-scheme: light; }
+[data-theme="iron"] { color-scheme: dark; }
