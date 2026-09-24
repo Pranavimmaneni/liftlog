@@ -1,5 +1,9 @@
 # Changelog
 
+## M2 Coach (2026-09-24)
+- Weekly hard-set coverage per muscle with "+ Fix", and routines that fill their own gaps.
+- Machine photos, named settings and stack increments on the machine logger; custom machines.
+
 ## M1 Log a workout (2026-09-24)
 - Seeded library of 410 exercises with a deterministic seed report.
 - Onboarding (S01–S04) with an auto-built routine, Home, workout list, exercise logger, rest timer, session ticket.

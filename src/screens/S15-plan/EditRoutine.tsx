@@ -5,7 +5,8 @@ import { ScreenHeader } from '@/components/ScreenHeader';
 import { toast } from '@/components/Toast';
 import { en } from '@/copy/en';
 import { useExerciseMap } from '@/db/catalog';
-import { updateRoutineSessions, useActiveRoutine, useProfile } from '@/db/repo';
+import { updateRoutineSessions, useActiveRoutine, useGym, useProfile } from '@/db/repo';
+import { presetGym } from '@/engine/suggest';
 import type { RoutineSession } from '@/db/types';
 import { splitById } from '@/engine/split';
 import { RoutineBuilder } from '../S04-routine/RoutineBuilder';
@@ -16,6 +17,7 @@ export default function EditRoutine() {
   const routine = useActiveRoutine();
   const profile = useProfile();
   const exMap = useExerciseMap();
+  const gym = useGym();
   const navigate = useNavigate();
   const [sessions, setSessions] = useState<RoutineSession[] | null>(null);
   useEffect(() => {
@@ -32,6 +34,11 @@ export default function EditRoutine() {
         exercises={exMap}
         profile={profile}
         initialTab={Number(index) || 0}
+        coverageCtx={{
+          gym: gym ?? presetGym('full-gym'),
+          daysPerWeek: profile.daysPerWeek,
+          limitations: profile.limitations,
+        }}
       />
       <div className="sticky bottom-0 mt-auto bg-paper px-5 pb-[calc(20px+env(safe-area-inset-bottom))] pt-3">
         <Button

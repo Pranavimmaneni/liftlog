@@ -1,9 +1,11 @@
-import { useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react';
+import { useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
 import { Chip } from '@/components/Chip';
 import { Icon } from '@/components/Icon';
 import { ExerciseThumb } from '@/illustration/Pictogram';
 import { muscleName } from '@/components/ExerciseRow';
-import { EmptyState } from '@/components/Toast';
+import { EmptyState, toast } from '@/components/Toast';
+import type { GymLike } from '@/engine/suggest';
+import { CoverageCard } from './Coverage';
 import { en } from '@/copy/en';
 import { uid } from '@/db/ids';
 import type { RoutineSession } from '@/db/types';
@@ -21,7 +23,7 @@ function move<T>(list: T[], from: number, to: number): T[] {
 
 /**
  * S04 routine builder (FR-RTN-2): add, remove, reorder (drag and keyboard) and swap exercises per
- * session. Used at the end of onboarding and from the Plan tab. `coverage` slot is filled in M2.
+ * session, with the live coverage check (FR-RTN-3). Used at the end of onboarding and from the Plan tab.
  */
 export function RoutineBuilder({
   splitName,
@@ -30,7 +32,7 @@ export function RoutineBuilder({
   exercises,
   profile,
   initialTab = 0,
-  coverage,
+  coverageCtx,
 }: {
   splitName: string;
   sessions: RoutineSession[];
@@ -38,7 +40,8 @@ export function RoutineBuilder({
   exercises: Map<string, Exercise>;
   profile: Pick<ProfileLike, 'experience' | 'goal' | 'nudge'>;
   initialTab?: number;
-  coverage?: (sessionIndex: number) => ReactNode;
+  /** FR-RTN-3: shows the coverage card when the gym and training days are known. */
+  coverageCtx?: { gym: GymLike; daysPerWeek: number; limitations: string[] };
 }) {
   const [tab, setTab] = useState(Math.min(initialTab, Math.max(0, sessions.length - 1)));
   const [adding, setAdding] = useState(false);
@@ -49,6 +52,10 @@ export function RoutineBuilder({
   const handles = useRef<(HTMLButtonElement | null)[]>([]);
 
   const cur = sessions[tab];
+  const allIds = useMemo(
+    () => sessions.map((s) => [...s.items].sort((a, b) => a.order - b.order).map((i) => i.exerciseId)),
+    [sessions],
+  );
   const ids = cur ? [...cur.items].sort((a, b) => a.order - b.order).map((i) => i.exerciseId) : [];
 
   const setIds = (next: string[]) => {
@@ -186,7 +193,22 @@ export function RoutineBuilder({
         </button>
       </div>
 
-      {coverage?.(tab)}
+      {coverageCtx && (
+        <CoverageCard
+          sessions={allIds}
+          exercises={exercises}
+          profile={{ ...profile, ...coverageCtx }}
+          gym={coverageCtx.gym}
+          onFix={(si, exerciseId) => {
+            onChange(
+              sessions.map((s, i) =>
+                i === si ? { ...s, items: [...s.items, { exerciseId, order: s.items.length }] } : s,
+              ),
+            );
+            toast(en.routine.fixed(exercises.get(exerciseId)?.name ?? '', sessions[si]?.name ?? ''));
+          }}
+        />
+      )}
 
       <ExercisePicker
         open={adding}

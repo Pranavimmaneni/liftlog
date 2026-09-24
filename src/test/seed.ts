@@ -3,7 +3,8 @@ import { getExerciseMap } from '@/db/catalog';
 import { db } from '@/db/schema';
 import { finishSession, logSet, startSession } from '@/db/workout';
 import { sessionsFor } from '@/engine/split';
-import { presetGym, suggestRoutine } from '@/engine/suggest';
+import { presetGym } from '@/engine/suggest';
+import { buildRoutine } from '@/engine/coverage';
 import { isGoalSet } from '@/engine/goalset';
 import { sessionsFromSuggestion } from '@/screens/S04-routine/RoutineBuilder';
 import type { RoutineSession } from '@/db/types';
@@ -25,7 +26,7 @@ export async function seedOnboarded(draft: Partial<OnboardingDraft> = {}): Promi
   const d = { ...TEST_DRAFT, ...draft };
   const map = await getExerciseMap();
   const sessions = sessionsFromSuggestion(
-    suggestRoutine(sessionsFor(d.splitId!, d.daysPerWeek), {
+    buildRoutine(sessionsFor(d.splitId!, d.daysPerWeek), {
       exercises: [...map.values()],
       gym: d,
       profile: d,

@@ -32,6 +32,7 @@ import { RestChip } from '../S25-timer/RestTimer';
 import { SwapSheet } from '../S23-swap/SwapSheet';
 import { EditSetSheet } from './EditSetSheet';
 import { IllustrationPanel } from './IllustrationPanel';
+import { MachinePanel } from '../S08-machine/MachinePanel';
 
 const EFFORTS: Effort[] = ['easy', 'solid', 'hard'];
 
@@ -118,7 +119,8 @@ export default function Logger() {
 
   if (model === null) return <Navigate to="/" replace />;
   if (!model) return null;
-  if (!item) return <Navigate to="/workout" replace />;
+  // After a swap the live data may be one tick behind the URL, so only leave if it stays missing.
+  if (!item) return <MissingExercise />;
 
   const ex = item.exercise;
   const g = item.goal;
@@ -218,6 +220,7 @@ export default function Logger() {
       )}
 
       <IllustrationPanel exercise={ex} />
+      {isMachine && <MachinePanel exercise={ex} units={units} />}
 
       <div className="grid grid-cols-2 gap-2.5 px-5 pt-3">
         <div className="ll-card ll-card-hard px-3 py-2.5">
@@ -494,6 +497,15 @@ async function replaceInRoutine(routineSessionId: string, fromId: string, toId: 
         : s,
     ),
   );
+}
+
+function MissingExercise() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const t = window.setTimeout(() => navigate('/workout', { replace: true }), 1200);
+    return () => window.clearTimeout(t);
+  }, [navigate]);
+  return null;
 }
 
 function HurtsMenu({ onHurts }: { onHurts: () => void }) {

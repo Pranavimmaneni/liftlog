@@ -9,7 +9,8 @@ import { completeOnboarding, saveWeighIn, type OnboardingDraft } from '@/db/repo
 import { finishSession, goalFromHistory, historyFor, logSet, setEffort, startSession } from '@/db/workout';
 import { isGoalSet, bonusReps } from '@/engine/goalset';
 import { sessionsFor } from '@/engine/split';
-import { presetGym, suggestRoutine } from '@/engine/suggest';
+import { presetGym } from '@/engine/suggest';
+import { buildRoutine } from '@/engine/coverage';
 import { dateKey, startOfWeek } from '@/engine/week';
 import { sessionsFromSuggestion } from '@/screens/S04-routine/RoutineBuilder';
 import type { Effort } from '@/engine/types';
@@ -78,7 +79,7 @@ export async function loadFixture(opts: FixtureOptions = {}): Promise<void> {
   };
   const map = await getExerciseMap();
   const sessions = sessionsFromSuggestion(
-    suggestRoutine(sessionsFor('upper-lower', 4), {
+    buildRoutine(sessionsFor('upper-lower', 4), {
       exercises: [...map.values()],
       gym: draft,
       profile: draft,

@@ -50,6 +50,8 @@ export interface GymRow {
 export interface MachineNoteRow {
   machineId: string;
   photoBlob?: Blob;
+  /** DECISIONS D52: fallback when the browser can't store Blobs in IndexedDB (private/ephemeral WebKit). */
+  photoDataUrl?: string;
   settings: Record<string, string>;
   incrementKg?: number;
   customName?: string;

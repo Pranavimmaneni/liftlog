@@ -11,7 +11,7 @@ import {
   type OnboardingStep,
 } from '@/db/repo';
 import { recommendSplit, splitById, sessionsFor } from '@/engine/split';
-import { suggestRoutine } from '@/engine/suggest';
+import { buildRoutine } from '@/engine/coverage';
 import type { Exercise } from '@/engine/types';
 import { platform } from '@/platform';
 import { RoutineBuilder, sessionsFromSuggestion } from '../S04-routine/RoutineBuilder';
@@ -61,7 +61,7 @@ export default function Onboarding() {
         onNext={async () => {
           const map = exMap ?? (await getExerciseMap());
           const splitId = draft.splitId ?? recommendSplit(draft.daysPerWeek, draft.experience);
-          const suggested = suggestRoutine(sessionsFor(splitId, draft.daysPerWeek), {
+          const suggested = buildRoutine(sessionsFor(splitId, draft.daysPerWeek), {
             exercises: [...map.values()],
             gym: draft,
             profile: draft,
@@ -90,6 +90,7 @@ export default function Onboarding() {
         sessions={routine.sessions}
         exercises={exMap}
         profile={draft}
+        coverageCtx={{ gym: draft, daysPerWeek: draft.daysPerWeek, limitations: draft.limitations }}
         onChange={(sessions) => update({ ...draft, routine: { ...routine, sessions } })}
       />
       <BottomCta>

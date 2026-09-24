@@ -43,7 +43,7 @@ export function ToggleChip({
       <button
         type="button"
         aria-pressed={on}
-        className={`inline-flex min-h-12 items-center gap-2 rounded-md border-[1.5px] px-3 text-[15px] font-medium ${
+        className={`inline-flex min-h-11 items-center gap-2 rounded-md border-[1.5px] px-3 text-[15px] font-medium ${
           on ? 'border-ink bg-ink text-card' : 'border-line bg-card text-ink'
         } ${className}`}
         {...rest}
