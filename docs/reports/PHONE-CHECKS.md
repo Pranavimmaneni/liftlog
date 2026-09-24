@@ -1,0 +1,13 @@
+# Phone checks
+
+Checks from `docs/PROMPTS.md`. ✅ = covered by Playwright e2e (Pixel 7 Chromium + iPhone 14 WebKit emulation, Paper + Iron). 📱 = needs a real phone.
+
+## M0
+| # | Check | Automated? |
+|---|---|---|
+| 1 | Pixel: open the URL in Chrome → "Install app" → opens full-screen with the LL icon | Partly ✅: manifest is valid and installable (name, standalone, 192/512 + maskable icons all load). 📱 The install flow and icon on the home screen |
+| 2 | iPhone: Safari → Share → Add to Home Screen → opens without Safari bars | 📱 (apple-touch-icon and `apple-mobile-web-app-capable` are in place) |
+| 3 | Phone dark mode on/off → app follows. Force Paper and Iron in `/dev/components` | ✅ System follows the emulated colour scheme; forcing Paper/Iron applies instantly and survives reload |
+| 4 | Airplane mode, close and reopen → still loads | ✅ on Chromium (real offline). WebKit: precache verified (Playwright limitation, DECISIONS D34). 📱 Do it once on the iPhone |
+
+URL: https://liftlog-jade.vercel.app · components page: https://liftlog-jade.vercel.app/dev/components
