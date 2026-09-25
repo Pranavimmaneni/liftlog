@@ -2,7 +2,8 @@
 
 All six milestones (M0–M6) are built, tested, committed on `main` and deployed.
 - **Live web app:** https://liftlog-jade.vercel.app
-- **Android APK:** built by GitHub Actions once the repo is pushed (TODO step 1).
+- **Source:** private repo https://github.com/Pranavimmaneni/liftlog
+- **Android APK:** built by GitHub Actions (Actions → Android APK → Run workflow).
 
 Per-milestone detail is in `docs/reports/M0.md` … `M6.md`; decisions D1–D78 are in `DECISIONS.md`.
 
@@ -74,7 +75,7 @@ To redeploy, run `vercel deploy --prod --yes` in this folder, or connect Vercel 
 
 ## Your TODO list, in order
 Full steps are in `docs/reports/TODO-FOR-PRANAV.md`.
-1. **Push to GitHub.** Create an empty private repo `liftlog`, then `git remote add origin …` and `git push -u origin main`, or use `gh repo create liftlog --private --source . --push`.
+1. ~~**Push to GitHub.**~~ Done: https://github.com/Pranavimmaneni/liftlog (private).
 2. **Install the web app** on the Pixel (Chrome → Install app) and the iPhone (Safari → Add to Home Screen).
 3. **Do the 📱 phone checks** in `docs/reports/PHONE-CHECKS.md`.
 4. **Build and install the APK** from GitHub Actions. Allow notifications, and "Alarms & reminders" if alerts arrive late.

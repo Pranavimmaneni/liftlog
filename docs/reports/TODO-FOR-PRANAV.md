@@ -2,23 +2,8 @@
 
 These steps need your accounts, your phones or your judgement. Do them in order. Steps 1–5 matter; 6–8 are optional.
 
-## 1. Put the code on GitHub
-The `gh` CLI isn't installed on this PC. The code is committed locally on `main` (13 commits).
-
-Create an **empty private** repo called `liftlog` at https://github.com/new (no README, no .gitignore). Then run this in this folder:
-
-```bash
-git remote add origin https://github.com/<your-username>/liftlog.git
-git push -u origin main
-```
-
-Or install the GitHub CLI (`winget install GitHub.cli`), run `gh auth login`, then:
-
-```bash
-gh repo create liftlog --private --source . --push
-```
-
-After the push, the **CI** and **Lighthouse** workflows run automatically (Actions tab).
+## 1. ~~Put the code on GitHub~~ ✅ done 2026-09-25
+Private repo: **https://github.com/Pranavimmaneni/liftlog** (branch `main`). Commits use your GitHub no-reply email, and the history was checked for secrets and personal details before the push. CI and Lighthouse run on every push (Actions tab).
 
 ## 2. Install the web app on both phones
 It's live at **https://liftlog-jade.vercel.app**.
