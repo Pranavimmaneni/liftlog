@@ -57,9 +57,9 @@ Per-milestone detail is in `docs/reports/M0.md` … `M6.md`; decisions D1–D78 
   - Both are covered by phone checks.
 
 ## Deployed URL
-**https://liftlog-jade.vercel.app** (production, version 1.0.0).
+**https://liftlog-jade.vercel.app** (production, version 1.1.0, adds Build your own split by muscle groups).
 
-To redeploy, run `vercel deploy --prod --yes` in this folder, or connect Vercel to GitHub (TODO 6). Demo data: open https://liftlog-jade.vercel.app/dev/fixture?auto=1 in a fresh or private window.
+Every push to `main` on GitHub deploys automatically (TODO 6, done); `vercel deploy --prod --yes` in this folder still works. Demo data: open https://liftlog-jade.vercel.app/dev/fixture?auto=1 in a fresh or private window.
 
 ## Install on your phones (short version of docs/INSTALL.md)
 - **iPhone:**
@@ -80,6 +80,6 @@ Full steps are in `docs/reports/TODO-FOR-PRANAV.md`.
 3. **Do the 📱 phone checks** in `docs/reports/PHONE-CHECKS.md`.
 4. **Build and install the APK** from GitHub Actions. Allow notifications, and "Alarms & reminders" if alerts arrive late.
 5. **Give `standards.json` a real source.** Replace the bands, fill in `"source"`, then run `npm run copy-data`.
-6. *(Optional)* Connect Vercel to GitHub so every push deploys.
+6. ~~Connect Vercel to GitHub so every push deploys.~~ Done.
 7. *(Optional)* Add `VERCEL_AUTOMATION_BYPASS_SECRET` so Lighthouse CI can audit previews.
 8. *(Optional)* Create a keystore and 4 secrets for a signed release APK (`docs/RELEASE.md`).

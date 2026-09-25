@@ -28,8 +28,8 @@ There's no Android SDK or JDK on this PC, so GitHub Actions builds the APK.
 2. Set `"source"` to the citation, for example `"source": "<publisher>, <table name>, <year>"`.
 3. Run `npm run copy-data` (or any build). The chip disappears once `source` no longer starts with "TODO".
 
-## 6. Connect Vercel to GitHub (optional, deploy on every push)
-The app is deployed from this PC with the Vercel CLI (project `liftlog`, team `ed-i-th`). To deploy on every push instead: Vercel → project **liftlog** → Settings → Git → Connect Git Repository → `liftlog`.
+## 6. Connect Vercel to GitHub ✅ done (2026-09-25)
+The Vercel project is connected to the GitHub repo: every push to `main` deploys to production, other branches get preview deploys. Keep GitHub linked at vercel.com/account/authentication, or Vercel blocks deploys from the noreply commit email.
 
 ## 7. Let Lighthouse CI audit Vercel previews (optional)
 Vercel previews sit behind Vercel Authentication.
