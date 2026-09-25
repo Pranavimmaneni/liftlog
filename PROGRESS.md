@@ -47,4 +47,4 @@ Resume file. If the session resets, read this, then `docs/PLAN.md`, then the cur
 - https://liftlog-jade.vercel.app (1.0.0)
 
 ## Blockers
-- (none)
+- 2026-09-25, v1.1.0 deploy: Vercel blocks production deploys (TEAM_ACCESS_REQUIRED) because commits now use the GitHub noreply email, which isn't linked to the Vercel account. Tried: normal deploy (twice) and a local `vercel build` + `--prebuilt` deploy, all BLOCKED. Fix needs Pranav: link GitHub at vercel.com/account/authentication, then redeploy and run `vercel git connect`. Code is pushed to GitHub (920e7a3); the live site still runs 1.0.0.
