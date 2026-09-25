@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router';
 import { Button } from '@/components/Button';
 import { Icon } from '@/components/Icon';
 import { ScreenHeader, SectionLabel } from '@/components/ScreenHeader';
@@ -137,6 +138,11 @@ export default function GymSettings() {
           srUnit={units === 'kg' ? 'kilograms' : 'pounds'}
         />
       </Sheet>
+      <div className="px-5 pt-4">
+        <Link to="/scan/stickers" className="ll-link inline-flex min-h-11 items-center">
+          {en.stickers.link}
+        </Link>
+      </div>
     </main>
   );
 }

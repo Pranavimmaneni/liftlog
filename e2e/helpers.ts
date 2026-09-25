@@ -8,6 +8,11 @@ export function projectTheme(info: TestInfo): 'paper' | 'iron' {
 
 /** NFR-A11Y-1: no axe violations (WCAG 2.2 AA tags) on the current page. */
 export async function expectNoAxeViolations(page: Page) {
+  // Check the settled screen: entrance animations (e.g. the PR stamp fading in) would otherwise be
+  // measured mid-fade under load.
+  await page.evaluate(() =>
+    Promise.all(document.getAnimations().map((a) => a.finished.catch(() => undefined))),
+  );
   const results = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
     .analyze();

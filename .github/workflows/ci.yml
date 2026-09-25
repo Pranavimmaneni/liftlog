@@ -20,6 +20,8 @@ jobs:
       - run: npm run lint
       - run: npm run test -- --coverage
       - run: npm run build
+      - name: Performance budget (NFR-PERF-3)
+        run: npm run budget
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium webkit
       - name: End-to-end tests (Pixel + iPhone emulation)

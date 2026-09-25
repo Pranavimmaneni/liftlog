@@ -23,6 +23,8 @@ import { addDays, dateKey, monthGrid, startOfWeek, weekNumber, weekRange } from 
 import { displayNumber } from '@/engine/units';
 import { platform } from '@/platform';
 import { WeighInSheet } from '../S20-weighin/WeighInSheet';
+import { useBackupNudge, useMotivation } from '@/db/motivation';
+import { BackupNudgeBanner, HeaderChips, InstallBanner, QuestCard } from './Motivation';
 
 const GOING_UP = new Set(['up', 'less_assist', 'more_reps']);
 
@@ -36,6 +38,8 @@ export default function Home() {
   const exMap = useExerciseMap();
   const activeId = useActiveSessionId();
   const deload = useDeload();
+  const motivation = useMotivation();
+  const nudge = useBackupNudge();
   const [weighIn, setWeighIn] = useState(false);
   const [starting, setStarting] = useState(false);
   const now = Date.now();
@@ -124,6 +128,7 @@ export default function Home() {
           <p className="t-label mt-1">{weekdayDate(now)}</p>
         </div>
         <div className="flex items-center gap-1.5">
+          <HeaderChips m={motivation} />
           <Link to="/settings" className="ll-icon-btn" aria-label={en.common.settings}>
             <Icon name="gear" />
           </Link>
@@ -132,6 +137,8 @@ export default function Home() {
 
       <DeloadBanner deload={deload} />
       <ReviewReady finished={data?.finished} weekStart={settings.weekStart} now={now} />
+      <BackupNudgeBanner nudge={nudge} />
+      <InstallBanner />
 
       {!routine || !next ? (
         <div className="ll-card ll-card-hard mt-4 p-4">
@@ -238,6 +245,8 @@ export default function Home() {
           </ol>
         </section>
       )}
+
+      {routine && next && <QuestCard m={motivation} />}
 
       <div className="mt-3 flex gap-3">
         <section className="ll-card grow px-3.5 py-3" aria-labelledby="month">

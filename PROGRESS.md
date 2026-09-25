@@ -3,8 +3,8 @@
 Resume file. If the session resets, read this, then `docs/PLAN.md`, then the current `docs/plans/M<n>.md`.
 
 ## Current
-- Milestone: **M5 Motivation and polish**
-- Step: starting (write docs/plans/M5.md)
+- Milestone: **M6 Android APK**
+- Step: starting (write docs/plans/M6.md); demo for Pranav after M5 (screenshots + link)
 
 ## Done
 - [x] Read handoff; repo root = project folder; `git init`
@@ -16,15 +16,16 @@ Resume file. If the session resets, read this, then `docs/PLAN.md`, then the cur
 
 - [x] **M3 Progression**: report docs/reports/M3.md (262 unit, engine 99.8%, overall 85.2%, e2e 96/96)
 - [x] **M4 Insight**: report docs/reports/M4.md (295 unit, engine 99.9%, overall 86.7%, e2e 108/108)
+- [x] **M5 Motivation and polish**: report docs/reports/M5.md (321 unit, engine 99.9%, overall 84.5%, e2e 124/124, first-load JS 163 KB gz, Lighthouse >= 90)
 
 ## Next
-- M5: XP/levels/stamps/streaks (rest-week pass)/milestones/weekly quest (xp.json, FR-XP), share-ticket PNG (FR-SUM-2), S22 QR scan (/scan, /m/:machineId, self-hosted zxing-wasm fallback) + sticker sheet, backup nudges, S21 install help (/install) + banner, S26 empty/error states + storage-error banner, full axe pass, NFR-PERF budget, Lighthouse CI config/workflow (scores >= 90)
-- Then M6: Capacitor Android, native adapter, icons/splash, v1.0.0, docs/RELEASE.md, .github/workflows/android-apk.yml
-- Then FINAL.md + complete TODO-FOR-PRANAV.md (incl. standards.json source)
+- M6: Capacitor Android project, native adapter (keep-awake, local notifications, haptics, filesystem/share, status bar), icons/splash, version 1.0.0, docs/RELEASE.md, .github/workflows/android-apk.yml from ci/android-apk.yml. No local SDK/JDK → APK built in CI only
+- Then FINAL.md + complete TODO-FOR-PRANAV.md (incl. standards.json source, Vercel bypass secret)
 
 ## How to run things (Windows / Git Bash notes)
 - `npm run build` then `npx playwright test` (vite preview on :4173; start with `npx vite preview --port 4173 --strictPort &` if needed)
 - Pose contact sheets: `npx tsx scripts/pose-sheet.ts out.png [filter] [--dark] [--arch]`
+- Lighthouse locally: `npx tsx scripts/serve-dist.ts 4175` (background) then `MSYS_NO_PATHCONV=1 LH_BASE=http://localhost:4175 npx tsx scripts/lighthouse-local.ts / /install` (lighthouse can't spawn Chrome itself here; the script uses Playwright's Chromium)
 - Screenshots: `MSYS_NO_PATHCONV=1 [SHOOT_SETUP='/dev/fixture?auto=1&active=1'] npx tsx scripts/shoot.ts <outdir> 'name=/route' 'name=/route|css-to-click'`
 - Deploy: `vercel deploy --prod --yes` (project liftlog, team ed-i-th → https://liftlog-jade.vercel.app)
 - Don't write big multi-file heredocs in Bash (Git Bash chokes); use the Write tool.
@@ -40,7 +41,7 @@ Resume file. If the session resets, read this, then `docs/PLAN.md`, then the cur
 - Installed outside the repo: Playwright Chromium + WebKit into %LOCALAPPDATA%\ms-playwright (per-user cache)
 
 ## Deployed URL
-- https://liftlog-jade.vercel.app (M4)
+- https://liftlog-jade.vercel.app (M5)
 
 ## Blockers
 - (none)

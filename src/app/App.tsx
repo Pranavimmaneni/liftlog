@@ -6,9 +6,10 @@ import { autoFinishStale } from '@/db/workout';
 import { Toaster } from '@/components/Toast';
 import { useThemeSync } from './theme';
 import { UpdateToast } from './UpdateToast';
+import { StorageBanner } from './StorageBanner';
 
 /** Routes that work before onboarding is finished. */
-const OPEN_PATHS = ['/onboarding', '/dev', '/install', '/settings'];
+export const OPEN_PATHS = ['/onboarding', '/dev', '/install', '/settings'];
 
 /** FR-ONB-5: until onboarding is done, every screen resumes it where the user stopped. */
 function OnboardingGate() {
@@ -25,7 +26,7 @@ function OnboardingGate() {
   return <Outlet />;
 }
 
-/** Root: theme sync, onboarding gate, service-worker updates, toasts, idle auto-finish. */
+/** Root: theme sync, storage-error banner, onboarding gate, service-worker updates, toasts, idle auto-finish. */
 export function App() {
   useThemeSync();
   useEffect(() => {
@@ -37,6 +38,7 @@ export function App() {
   }, []);
   return (
     <>
+      <StorageBanner />
       <OnboardingGate />
       <UpdateToast />
       <Toaster />

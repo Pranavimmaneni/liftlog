@@ -63,15 +63,15 @@ export default function Library() {
   results.slice(0, limit).forEach((r, i) => {
     if (!query && recentCount && i === 0)
       rows.push(
-        <h3 key="h-recent" className="t-label px-3 pb-1 pt-2.5">
-          {en.library.recent}
-        </h3>,
+        <li key="h-recent">
+          <h3 className="t-label px-3 pb-1 pt-2.5">{en.library.recent}</h3>
+        </li>,
       );
     if (!query && recentCount && i === recentCount)
       rows.push(
-        <h3 key="h-all" className="t-label border-t-[1.5px] border-line px-3 pb-1 pt-2.5">
-          {en.library.all}
-        </h3>,
+        <li key="h-all">
+          <h3 className="t-label border-t-[1.5px] border-line px-3 pb-1 pt-2.5">{en.library.all}</h3>
+        </li>,
       );
     rows.push(
       <li key={r.exercise.id}>

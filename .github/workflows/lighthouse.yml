@@ -1,0 +1,52 @@
+# Lighthouse CI (M5 exit criterion: every score >= 90 on mobile).
+# - On every push/PR: audits the production build, served with Brotli like Vercel (scripts/serve-dist.ts).
+# - When Vercel reports a successful preview deployment: audits that preview URL. Vercel previews are
+#   behind Vercel Authentication, so add the repository secret VERCEL_AUTOMATION_BYPASS_SECRET
+#   (Vercel → Project → Settings → Deployment Protection → Protection Bypass for Automation).
+name: Lighthouse
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  deployment_status:
+
+jobs:
+  build:
+    if: github.event_name != 'deployment_status'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npx lhci autorun --config=lighthouserc.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-build
+          path: .lighthouseci
+
+  vercel-preview:
+    if: github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx lhci autorun --config=lighthouserc.cjs
+        env:
+          LHCI_BASE_URL: ${{ github.event.deployment_status.environment_url }}
+          LHCI_URLS: /,/install
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-preview
+          path: .lighthouseci

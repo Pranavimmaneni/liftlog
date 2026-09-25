@@ -45,3 +45,11 @@ URL: https://liftlog-jade.vercel.app · components page: https://liftlog-jade.ve
 | 2 | Log 3 weigh-ins → the recomp check appears | ✅ e2e (empty state → On track/Watch after the third) + unit tests for every §6.8 goal |
 | 3 | Strength levels ask for body stats once, then show your next milestone | ✅ e2e (S19 first, "Guideline values", "Next: …", not asked again after reload) |
 | 4 | History lists past sessions and you can edit a set there | ✅ e2e (History → S18 → edit set) + screen test for delete session |
+
+## M5
+| # | Check | Automated? |
+|---|---|---|
+| 1 | Finish a session: ticket shows level + XP; Share gives a PNG | ✅ e2e (level card, +XP, milestone card, downloaded file is a real PNG). 📱 The share sheet on each phone |
+| 2 | Print stickers, scan one on a machine (iPhone uses the WASM fallback) | Partly ✅: sticker sheet renders a QR per machine, `/m/<id>` opens the logger/detail, unit tests for payload parsing. 📱 Real camera scan on both phones and a print |
+| 3 | Install from the install-help steps | ✅ screen renders both platforms' steps; manifest installable (M0). 📱 The install itself |
+| 4 | Every screen readable in both themes | ✅ axe sweep of 21 views × Paper/Iron × Pixel/iPhone |

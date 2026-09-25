@@ -5,12 +5,20 @@ import { formatInt, longDate } from '@/copy/format';
 import { bonusPercent } from '@/engine/summary';
 import { displayNumber, formatLoad, fromDisplay, hasLoad, toDisplay } from '@/engine/units';
 import { useTicket } from './useTicket';
+import { Icon } from '@/components/Icon';
+import { toast } from '@/components/Toast';
+import { useMotivation } from '@/db/motivation';
+import { levelInfo } from '@/engine/xp';
+import { dateKey } from '@/engine/week';
+import { platform } from '@/platform';
+import { renderTicketPng } from '@/app/ticket-image';
 
-/** S09 session ticket (FR-SUM-1). XP, share and milestones join in M5. */
+/** S09 session ticket (FR-SUM-1/2, FR-XP-2/5): numbers, stamp, PRs, level + XP, milestones, share. */
 export default function Summary() {
   const { sessionId } = useParams();
   const navigate = useNavigate();
   const t = useTicket(sessionId);
+  const motivation = useMotivation();
   if (t === null) return <Navigate to="/" replace />;
   if (!t) return null;
   const { model, totals } = t;
@@ -26,6 +34,41 @@ export default function Summary() {
   const changed = t.next
     .filter((n) => ['up', 'less_assist', 'more_reps', 'widen', 'calibrated'].includes(n.goal.reason.code))
     .slice(0, 3);
+  const xp = motivation?.perSession.get(model.session.id) ?? null;
+  const lvl = xp ? levelInfo(xp.cumulative) : null;
+  const share = async () => {
+    const blob = await renderTicketPng({
+      number: en.summary.ticket(String(t.number).padStart(3, '0')).replace(/^LiftLog · /, ''),
+      name: model.session.name,
+      dateLine: `${longDate(model.session.startedAt)} · ${en.summary.week(model.weekNumber)}`,
+      lifted: `${formatInt(tonnage)} ${units}`,
+      sets: String(totals.workSets),
+      reps: String(totals.reps),
+      goalPct: pct,
+      rows: [
+        [en.summary.goalSets, `${meter.done} / ${meter.total}`],
+        [en.summary.bonusReps, `+${meter.bonusReps}`],
+      ],
+      prs: t.prs.map(
+        (p) => `${p.exercise?.name ?? ''} · ${displayNumber(p.loadKg, units)} ${units} × ${p.reps}`,
+      ),
+      xpLine: xp && lvl ? `${en.xp.levelTitle(lvl.level)} · ${en.summary.xp(xp.total)}` : null,
+      labels: {
+        lifted: en.summary.lifted,
+        sets: en.summary.sets,
+        reps: en.summary.reps,
+        goalsMet: en.summary.goalsMet,
+        brand: en.app.name,
+      },
+    });
+    const r = await platform.share({
+      name: `liftlog-${model.session.name.toLowerCase().replace(/\W+/g, '-')}-${dateKey(model.session.startedAt)}.png`,
+      mime: 'image/png',
+      data: blob,
+      title: model.session.name,
+    });
+    if (r === 'downloaded') toast(en.summary.shareSaved);
+  };
   const nextItems = (changed.length ? changed : t.next.slice(0, 3)).map((n) => {
     const reps =
       n.goal.reason.code === 'widen' || n.goal.reason.code === 'more_reps' ? ` × ${n.goal.repMax}` : '';
@@ -150,7 +193,50 @@ export default function Summary() {
         </p>
       )}
 
+      {xp && (
+        <section className="ll-card mt-4 px-4 py-3.5" aria-labelledby="level-h">
+          <div className="flex items-baseline justify-between">
+            <h2 id="level-h" className="t-display text-[28px]">
+              {en.xp.levelTitle(lvl!.level)}
+            </h2>
+            <span className="t-mono text-[14px] font-semibold text-accent">{en.summary.xp(xp.total)}</span>
+          </div>
+          <div
+            className="mt-2 h-3.5 overflow-hidden rounded-[3px] border-[1.5px] border-line bg-panel"
+            role="progressbar"
+            aria-label={en.xp.toNext(lvl!.next - xp.cumulative)}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={Math.round(lvl!.progress * 100)}
+          >
+            <div className="h-full bg-ink" style={{ width: `${lvl!.progress * 100}%` }} />
+          </div>
+          <p className="mt-2 text-[14px] text-ink2">{en.summary.xpNote}</p>
+        </section>
+      )}
+
+      {xp?.milestones.map((m, i) => (
+        <div key={i} className="mt-3 rounded-md border-[1.5px] border-brass bg-brass-wash px-4 py-3">
+          <p className="t-label !text-brass-text">{en.xp.milestone}</p>
+          <p className="mt-1 text-[15px] font-semibold">
+            {m.id === 'tonnage'
+              ? en.xp.tonnage(
+                  `${formatInt(toDisplay(m.thresholdKg, units))} ${units}`,
+                  m.equivalent.count,
+                  m.equivalent.name,
+                )
+              : m.id === 'sessions'
+                ? en.xp.sessions(m.count)
+                : en.xp.firstPullup}
+          </p>
+        </div>
+      ))}
+
       <div className="mt-auto flex gap-2.5 pt-6">
+        <Button variant="secondary" className="!w-auto shrink-0 !px-6" onClick={() => void share()}>
+          <Icon name="share" size={20} />
+          <span className="ml-2">{en.summary.share}</span>
+        </Button>
         <Button onClick={() => navigate('/', { replace: true })}>{en.summary.done}</Button>
       </div>
     </main>

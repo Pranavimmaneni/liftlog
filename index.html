@@ -16,9 +16,32 @@
     <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <script src="/theme-boot.js"></script>
+    <style>
+      /* Boot splash painted before the JS arrives (NFR-PERF-1); React replaces #root's content. */
+      html {
+        background: #f2eadb;
+        color: #1d1b18;
+      }
+      html[data-theme='iron'] {
+        background: #151412;
+        color: #efe6d4;
+      }
+      .ll-boot {
+        min-height: 100dvh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font:
+          900 44px/1 'Big Shoulders Display',
+          Oswald,
+          'Arial Narrow',
+          sans-serif;
+        letter-spacing: 0.08em;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"><div class="ll-boot" aria-hidden="true">LIFTLOG</div></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

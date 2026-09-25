@@ -10,6 +10,7 @@ import { bodyweightOn } from '@/engine/load';
 import { warmupEligible } from '@/engine/warmup';
 import { dateKey, weekNumber } from '@/engine/week';
 import { exposuresFrom, goalFor, type Goal } from '@/engine/goal';
+import { bestE1rmByExercise, findPrs } from '@/engine/summary';
 import type { Exercise, Side } from '@/engine/types';
 
 export interface ItemModel {
@@ -21,6 +22,8 @@ export interface ItemModel {
   overridden: boolean;
   /** Target for the next exposure if this one ended now (the "Next time" line). */
   next: Goal | null;
+  /** FR-XP-3: the set in this session that is a new e1RM best for the exercise (stamped on its row). */
+  prSetId: string | null;
   /** This session's sets for the exercise, in log order. */
   sets: SetRow[];
   warmupsLogged: SetRow[];
@@ -105,9 +108,17 @@ export function buildSessionModel(raw: SessionRaw, exMap: Map<string, Exercise>)
         .filter((s) => s.sessionId === lastSession)
         .sort((a, b) => a.idx - b.idx || a.loggedAt - b.loggedAt);
     }
+    const prior = bestE1rmByExercise(own, exMap, (x) =>
+      bodyweightOn(
+        raw.bodyweights,
+        dateKey(raw.history.sessions.get(x.sessionId)?.startedAt ?? session.startedAt),
+      ),
+    );
+    const pr = findPrs(work, prior, exMap, () => goal.repMin, bw)[0];
     return {
       exercise: ex,
       planned: p.planned,
+      prSetId: pr?.setId ?? null,
       goal,
       coachGoal,
       overridden: !!override,

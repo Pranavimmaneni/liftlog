@@ -71,6 +71,16 @@ describe('review read model (FR-REV-1/2/3)', () => {
     expect(r.strength.length).toBeGreaterThanOrEqual(2);
   });
 
+  it('a weigh-in dated today counts just after midnight (regression)', async () => {
+    await seedOnboarded();
+    const d = new Date();
+    const justAfterMidnight = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 5).getTime();
+    for (const days of [14, 7, 0]) await saveWeighIn(dateKey(justAfterMidnight - days * DAY), 80);
+    const r = (await getReview('week', justAfterMidnight, justAfterMidnight))!;
+    expect(r.bodyweight).toHaveLength(3);
+    expect(r.recomp.status).not.toBe('empty');
+  });
+
   it('monthly review adds a per-muscle hard-sets trend', async () => {
     const sessions = await seedOnboarded();
     await seedSession({ routineSession: sessions[0]!, startedAt: NOW - DAY });

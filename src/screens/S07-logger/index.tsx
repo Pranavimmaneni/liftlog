@@ -327,6 +327,15 @@ export default function Logger() {
                       : `${s.reps}${lt === 'timed' ? ' s' : ''}`}
                   </span>
                 </button>
+                {s.id === item.prSetId && (
+                  <span
+                    className="t-display ll-stamp-anim rounded-[3px] border-[1.5px] border-brass bg-brass-wash px-1.5 text-[15px] text-brass-text"
+                    style={{ transform: 'rotate(-8deg)' }}
+                    aria-label={en.logger.newPr}
+                  >
+                    {en.summary.pr}
+                  </span>
+                )}
                 {s.bonusReps > 0 && (
                   <Chip variant="brass" className="!px-2.5 !py-1.5">
                     +{s.bonusReps}

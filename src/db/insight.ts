@@ -328,7 +328,7 @@ export async function getReview(kind: ReviewKind, t: number, now = Date.now()): 
   const rEnd = Math.min(end, now);
   const rStart = rEnd - 6 * WEEK;
   const bodyweight = log.bodyweights
-    .map((b) => ({ at: new Date(b.date + 'T12:00:00').getTime(), value: b.kg }))
+    .map((b) => ({ at: new Date(b.date + 'T00:00:00').getTime(), value: b.kg }))
     .filter((p) => p.at >= rStart && p.at < rEnd);
   const weekStarts = Array.from({ length: 6 }, (_, i) =>
     addDays(startOfWeek(rStart, settings.weekStart), 7 * i),

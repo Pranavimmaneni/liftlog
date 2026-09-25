@@ -36,6 +36,7 @@ export const routes: RouteObject[] = [
           { path: ':exerciseId', ...page(() => import('@/screens/S07-logger')) },
         ],
       },
+      { path: 'scan', ...page(() => import('@/screens/S22-scan')) },
       {
         element: <FullLayout />,
         errorElement: <RouteError />,
@@ -47,6 +48,9 @@ export const routes: RouteObject[] = [
           { path: 'plan/split', ...page(() => import('@/screens/S15-plan/ChangeSplit')) },
           { path: 'progress/session/:sessionId', ...page(() => import('@/screens/S18-session')) },
           { path: 'progress/body-stats', ...page(() => import('@/screens/S19-body-stats')) },
+          { path: 'install', ...page(() => import('@/screens/S21-install')) },
+          { path: 'scan/stickers', ...page(() => import('@/screens/S22-scan/Stickers')) },
+          { path: 'm/:machineId', ...page(() => import('@/screens/S22-scan/MachineLink')) },
           { path: 'library/new', ...page(() => import('@/screens/S17-custom')) },
           { path: 'library/:exerciseId', ...page(() => import('@/screens/S16-exercise')) },
           { path: 'library/:exerciseId/edit', ...page(() => import('@/screens/S17-custom')) },
@@ -64,5 +68,10 @@ export const routes: RouteObject[] = [
   },
 ];
 
-/** The APK serves files from the bundle, so it uses hash routing; the PWA uses clean URLs. */
-export const router = isNative ? createHashRouter(routes) : createBrowserRouter(routes);
+/**
+ * The APK serves files from the bundle, so it uses hash routing; the PWA uses clean URLs. Created on
+ * demand so main.tsx can settle the first URL (onboarding redirect) before the first lazy route loads.
+ */
+export function createAppRouter() {
+  return isNative ? createHashRouter(routes) : createBrowserRouter(routes);
+}

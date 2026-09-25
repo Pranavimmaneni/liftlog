@@ -23,3 +23,9 @@ After the push, the **CI** workflow runs automatically (Actions tab).
 
 The app is already deployed from this PC with the Vercel CLI to **https://liftlog-jade.vercel.app** (project `liftlog`, team `ed-i-th`).
 To deploy on every push instead: Vercel → project **liftlog** → Settings → Git → Connect Git Repository → pick `liftlog`.
+
+## 3. Let Lighthouse CI audit Vercel previews (optional)
+Vercel previews are behind Vercel Authentication, so the Lighthouse job can't open them without a bypass token.
+1. Vercel → project **liftlog** → Settings → Deployment Protection → **Protection Bypass for Automation** → Generate secret.
+2. GitHub → repo **liftlog** → Settings → Secrets and variables → Actions → New repository secret: name `VERCEL_AUTOMATION_BYPASS_SECRET`, value = that secret.
+Until then, Lighthouse CI audits the production build served the same way (Brotli) on every push.

@@ -1,5 +1,12 @@
 # Changelog
 
+## M5 Motivation and polish (2026-09-25)
+- XP, levels, weekly streak with rest-week pass, milestones and a weekly quest, all derived from the log.
+- Shareable ticket image; PR stamp on the set row.
+- QR scanning (with an offline iOS fallback), machine links and a printable sticker sheet.
+- Backup nudges, install help, storage-error banner; every screen axe-clean in both themes.
+- Performance budget and Lighthouse CI (every score >= 90).
+
 ## M4 Insight (2026-09-24)
 - Weekly and monthly review with "Going well", "Needs work" (one-tap fix) and next week's changes with reasons.
 - Recomp check with bodyweight and strength sparklines.
