@@ -114,54 +114,58 @@ export async function loadFixture(opts: FixtureOptions = {}): Promise<void> {
   }
 
   for (let i = 0; i < plans.length; i++) {
-    const leaveOpen = opts.active && i === plans.length - 1;
-    // An open session must be recent, or the 3 h idle rule (FR-WRK-12) finishes it on load.
-    const t = leaveOpen ? now - 15 * 60_000 : plans[i]!.t;
-    const rs = sessions[rot % sessions.length]!;
-    rot++;
-    const ids = [...rs.items].sort((a, b) => a.order - b.order).map((x) => x.exerciseId);
-    const s = await startSession({
-      routineId: routine.id,
-      routineSessionId: rs.id,
-      name: rs.name,
-      exerciseIds: ids,
-      now: t,
-    });
-    const history = await historyFor(ids, s.id, t);
-    let clock = t;
-    for (const [n, id] of ids.entries()) {
-      if (leaveOpen && n > 0) break;
-      const ex = map.get(id)!;
-      const goal = goalFromHistory(ex, history, profile);
-      const load = goal.loadKg ?? BASE_KG[id] ?? 20;
-      const p = rand();
-      const reps =
-        p < 0.55
-          ? [goal.repMax, goal.repMax, goal.repMax]
-          : p < 0.88
-            ? [goal.repMax, goal.repMax - 1, goal.repMin]
-            : [goal.repMax - 1, goal.repMin, goal.repMin - 1];
-      const setCount = leaveOpen ? 2 : goal.sets;
-      for (let k = 1; k <= setCount; k++) {
-        clock += 150_000;
-        const r = reps[Math.min(k - 1, reps.length - 1)]!;
-        const row = { kind: 'work' as const, loadKg: load, reps: r };
-        const logged = await logSet({
-          sessionId: s.id,
-          exerciseId: id,
-          idx: k,
-          kind: 'work',
-          loadKg: load,
-          reps: r,
-          goalMet: isGoalSet(row, goal, ex.loadType),
-          bonusReps: bonusReps(row, goal, ex.loadType, 78),
-          now: clock,
-        });
-        const e: Effort = rand() < 0.2 ? 'easy' : rand() < 0.85 ? 'solid' : 'hard';
-        if (k === setCount || rand() < 0.4) await setEffort(logged.id, e);
+    // One transaction per session (start, sets, finish): far fewer IndexedDB commits, which
+    // matters on WebKit (D58). Everything inside is Dexie work or already-resolved promises.
+    await db.transaction('rw', db.tables, async () => {
+      const leaveOpen = opts.active && i === plans.length - 1;
+      // An open session must be recent, or the 3 h idle rule (FR-WRK-12) finishes it on load.
+      const t = leaveOpen ? now - 15 * 60_000 : plans[i]!.t;
+      const rs = sessions[rot % sessions.length]!;
+      rot++;
+      const ids = [...rs.items].sort((a, b) => a.order - b.order).map((x) => x.exerciseId);
+      const s = await startSession({
+        routineId: routine.id,
+        routineSessionId: rs.id,
+        name: rs.name,
+        exerciseIds: ids,
+        now: t,
+      });
+      const history = await historyFor(ids, s.id, t);
+      let clock = t;
+      for (const [n, id] of ids.entries()) {
+        if (leaveOpen && n > 0) break;
+        const ex = map.get(id)!;
+        const goal = goalFromHistory(ex, history, profile);
+        const load = goal.loadKg ?? BASE_KG[id] ?? 20;
+        const p = rand();
+        const reps =
+          p < 0.55
+            ? [goal.repMax, goal.repMax, goal.repMax]
+            : p < 0.88
+              ? [goal.repMax, goal.repMax - 1, goal.repMin]
+              : [goal.repMax - 1, goal.repMin, goal.repMin - 1];
+        const setCount = leaveOpen ? 2 : goal.sets;
+        for (let k = 1; k <= setCount; k++) {
+          clock += 150_000;
+          const r = reps[Math.min(k - 1, reps.length - 1)]!;
+          const row = { kind: 'work' as const, loadKg: load, reps: r };
+          const logged = await logSet({
+            sessionId: s.id,
+            exerciseId: id,
+            idx: k,
+            kind: 'work',
+            loadKg: load,
+            reps: r,
+            goalMet: isGoalSet(row, goal, ex.loadType),
+            bonusReps: bonusReps(row, goal, ex.loadType, 78),
+            now: clock,
+          });
+          const e: Effort = rand() < 0.2 ? 'easy' : rand() < 0.85 ? 'solid' : 'hard';
+          if (k === setCount || rand() < 0.4) await setEffort(logged.id, e);
+        }
       }
-    }
-    if (!leaveOpen) await finishSession(s.id, { now: clock + 120_000 });
+      if (!leaveOpen) await finishSession(s.id, { now: clock + 120_000 });
+    });
   }
   await db.meta.put({ key: 'lastBackupAt', value: now - 3 * 86_400_000 });
 }

@@ -233,11 +233,12 @@ describe('M1 screens', () => {
 
   it('S12 progress lists finished sessions; empty state before any', async () => {
     const sessions = await seedOnboarded();
-    const { unmount } = renderRoute('/progress');
+    // M4: history sits under the hub's History tab (S12 mockup).
+    const { unmount } = renderRoute('/progress?tab=history');
     expect(await screen.findByText(/no sessions yet/i, {}, W)).toBeInTheDocument();
     unmount();
     await seedSession({ routineSession: sessions[0]!, startedAt: T0 });
-    renderRoute('/progress');
+    renderRoute('/progress?tab=history');
     expect(await screen.findByRole('link', { name: /upper a/i }, W)).toBeInTheDocument();
   });
 

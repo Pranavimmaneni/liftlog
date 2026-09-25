@@ -117,7 +117,7 @@ test.describe('M1 log a workout', () => {
     await page.getByRole('button', { name: /replace everything/i }).click();
     await expect(page).toHaveURL(/\/$/);
     await expect(page.getByRole('heading', { name: 'Lower A' })).toBeVisible();
-    await page.goto('/progress');
+    await page.goto('/progress?tab=history');
     await expect(page.getByRole('link', { name: /upper a/i })).toBeVisible();
   });
 

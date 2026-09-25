@@ -1,5 +1,11 @@
 # Changelog
 
+## M4 Insight (2026-09-24)
+- Weekly and monthly review with "Going well", "Needs work" (one-tap fix) and next week's changes with reasons.
+- Recomp check with bodyweight and strength sparklines.
+- Strength levels by sex, age and bodyweight ("Guideline values" until standards are sourced), with body stats.
+- Progress hub: e1RM charts with table views, PRs, weigh-ins, history; session detail with set editing and delete.
+
 ## M3 Progression (2026-09-24)
 - Deload weeks (scheduled or after stalls), announced a week ahead on Home and Plan.
 - Change-the-target sheet with "Reset to coach's pick", and a "Next time" line with the reason.

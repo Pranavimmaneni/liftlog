@@ -24,6 +24,8 @@ export const routes: RouteObject[] = [
           { path: 'plan', ...page(() => import('@/screens/S15-plan')) },
           { path: 'library', ...page(() => import('@/screens/S13-library')) },
           { path: 'progress', ...page(() => import('@/screens/S12-progress')) },
+          { path: 'progress/review', ...page(() => import('@/screens/S10-review')) },
+          { path: 'progress/strength', ...page(() => import('@/screens/S11-strength')) },
         ],
       },
       {
@@ -43,6 +45,8 @@ export const routes: RouteObject[] = [
           { path: 'summary/:sessionId', ...page(() => import('@/screens/S09-summary')) },
           { path: 'plan/edit/:index', ...page(() => import('@/screens/S15-plan/EditRoutine')) },
           { path: 'plan/split', ...page(() => import('@/screens/S15-plan/ChangeSplit')) },
+          { path: 'progress/session/:sessionId', ...page(() => import('@/screens/S18-session')) },
+          { path: 'progress/body-stats', ...page(() => import('@/screens/S19-body-stats')) },
           { path: 'library/new', ...page(() => import('@/screens/S17-custom')) },
           { path: 'library/:exerciseId', ...page(() => import('@/screens/S16-exercise')) },
           { path: 'library/:exerciseId/edit', ...page(() => import('@/screens/S17-custom')) },

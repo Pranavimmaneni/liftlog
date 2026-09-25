@@ -21,11 +21,14 @@ export function LineChart({
   unit,
   title,
   height = 180,
+  maxLabels = 8,
 }: {
   points: Point[];
   unit: string;
   title: string;
   height?: number;
+  /** Most x-axis labels to draw (dates need fewer than "W1…W8"). */
+  maxLabels?: number;
 }) {
   const [table, setTable] = useState(false);
   const id = useId();
@@ -46,7 +49,7 @@ export function LineChart({
   const d = points.map((p, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)} ${y(p.value).toFixed(1)}`).join('');
   const last = points[points.length - 1]!;
   const ticks = niceTicks(min, max);
-  const every = Math.max(1, Math.ceil(points.length / 8));
+  const every = Math.max(1, Math.ceil(points.length / maxLabels));
   return (
     <figure className="m-0">
       {table ? (
@@ -94,10 +97,10 @@ export function LineChart({
           />
           <circle cx={x(points.length - 1)} cy={y(last.value)} r="4.5" fill="var(--ll-accent)" />
           <text
-            x={x(points.length - 1)}
+            x={x(points.length - 1) - 8}
             y={y(last.value) - 10}
             fontSize="11"
-            textAnchor="middle"
+            textAnchor="end"
             fontFamily="var(--font-mono)"
             fontWeight="600"
             fill="var(--ll-ink)"
@@ -121,14 +124,16 @@ export function LineChart({
           )}
         </svg>
       )}
-      <button
-        type="button"
-        className="ll-link float-right"
-        aria-pressed={table}
-        onClick={() => setTable(!table)}
-      >
-        {table ? en.chart.showChart : en.chart.showTable}
-      </button>
+      <div className="flex justify-end">
+        <button
+          type="button"
+          className="ll-link min-h-11"
+          aria-pressed={table}
+          onClick={() => setTable(!table)}
+        >
+          {table ? en.chart.showChart : en.chart.showTable}
+        </button>
+      </div>
     </figure>
   );
 }

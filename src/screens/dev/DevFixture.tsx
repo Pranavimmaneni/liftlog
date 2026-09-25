@@ -17,11 +17,13 @@ export default function DevFixture() {
   const hasProfile = useLiveQuery(async () => (await db.profile.count()) > 0, []);
   const auto = params.get('auto') === '1';
   const active = params.get('active') === '1';
+  // ?weeks=N shortens the demo (e2e on WebKit, where IndexedDB is slow, D58).
+  const weeks = Math.min(12, Math.max(1, Number(params.get('weeks')) || 6));
 
   const run = async () => {
     setState('running');
     const { loadFixture } = await import('@/dev/fixture');
-    await loadFixture({ active });
+    await loadFixture({ active, weeks });
     setState('done');
   };
 

@@ -347,6 +347,15 @@ export async function discardSession(sessionId: string): Promise<void> {
   });
 }
 
+/** S18: deletes a finished session and its sets, then rebuilds PRs for the exercises in it. */
+export async function deleteSession(sessionId: string): Promise<void> {
+  const ids = [
+    ...new Set((await db.sets.where('sessionId').equals(sessionId).toArray()).map((s) => s.exerciseId)),
+  ];
+  await discardSession(sessionId);
+  for (const id of ids) await rebuildPrs(id);
+}
+
 /** FR-WRK-12: finishes (or discards) a session idle for more than 3 hours. */
 export async function autoFinishStale(now = Date.now()): Promise<string | null> {
   const s = await getActiveSession();

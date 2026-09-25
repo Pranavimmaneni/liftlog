@@ -37,3 +37,11 @@ URL: https://liftlog-jade.vercel.app · components page: https://liftlog-jade.ve
 | 3 | Override a target → it sticks; "Reset to coach's pick" undoes it | ✅ e2e (survives reload, axe clean) + screen test |
 | 4 | Look through the pose gallery and note any pose that looks wrong | Partly ✅: every pose stays in frame through the whole movement (unit test); contact sheets in docs/reports/poses/. 📱 Your judgement at /dev/poses |
 | 5 | "Log set" feels instant on the iPhone (NFR-PERF-2) | 📱 Chromium ~17 ms; Playwright WebKit on Windows ~250 ms (D58) |
+
+## M4
+| # | Check | Automated? |
+|---|---|---|
+| 1 | Weekly review shows one "Going well" and one "Needs work" that match what you did | ✅ e2e on the 6-week fixture (both insights, recomp, next week, monthly muscle trend, axe clean) + unit tests for every §6.7 rule. 📱 Judge whether they match your real week |
+| 2 | Log 3 weigh-ins → the recomp check appears | ✅ e2e (empty state → On track/Watch after the third) + unit tests for every §6.8 goal |
+| 3 | Strength levels ask for body stats once, then show your next milestone | ✅ e2e (S19 first, "Guideline values", "Next: …", not asked again after reload) |
+| 4 | History lists past sessions and you can edit a set there | ✅ e2e (History → S18 → edit set) + screen test for delete session |
