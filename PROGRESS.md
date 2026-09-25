@@ -3,8 +3,8 @@
 Resume file. If the session resets, read this, then `docs/PLAN.md`, then the current `docs/plans/M<n>.md`.
 
 ## Current
-- Milestone: **Wrap-up**
-- Step: docs/reports/FINAL.md, complete TODO-FOR-PRANAV.md, 10-line summary
+- Milestone: **Done** (M0–M6 + wrap-up)
+- Step: waiting on Pranav's TODO list (docs/reports/TODO-FOR-PRANAV.md)
 
 ## Done
 - [x] Read handoff; repo root = project folder; `git init`
@@ -20,8 +20,10 @@ Resume file. If the session resets, read this, then `docs/PLAN.md`, then the cur
 - [x] Demo for Pranav after M5: docs/reports/demo/demo-{paper,iron}.png + live link
 - [x] **M6 Android APK**: report docs/reports/M6.md (326 unit, e2e 124/124, native smoke OK; APK via CI only, D74)
 
+- [x] **Wrap-up**: docs/reports/FINAL.md, TODO-FOR-PRANAV.md complete (8 steps), LICENSES.md, D77–D78
+
 ## Next
-- FINAL.md (requirements → PRD §15, test results, not done, URL, install, TODO list), then print the 10-line summary
+- Nothing planned. Possible v1.1: supersets (FR-WRK-15), dataset photos (FR-LIB-7), iOS build if an Apple account appears
 
 ## How to run things (Windows / Git Bash notes)
 - `npm run build` then `npx playwright test` (vite preview on :4173; start with `npx vite preview --port 4173 --strictPort &` if needed)

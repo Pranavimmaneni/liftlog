@@ -1,10 +1,11 @@
 # TODO for Pranav
 
-Things that need your accounts, devices or judgement. In order.
+These steps need your accounts, your phones or your judgement. Do them in order. Steps 1–5 matter; 6–8 are optional.
 
-## 1. Put the code on GitHub (the `gh` CLI isn't installed on this PC)
+## 1. Put the code on GitHub
+The `gh` CLI isn't installed on this PC. The code is committed locally on `main` (13 commits).
 
-Create an **empty private** repo called `liftlog` at https://github.com/new (no README, no .gitignore), then in this folder:
+Create an **empty private** repo called `liftlog` at https://github.com/new (no README, no .gitignore). Then run this in this folder:
 
 ```bash
 git remote add origin https://github.com/<your-username>/liftlog.git
@@ -17,22 +18,40 @@ Or install the GitHub CLI (`winget install GitHub.cli`), run `gh auth login`, th
 gh repo create liftlog --private --source . --push
 ```
 
-After the push, the **CI** workflow runs automatically (Actions tab).
+After the push, the **CI** and **Lighthouse** workflows run automatically (Actions tab).
 
-## 2. Connect Vercel to GitHub (optional, for deploy-on-push)
+## 2. Install the web app on both phones
+It's live at **https://liftlog-jade.vercel.app**.
+- **Pixel (Chrome):** open the link, tap ⋮, then **Install app**.
+- **iPhone (Safari):** open the link, tap **Share**, then **Add to Home Screen**. From then on, always open it from the icon.
 
-The app is already deployed from this PC with the Vercel CLI to **https://liftlog-jade.vercel.app** (project `liftlog`, team `ed-i-th`).
-To deploy on every push instead: Vercel → project **liftlog** → Settings → Git → Connect Git Repository → pick `liftlog`.
+In-app help is at `/install`. Full steps are in `docs/INSTALL.md`.
 
-## 3. Let Lighthouse CI audit Vercel previews (optional)
-Vercel previews are behind Vercel Authentication, so the Lighthouse job can't open them without a bypass token.
+## 3. Do the phone checks
+`docs/reports/PHONE-CHECKS.md` lists every check for M0–M6. The ones marked 📱 need a real phone: install flows, the real camera, the share sheets, real airplane mode, whether logging feels instant on the iPhone, and whether you agree with the poses at `/dev/poses`.
+
+## 4. Get the Android APK (after step 1)
+There's no Android SDK or JDK on this PC, so GitHub Actions builds the APK.
+1. GitHub → **liftlog** → **Actions** → **Android APK** → **Run workflow** → `debug`.
+2. Download the **liftlog-apk** artifact and unzip it. Copy `app-debug.apk` to the Pixel, open it, and allow installs from your file manager.
+3. The first rest timer asks for notification permission: allow it. If the "rest over" notification arrives late, go to Settings → Apps → LiftLog → **Alarms & reminders** → allow.
+4. To move your data: in the web app, Settings → **Back up now**; in the APK, Settings → **Restore from backup**.
+
+## 5. Give the strength standards a real source
+`src/data/standards.json` (copied from `data/standards.json`) holds **starter** values. Until its `"source"` field names a published source, the strength-levels screen shows a **"Guideline values"** chip (D23).
+1. Pick a published strength-standards table and replace the bands in `data/standards.json` (bodyweight ratios per level, male/female).
+2. Set `"source"` to the citation, for example `"source": "<publisher>, <table name>, <year>"`.
+3. Run `npm run copy-data` (or any build). The chip disappears once `source` no longer starts with "TODO".
+
+## 6. Connect Vercel to GitHub (optional, deploy on every push)
+The app is deployed from this PC with the Vercel CLI (project `liftlog`, team `ed-i-th`). To deploy on every push instead: Vercel → project **liftlog** → Settings → Git → Connect Git Repository → `liftlog`.
+
+## 7. Let Lighthouse CI audit Vercel previews (optional)
+Vercel previews sit behind Vercel Authentication.
 1. Vercel → project **liftlog** → Settings → Deployment Protection → **Protection Bypass for Automation** → Generate secret.
-2. GitHub → repo **liftlog** → Settings → Secrets and variables → Actions → New repository secret: name `VERCEL_AUTOMATION_BYPASS_SECRET`, value = that secret.
-Until then, Lighthouse CI audits the production build served the same way (Brotli) on every push.
+2. GitHub → repo → Settings → Secrets and variables → Actions → add `VERCEL_AUTOMATION_BYPASS_SECRET` with that value.
 
-## 4. Get the Android APK
-There's no Android SDK/JDK on this PC, so the APK is built by GitHub Actions (needs step 1 done first).
-1. GitHub → repo **liftlog** → **Actions** → **Android APK** → **Run workflow** → `debug`.
-2. Download the **liftlog-apk** artifact, unzip, copy `app-debug.apk` to the Pixel, open it and allow installs from your file manager.
-3. First rest timer: allow notifications. If the "rest over" notification comes late, Settings → Apps → LiftLog → **Alarms & reminders** → allow.
-4. For a signed release APK later, follow `docs/RELEASE.md` §4 (keystore + 4 GitHub secrets).
+Until then, Lighthouse CI audits the production build, served with the same Brotli compression, on every push.
+
+## 8. Signed release APK (optional)
+Follow `docs/RELEASE.md` §4: create a keystore, then add 4 GitHub secrets. Then run the workflow with `release`, or push a `v1.0.0` tag. Keep the keystore safe: every future update must be signed with it.
