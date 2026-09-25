@@ -6,7 +6,7 @@ import { Button } from '@/components/Button';
 import { en } from '@/copy/en';
 import { useExerciseMap } from '@/db/catalog';
 import { useGym, useProfile } from '@/db/repo';
-import { presetGym, swapAlternatives } from '@/engine/suggest';
+import { presetGym, swapAlternatives, type GymLike, type SuggestContext } from '@/engine/suggest';
 import type { Exercise } from '@/engine/types';
 import { ExercisePicker } from '../S13-library/ExercisePicker';
 
@@ -26,6 +26,8 @@ export function SwapSheet({
   onChoose,
   onRemove,
   exclude = [],
+  profileOverride,
+  gymOverride,
 }: {
   open: boolean;
   current: Exercise | null;
@@ -35,10 +37,15 @@ export function SwapSheet({
   onChoose: (e: Exercise, scope: SwapScope) => void;
   onRemove?: () => void;
   exclude?: string[];
+  /** Onboarding S04: the profile and gym are still a draft, not saved yet. */
+  profileOverride?: SuggestContext['profile'];
+  gymOverride?: GymLike;
 }) {
   const map = useExerciseMap();
-  const gym = useGym();
-  const profile = useProfile();
+  const savedGym = useGym();
+  const savedProfile = useProfile();
+  const gym = gymOverride ?? savedGym;
+  const profile = profileOverride ?? savedProfile;
   const [scope, setScope] = useState<SwapScope>('session');
   const [browse, setBrowse] = useState(false);
   const alts = useMemo(() => {
@@ -56,6 +63,8 @@ export function SwapSheet({
 
   if (!current) return null;
   const s = en.swap;
+  // Don't claim "no alternatives" while the catalogue or profile is still loading.
+  const loading = !map || !profile;
   return (
     <>
       <Sheet open={open && !browse} onClose={onClose} title={s.title(current.name)}>
@@ -71,11 +80,11 @@ export function SwapSheet({
           />
         )}
         <h3 className="t-label mt-3">{s.alternatives}</h3>
-        <div className="ll-card mt-2 overflow-hidden">
+        <div className="ll-card mt-2 overflow-hidden" aria-busy={loading}>
           {alts.map((a) => (
             <ExerciseRow key={a.id} exercise={a} onClick={() => onChoose(a, inWorkout ? scope : 'routine')} />
           ))}
-          {!alts.length && <p className="p-3 text-[15px] text-ink2">{s.none}</p>}
+          {!loading && !alts.length && <p className="p-3 text-[15px] text-ink2">{s.none}</p>}
         </div>
         <div className="mt-3 flex flex-col gap-2.5">
           <Button variant="secondary" onClick={() => setBrowse(true)}>

@@ -116,8 +116,11 @@ export function RoutineBuilder({
             role="tab"
             type="button"
             aria-selected={i === tab}
-            onClick={() => setTab(i)}
-            className={`min-h-12 min-w-[76px] grow whitespace-nowrap rounded-lg border-[1.5px] px-3 font-mono text-[12px] font-semibold uppercase tracking-[0.1em] ${
+            onClick={(e) => {
+              setTab(i);
+              e.currentTarget.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
+            }}
+            className={`min-h-12 min-w-[76px] shrink-0 grow whitespace-nowrap rounded-lg border-[1.5px] px-3 font-mono text-[12px] font-semibold uppercase tracking-[0.1em] ${
               i === tab ? 'border-ink bg-ink text-card' : 'border-line bg-card text-ink'
             }`}
           >
@@ -224,6 +227,8 @@ export function RoutineBuilder({
         open={swapping !== null}
         current={swapEx}
         exclude={ids}
+        profileOverride={{ ...profile, limitations: coverageCtx?.limitations ?? [] }}
+        gymOverride={coverageCtx?.gym}
         onClose={() => setSwapping(null)}
         onChoose={(e) => {
           if (swapping !== null) setIds(ids.map((x, i) => (i === swapping ? e.id : x)));

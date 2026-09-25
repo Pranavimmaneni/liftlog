@@ -5,6 +5,8 @@ import type { OnboardingDraft } from '@/db/repo';
 import { SPLITS } from '@/engine/data';
 import { previewDays, recommendSplit, sessionsFor, shortName, weekLayout } from '@/engine/split';
 import { BottomCta, StepHeader, Title } from './shared';
+import { CustomDays } from './CustomDays';
+import { dayName } from '@/engine/custom-split';
 
 /** S03 Onboarding 3: recommends a split via splits.json recommendRule; any split can be chosen (FR-ONB-4). */
 export function S03Split({
@@ -22,8 +24,13 @@ export function S03Split({
   const chosen = draft.splitId ?? best;
   const bestSplit = SPLITS.find((s) => s.id === best)!;
   const s3 = en.onboarding.s3;
+  const custom = draft.customDays ?? [];
   const example =
-    sessionsFor(chosen, draft.daysPerWeek)[2]?.name ?? sessionsFor(chosen, draft.daysPerWeek)[0]?.name ?? '';
+    chosen === 'custom' && custom.length
+      ? dayName(custom[Math.min(2, custom.length - 1)]!, Math.min(2, custom.length - 1))
+      : (sessionsFor(chosen, draft.daysPerWeek)[2]?.name ??
+        sessionsFor(chosen, draft.daysPerWeek)[0]?.name ??
+        '');
   return (
     <main className="flex min-h-dvh flex-col">
       <StepHeader step={3} name={s3.name} onBack={onBack} />
@@ -45,7 +52,17 @@ export function S03Split({
               type="button"
               role="radio"
               aria-checked={on}
-              onClick={() => onChange({ ...draft, splitId: t.id })}
+              onClick={() =>
+                onChange({
+                  ...draft,
+                  splitId: t.id,
+                  // First time on "Build your own": one empty day per training day.
+                  customDays:
+                    t.id === 'custom' && !draft.customDays?.length
+                      ? Array.from({ length: Math.max(1, draft.daysPerWeek) }, () => [])
+                      : draft.customDays,
+                })
+              }
               className={`w-full rounded-lg bg-card px-3.5 py-3 text-left ${
                 on ? 'border-2 border-ink shadow-hard' : 'border-[1.5px] border-rule'
               }`}
@@ -85,6 +102,22 @@ export function S03Split({
           );
         })}
       </div>
+
+      {chosen === 'custom' && (
+        <>
+          <CustomDays
+            days={
+              draft.customDays?.length
+                ? draft.customDays
+                : Array.from({ length: Math.max(1, draft.daysPerWeek) }, () => [])
+            }
+            onChange={(customDays) => onChange({ ...draft, splitId: 'custom', customDays })}
+          />
+          {(draft.customDays ?? [[]]).some((d) => d.length === 0) && (
+            <p className="px-5 pt-2 text-[13px] text-ink2">{s3.customDays.emptyHint}</p>
+          )}
+        </>
+      )}
 
       <div className="mx-5 mt-3 flex gap-3 rounded-md bg-panel px-3.5 py-3 text-[14px] leading-snug">
         <Icon name="calendar" className="mt-0.5 shrink-0 text-accent" />

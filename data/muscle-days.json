@@ -1,0 +1,102 @@
+{
+  "_note": "Build-your-own split (S03 custom): muscle groups a user can combine on a day. Each group lists movement slots in priority order; the first `core` slots are always used, the rest are added while the session stays under intensity.json sessionMinutesTarget. Slots are filled from the user's gym like split templates (compound first, limitations respected).",
+  "groups": [
+    {
+      "id": "chest",
+      "name": "Chest",
+      "core": 2,
+      "slots": [
+        { "pattern": "horizontal_press", "role": "compound", "muscle": "chest" },
+        { "pattern": "incline_press", "role": "compound", "muscle": "chest" },
+        { "pattern": "chest_fly", "role": "isolation", "muscle": "chest" }
+      ]
+    },
+    {
+      "id": "back",
+      "name": "Back",
+      "core": 2,
+      "slots": [
+        { "pattern": "vertical_pull", "role": "compound", "muscle": "lats" },
+        { "pattern": "horizontal_pull", "role": "compound", "muscle": "upper back" },
+        { "pattern": "horizontal_pull", "role": "compound", "muscle": "lats" }
+      ]
+    },
+    {
+      "id": "shoulders",
+      "name": "Shoulders",
+      "core": 2,
+      "slots": [
+        { "pattern": "overhead_press", "role": "compound", "muscle": "shoulders" },
+        { "pattern": "lateral_raise", "role": "isolation", "muscle": "shoulders" },
+        { "pattern": "rear_delt", "role": "isolation", "muscle": "shoulders" }
+      ]
+    },
+    {
+      "id": "biceps",
+      "name": "Biceps",
+      "core": 1,
+      "slots": [
+        { "pattern": "elbow_flexion", "role": "isolation", "muscle": "biceps" },
+        { "pattern": "elbow_flexion", "role": "isolation", "muscle": "biceps" }
+      ]
+    },
+    {
+      "id": "triceps",
+      "name": "Triceps",
+      "core": 1,
+      "slots": [
+        { "pattern": "elbow_extension", "role": "isolation", "muscle": "triceps" },
+        { "pattern": "elbow_extension", "role": "isolation", "muscle": "triceps" }
+      ]
+    },
+    {
+      "id": "legs",
+      "name": "Legs",
+      "core": 4,
+      "slots": [
+        { "pattern": "squat", "role": "compound", "muscle": "quads" },
+        { "pattern": "hinge", "role": "compound", "muscle": "hamstrings" },
+        { "pattern": "knee_flexion", "role": "isolation", "muscle": "hamstrings" },
+        { "pattern": "calf_raise", "role": "isolation", "muscle": "calves" },
+        { "pattern": "leg_press_or_lunge", "role": "compound", "muscle": "quads" },
+        { "pattern": "knee_extension", "role": "isolation", "muscle": "quads" }
+      ]
+    },
+    {
+      "id": "glutes",
+      "name": "Glutes",
+      "core": 1,
+      "slots": [
+        { "pattern": "hip_extension", "role": "compound", "muscle": "glutes" },
+        { "pattern": "hip_abduction", "role": "isolation", "muscle": "glutes" }
+      ]
+    },
+    {
+      "id": "calves",
+      "name": "Calves",
+      "core": 1,
+      "slots": [{ "pattern": "calf_raise", "role": "isolation", "muscle": "calves" }]
+    },
+    {
+      "id": "abs",
+      "name": "Abs",
+      "core": 1,
+      "slots": [
+        { "pattern": "core_flexion", "role": "isolation", "muscle": "abs" },
+        { "pattern": "core_antiextension", "role": "isolation", "muscle": "abs" }
+      ]
+    },
+    {
+      "id": "forearms",
+      "name": "Forearms",
+      "core": 1,
+      "slots": [{ "pattern": "elbow_flexion", "role": "isolation", "muscle": "forearms" }]
+    },
+    {
+      "id": "lower-back",
+      "name": "Lower back",
+      "core": 1,
+      "slots": [{ "pattern": "hip_extension", "role": "isolation", "muscle": "lower back" }]
+    }
+  ]
+}

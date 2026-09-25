@@ -46,6 +46,8 @@ export interface OnboardingDraft {
   limitations: string[];
   units: Units;
   splitId?: string;
+  /** "Build your own": muscle-group ids per day, in the order picked (S03, DECISIONS D79). */
+  customDays?: string[][];
   /** Routine being edited on S04 before saving. */
   routine?: { splitId: string; sessions: RoutineSession[] };
 }

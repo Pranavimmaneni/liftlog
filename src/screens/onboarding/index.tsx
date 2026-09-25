@@ -10,8 +10,8 @@ import {
   type OnboardingDraft,
   type OnboardingStep,
 } from '@/db/repo';
-import { recommendSplit, splitById, sessionsFor } from '@/engine/split';
-import { buildRoutine } from '@/engine/coverage';
+import { recommendSplit, splitById } from '@/engine/split';
+import { suggestForSplit } from '@/engine/custom-split';
 import type { Exercise } from '@/engine/types';
 import { platform } from '@/platform';
 import { RoutineBuilder, sessionsFromSuggestion } from '../S04-routine/RoutineBuilder';
@@ -61,7 +61,7 @@ export default function Onboarding() {
         onNext={async () => {
           const map = exMap ?? (await getExerciseMap());
           const splitId = draft.splitId ?? recommendSplit(draft.daysPerWeek, draft.experience);
-          const suggested = buildRoutine(sessionsFor(splitId, draft.daysPerWeek), {
+          const suggested = suggestForSplit(splitId, draft.daysPerWeek, draft.customDays, {
             exercises: [...map.values()],
             gym: draft,
             profile: draft,

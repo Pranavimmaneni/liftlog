@@ -6,8 +6,8 @@ import { en } from '@/copy/en';
 import { useExerciseMap } from '@/db/catalog';
 import { replaceRoutine, useGym, useProfile, type OnboardingDraft } from '@/db/repo';
 import type { RoutineSession } from '@/db/types';
-import { buildRoutine } from '@/engine/coverage';
-import { recommendSplit, sessionsFor, splitById } from '@/engine/split';
+import { suggestForSplit } from '@/engine/custom-split';
+import { recommendSplit, splitById } from '@/engine/split';
 import { presetGym } from '@/engine/suggest';
 import { RoutineBuilder, sessionsFromSuggestion } from '../S04-routine/RoutineBuilder';
 import { BottomCta } from '../onboarding/shared';
@@ -23,6 +23,7 @@ export default function ChangeSplit() {
   const gym = useGym();
   const exMap = useExerciseMap();
   const [splitId, setSplitId] = useState<string | undefined>();
+  const [customDays, setCustomDays] = useState<string[][] | undefined>();
   const [sessions, setSessions] = useState<RoutineSession[] | null>(null);
   if (!profile || !exMap) return null;
   const g = gym ?? presetGym('full-gym');
@@ -37,20 +38,24 @@ export default function ChangeSplit() {
     limitations: profile.limitations,
     units: profile.units,
     splitId,
+    customDays,
   };
 
   if (!sessions) {
     return (
       <S03Split
         draft={draft}
-        onChange={(d) => setSplitId(d.splitId)}
+        onChange={(d) => {
+          setSplitId(d.splitId);
+          setCustomDays(d.customDays);
+        }}
         onBack={() => navigate('/plan')}
         onNext={() => {
           const id = splitId ?? recommendSplit(profile.daysPerWeek, profile.experience);
           setSplitId(id);
           setSessions(
             sessionsFromSuggestion(
-              buildRoutine(sessionsFor(id, profile.daysPerWeek), {
+              suggestForSplit(id, profile.daysPerWeek, customDays, {
                 exercises: [...exMap.values()].filter((e) => !e.deleted),
                 gym: g,
                 profile,

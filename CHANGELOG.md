@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0 (2026-09-25)
+- Build your own split: combine muscle groups per day (e.g. Chest + Biceps, Legs + Back); LiftLog suggests exercises covering them, then you add, remove or replace on the routine screen. Also in Plan → Change split.
+- Routine tabs show full day names and scroll sideways.
+- Swap sheet offers alternatives during onboarding, and no longer flashes "No alternatives" while loading.
+
 ## 1.0.0 / M6 Android APK (2026-09-25)
 - Android app via Capacitor: rest-end notification with the phone locked, keep-screen-on, haptics, share sheet, themed status bar.
 - LL monogram icon and Paper/Iron splash screens.
