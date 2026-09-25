@@ -38,7 +38,7 @@ Resume file. If the session resets, read this, then `docs/PLAN.md`, then the cur
 - `tsc -b` includes e2e/ and scripts/: keep them type-clean or the build fails.
 
 ## Environment notes
-- gh CLI: not installed → GitHub steps in docs/reports/TODO-FOR-PRANAV.md
+- gh CLI: installed 2026-09-25 with `winget install GitHub.cli --scope user` (per-user, under %LOCALAPPDATA%/Microsoft/WinGet/Packages/GitHub.cli_*/bin/gh.exe) to create the private repo
 - Vercel: CLI logged in on this PC
 - No Java/Android SDK → APK via GitHub Actions only
 - Installed outside the repo: Playwright Chromium + WebKit into %LOCALAPPDATA%\ms-playwright (per-user cache)
