@@ -53,3 +53,10 @@ URL: https://liftlog-jade.vercel.app · components page: https://liftlog-jade.ve
 | 2 | Print stickers, scan one on a machine (iPhone uses the WASM fallback) | Partly ✅: sticker sheet renders a QR per machine, `/m/<id>` opens the logger/detail, unit tests for payload parsing. 📱 Real camera scan on both phones and a print |
 | 3 | Install from the install-help steps | ✅ screen renders both platforms' steps; manifest installable (M0). 📱 The install itself |
 | 4 | Every screen readable in both themes | ✅ axe sweep of 21 views × Paper/Iron × Pixel/iPhone |
+
+## M6
+| # | Check | Automated? |
+|---|---|---|
+| 1 | Run the "Android APK" workflow, download the APK, install on the Pixel | Partly ✅: workflow in place (debug + signed release), native bundle smoke test passes. 📱 Needs the repo on GitHub, then the install itself |
+| 2 | Start a rest timer, lock the phone → notification at rest end | Partly ✅: unit tests for schedule/cancel/permission with mocked plugins. 📱 The real notification |
+| 3 | Export from the web app, import into the APK → history appears | ✅ backup/restore round-trip is e2e #5 (same code in the APK). 📱 The cross-install move |

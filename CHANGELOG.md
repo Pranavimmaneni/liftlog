@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.0 / M6 Android APK (2026-09-25)
+- Android app via Capacitor: rest-end notification with the phone locked, keep-screen-on, haptics, share sheet, themed status bar.
+- LL monogram icon and Paper/Iron splash screens.
+- GitHub Actions workflow for debug and signed release APKs; docs/RELEASE.md.
+
 ## M5 Motivation and polish (2026-09-25)
 - XP, levels, weekly streak with rest-week pass, milestones and a weekly quest, all derived from the log.
 - Shareable ticket image; PR stamp on the set row.

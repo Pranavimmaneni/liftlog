@@ -29,3 +29,10 @@ Vercel previews are behind Vercel Authentication, so the Lighthouse job can't op
 1. Vercel → project **liftlog** → Settings → Deployment Protection → **Protection Bypass for Automation** → Generate secret.
 2. GitHub → repo **liftlog** → Settings → Secrets and variables → Actions → New repository secret: name `VERCEL_AUTOMATION_BYPASS_SECRET`, value = that secret.
 Until then, Lighthouse CI audits the production build served the same way (Brotli) on every push.
+
+## 4. Get the Android APK
+There's no Android SDK/JDK on this PC, so the APK is built by GitHub Actions (needs step 1 done first).
+1. GitHub → repo **liftlog** → **Actions** → **Android APK** → **Run workflow** → `debug`.
+2. Download the **liftlog-apk** artifact, unzip, copy `app-debug.apk` to the Pixel, open it and allow installs from your file manager.
+3. First rest timer: allow notifications. If the "rest over" notification comes late, Settings → Apps → LiftLog → **Alarms & reminders** → allow.
+4. For a signed release APK later, follow `docs/RELEASE.md` §4 (keystore + 4 GitHub secrets).

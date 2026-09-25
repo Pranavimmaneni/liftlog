@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Notification small icon (FR-PLT-4): the "LL" monogram in white, as Android requires. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+    <path android:fillColor="#FFFFFFFF" android:pathData="M14,16h14v42h18v14H14z" />
+    <path android:fillColor="#FFFFFFFF" android:pathData="M54,16h14v42h18v14H54z" />
+    <path android:fillColor="#FFFFFFFF" android:pathData="M14,78h72v7H14z" />
+</vector>

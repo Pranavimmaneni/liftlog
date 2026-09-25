@@ -3,8 +3,8 @@
 Resume file. If the session resets, read this, then `docs/PLAN.md`, then the current `docs/plans/M<n>.md`.
 
 ## Current
-- Milestone: **M6 Android APK**
-- Step: starting (write docs/plans/M6.md); demo for Pranav after M5 (screenshots + link)
+- Milestone: **Wrap-up**
+- Step: docs/reports/FINAL.md, complete TODO-FOR-PRANAV.md, 10-line summary
 
 ## Done
 - [x] Read handoff; repo root = project folder; `git init`
@@ -17,10 +17,11 @@ Resume file. If the session resets, read this, then `docs/PLAN.md`, then the cur
 - [x] **M3 Progression**: report docs/reports/M3.md (262 unit, engine 99.8%, overall 85.2%, e2e 96/96)
 - [x] **M4 Insight**: report docs/reports/M4.md (295 unit, engine 99.9%, overall 86.7%, e2e 108/108)
 - [x] **M5 Motivation and polish**: report docs/reports/M5.md (321 unit, engine 99.9%, overall 84.5%, e2e 124/124, first-load JS 163 KB gz, Lighthouse >= 90)
+- [x] Demo for Pranav after M5: docs/reports/demo/demo-{paper,iron}.png + live link
+- [x] **M6 Android APK**: report docs/reports/M6.md (326 unit, e2e 124/124, native smoke OK; APK via CI only, D74)
 
 ## Next
-- M6: Capacitor Android project, native adapter (keep-awake, local notifications, haptics, filesystem/share, status bar), icons/splash, version 1.0.0, docs/RELEASE.md, .github/workflows/android-apk.yml from ci/android-apk.yml. No local SDK/JDK → APK built in CI only
-- Then FINAL.md + complete TODO-FOR-PRANAV.md (incl. standards.json source, Vercel bypass secret)
+- FINAL.md (requirements → PRD §15, test results, not done, URL, install, TODO list), then print the 10-line summary
 
 ## How to run things (Windows / Git Bash notes)
 - `npm run build` then `npx playwright test` (vite preview on :4173; start with `npx vite preview --port 4173 --strictPort &` if needed)
@@ -41,7 +42,7 @@ Resume file. If the session resets, read this, then `docs/PLAN.md`, then the cur
 - Installed outside the repo: Playwright Chromium + WebKit into %LOCALAPPDATA%\ms-playwright (per-user cache)
 
 ## Deployed URL
-- https://liftlog-jade.vercel.app (M5)
+- https://liftlog-jade.vercel.app (1.0.0)
 
 ## Blockers
 - (none)
