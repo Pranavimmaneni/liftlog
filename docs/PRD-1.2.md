@@ -8,7 +8,7 @@ This addendum adds to `docs/PRD.md` (v3). The PRD rules (priorities, IDs, tracea
 |---|---|---|
 | 1.1.1 | Fixes from real use | M7 |
 | 1.1.2 | Bigger library, a pictogram for every exercise | M8 |
-| 1.2.0 | Game-style redesign, food tracking, combined food + training feedback | M9–M12 (IDs added when the food brief arrives) |
+| 1.2.0 | Game-style redesign, food tracking, combined food + training feedback | M9–M13 (draft IDs below, waiting on Pranav's answers) |
 | 1.3.0 | Supersets, on-device metrics, split builder 2, rem type sizes | later |
 
 **Platform change (D81):** the Android APK is frozen. The PWA added to the home screen is the only supported install. §2 rows for the APK and M6 stay as history; the `android/` project and native adapter are kept but not built, tested or changed.
@@ -54,3 +54,61 @@ Changes to the PRD: FR-LIB-4 (the default "In my gym" filter no longer hides mat
 | Workout | FR-WRK-5a, FR-WRK-16 | M7 | S06, S07, S08 | component + screen tests, e2e |
 | Navigation | FR-NAV-1 | M7 | S05, S13, S14, S15 | screen tests, e2e |
 | Illustration | FR-ILL-6 | M8 | S07, S13, S16 | pose bounds test, `/dev/poses` |
+
+## 1.2.0 draft requirements (not approved yet)
+
+Sources: Pranav's food brief (above) and a data-source check on 2026-10-26 (USDA FoodData Central is public domain, CC0; Open Food Facts is ODbL share-alike, so it stays out).
+
+### Food library (FR-FOOD)
+| ID | Requirement | Pri |
+|---|---|---|
+| FR-FOOD-1 | `scripts/seed-foods.ts` builds the food library deterministically and writes `FOOD-SEED-REPORT.md`. Generic foods: USDA FNDDS 2021–23 (5,432 "as eaten" foods, 65 nutrients, household portions like "1 cup"). Branded foods: a subset of USDA Branded Foods (about 15–25k products) from store brands (Kirkland Signature, Member's Mark, Great Value, Trader Joe's, Good & Gather, Kroger, 365, Aldi) and the biggest national brands, latest record per barcode, nothing older than 2020. Branded foods carry label nutrients only; other micros show "not on label". | M |
+| FR-FOOD-2 | The library (about 2 MB compressed) downloads once from LiftLog's own site on first use of Food, is stored in IndexedDB and then works offline. It isn't precached (NFR-SIZE-1). | M |
+| FR-FOOD-3 | Search by name, brand and alias, with the same typo tolerance as exercises, in under 150 ms over the whole library. Recent, frequent and favourite foods come first. | M |
+| FR-FOOD-4 | Offline barcode scanning (UPC/EAN) against the library, using the scanner LiftLog already has. A miss offers "Create food" with the barcode filled in. | S |
+| FR-FOOD-5 | Custom foods, recipes (ingredients plus number of servings) and quick add (calories and macros only). | M |
+
+### Diary (FR-DIARY)
+| ID | Requirement | Pri |
+|---|---|---|
+| FR-DIARY-1 | Food tab: a day view by meal (Breakfast, Lunch, Dinner, Snacks), each entry with a time (default now) so meals can be matched to workouts. | M |
+| FR-DIARY-2 | Portions in household measures, grams or ounces, with a servings stepper. Every entry is saved the moment it's logged. | M |
+| FR-DIARY-3 | Fast logging: copy a meal or a whole day, saved meals, log again from recent. | M |
+| FR-DIARY-4 | Water tracking with a daily target. | S |
+
+### Targets (FR-TGT)
+| ID | Requirement | Pri |
+|---|---|---|
+| FR-TGT-1 | Inputs: bodyweight (the shared weigh-ins), height, sex, birth year, activity level and a diet phase (lose / maintain / gain, with a weekly rate). | M |
+| FR-TGT-2 | Energy target: Mifflin-St Jeor × activity factor, adjusted for the phase. All constants in `data/nutrition.json`. | M |
+| FR-TGT-3 | Macros: protein in g per kg by goal and phase (ISSN range), a fat floor, carbs fill the rest; fibre per 1,000 kcal. | M |
+| FR-TGT-4 | Micros from the US Dietary Reference Intakes by age and sex (RDA or AI), with upper limits flagged. | M |
+| FR-TGT-5 | Adaptive expenditure: after 3 weeks of logging and weigh-ins, estimate real daily energy use from intake vs the weight trend and offer the new target with the reason. | S |
+| FR-TGT-6 | Optional higher carbs on training days. Any target can be overridden; "Reset to coach's pick" restores it. | S |
+
+### Reviews and combined coach (FR-NUT, FR-COACH)
+| ID | Requirement | Pri |
+|---|---|---|
+| FR-NUT-1 | Today: calories left, macro bars, micros as % of target. | M |
+| FR-NUT-2 | Weekly and monthly food review: averages, days on target, macro and micro adequacy, top food sources per nutrient, trends. | M |
+| FR-COACH-1 | Rule-based combined insights, e.g. protein below target on training days; under 30 g carbs in the 3 h before a workout; a gain phase with flat weight; losing more than 1%/week while e1RM drops; a micro under 70% for the week, with foods from the user's own diary or the library that are rich in it. | M |
+| FR-COACH-2 | S10 gets a Food section; "Going well" and "Needs work" draw on both sides, each with a reason and a one-tap fix. | M |
+| FR-GAME-1 | Food counts toward XP, streaks and quests only for hitting targets (in range, not "more"), e.g. "Hit protein 5 of 7 days". | S |
+
+### Shared (FR-SHR)
+| ID | Requirement | Pri |
+|---|---|---|
+| FR-SHR-1 | One bodyweight log, one body stats form (now with height and activity) and one goal feed both sides. | M |
+| FR-SHR-2 | Backup, restore and CSV export include the food tables (schema version 2 with a migration test). | M |
+
+### Milestones (draft)
+| Milestone | Scope |
+|---|---|
+| M9 Design | Game-style mockups for training and food screens, Paper and Iron |
+| M10 Food data and engines | Seed script, schema v2, target and review engines with tests |
+| M11 Food UI | Food tab, diary, search, barcode, recipes, water |
+| M12 Combined coach | Food reviews, combined insights, food in XP and quests |
+| M13 Redesign | The approved mockups on the training screens |
+
+Not possible without a server: scheduled meal reminders (a web app can't fire them while closed), and live product lookups for barcodes outside the library.
+

@@ -4,7 +4,8 @@ import { defineConfig, devices } from '@playwright/test';
  * NFR-COMP-1: Pixel 7 (Chromium) and iPhone 14 (WebKit), each in Paper (light) and Iron (dark).
  * Runs against the production build (`npm run build` first) so the service worker and CSP are real.
  */
-const PORT = 4173;
+// E2E_PORT avoids a clash when another local app already serves 4173 (D88).
+const PORT = Number(process.env.E2E_PORT ?? 4173);
 
 export default defineConfig({
   testDir: './e2e',

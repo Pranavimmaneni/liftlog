@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.1 (2026-10-27)
+- Weights like 22.5 or 122.5 now show in full while you type and after (the number used to be cut to two characters on narrow phones).
+- "Add from list" during a workout also shows matching exercises that aren't in your gym, always shows your custom exercises, and can create a new exercise straight into the workout.
+- Started a workout by mistake? Tap Undo for 10 seconds after starting, or Cancel workout at any time. Up next doesn't move.
+- The Library is no longer a tab: open it from Plan or Settings.
+
 ## 1.1.0 (2026-09-25)
 - Build your own split: combine muscle groups per day (e.g. Chest + Biceps, Legs + Back); LiftLog suggests exercises covering them, then you add, remove or replace on the routine screen. Also in Plan → Change split.
 - Routine tabs show full day names and scroll sideways.

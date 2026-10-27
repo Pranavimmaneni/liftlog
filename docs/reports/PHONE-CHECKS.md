@@ -60,3 +60,12 @@ URL: https://liftlog-jade.vercel.app · components page: https://liftlog-jade.ve
 | 1 | Run the "Android APK" workflow, download the APK, install on the Pixel | Partly ✅: workflow in place (debug + signed release), native bundle smoke test passes. 📱 Needs the repo on GitHub, then the install itself |
 | 2 | Start a rest timer, lock the phone → notification at rest end | Partly ✅: unit tests for schedule/cancel/permission with mocked plugins. 📱 The real notification |
 | 3 | Export from the web app, import into the APK → history appears | ✅ backup/restore round-trip is e2e #5 (same code in the APK). 📱 The cross-install move |
+
+## M7 (1.1.1)
+| # | Check | Automated? |
+|---|---|---|
+| 1 | On a dumbbell exercise, tap the weight and type 22.5, then 122.5. Every digit shows while typing and after | ✅ e2e on all 4 projects (field width ≥ text, value in the box). 📱 The phone keypad (decimal key, comma locales) |
+| 2 | Start a workout, tap Undo within 10 s: back on Home, Up next unchanged | ✅ e2e + screen test. 📱 Once on each phone |
+| 3 | Start a workout, log one set, Cancel workout: the sheet says "1 logged set"; the workout isn't in History | ✅ screen test + unit test (sets, queue, PRs). 📱 Once |
+| 4 | During a workout, Add from list → search for something your gym lacks: it shows under "Not in your gym". Search nonsense → Create custom exercise → save → it opens in the workout | ✅ screen tests. 📱 With your real gym settings |
+| 5 | The tab bar shows Today, Plan, Progress; the Library opens from Plan (book icon or button) and Settings | ✅ e2e + screen test |
