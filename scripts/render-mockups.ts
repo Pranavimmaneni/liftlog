@@ -22,9 +22,13 @@ for (const [theme, out] of [
 ] as const) {
   mkdirSync(join(root, 'png', out), { recursive: true });
   for (const f of files) {
+    // `<name>.paper.html` / `<name>.iron.html` are fixed to one theme (copies of the 1.1 mockups).
+    const fixed = f.match(/\.(paper|iron)\.html$/)?.[1];
+    if (fixed && fixed !== theme) continue;
     await page.goto(`${pathToFileURL(join(root, f)).href}?theme=${theme}`);
     await page.evaluate(() => document.fonts.ready);
-    await page.locator('.phone').screenshot({ path: join(root, 'png', out, f.replace('.html', '.png')) });
+    const shot = fixed ? page.locator('body > div').first() : page.locator('.phone');
+    await shot.screenshot({ path: join(root, 'png', out, f.replace(/(\.(paper|iron))?\.html$/, '.png')) });
   }
 }
 await browser.close();

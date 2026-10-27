@@ -5,15 +5,15 @@
 </head><body>
 <div class="phone">
 
-<header class="top" style="justify-content:flex-start">
-  <button type="button" class="icon" aria-label="Back" style="margin-left:-12px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
-  <div class="grow"><div class="title">Fasting</div><div class="sm muted gap8">16:8 · since 8:00 pm · 4 in a row</div></div>
+<header class="top">
+  <div class="switch" role="tablist" aria-label="Section"><span role="tab" aria-selected="false">LiftLog</span><span role="tab" aria-selected="true" class="on">Food</span></div>
 </header>
+<div style="padding:20px 24px 0"><div class="title">Fasting</div><div class="sm muted gap8">16:8 · since 8:00 pm · 4 in a row</div></div>
 
 <main class="body">
   <!-- Ring: 14 h 20 m of 16 h (circumference 2π·120 ≈ 754; 0.896 done) -->
-  <div class="gap40" style="position:relative;width:272px;height:272px;margin-left:auto;margin-right:auto">
-    <svg width="272" height="272" viewBox="0 0 272 272" aria-hidden="true">
+  <div class="gap24" style="position:relative;width:240px;height:240px;margin-left:auto;margin-right:auto">
+    <svg width="240" height="240" viewBox="0 0 272 272" aria-hidden="true">
       <circle cx="136" cy="136" r="120" fill="none" stroke="var(--ll-rule)" stroke-width="10"/>
       <circle cx="136" cy="136" r="120" fill="none" stroke="var(--ll-ink)" stroke-width="10" stroke-dasharray="676 754" transform="rotate(-90 136 136)"/>
     </svg>
@@ -24,7 +24,7 @@
   </div>
   <div class="sm gap24" style="text-align:center">Eat from <span class="mono">12:00 pm</span></div>
 
-  <div class="label gap40">This week</div>
+  <div class="label gap24">This week</div>
   <div class="gap16" style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center">
     <div><div class="bar thick"><i class="on"></i></div><div class="label gap8">M</div></div>
     <div><div class="bar thick"><i class="on"></i></div><div class="label gap8">T</div></div>
@@ -34,10 +34,14 @@
     <div><div class="bar thick"><i></i></div><div class="label gap8">S</div></div>
     <div><div class="bar thick"><i></i></div><div class="label gap8">S</div></div>
   </div>
-  <div class="between gap32"><span class="sm muted">Upper B at 6:30 pm is in your eating window.</span></div>
-  <div class="gap16"><span class="link">Change plan</span></div>
+  <div class="between gap24"><span class="sm muted">Upper B at 6:30 pm is in your eating window.</span><span class="link">Change</span></div>
 </main>
 
-<div class="dock low"><button type="button" class="cta">End fast</button></div>
+<div class="dock"><button type="button" class="cta">End fast</button></div>
+<nav class="tabbar" aria-label="Food">
+  <div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11M9 8h6"/></svg>Diary</div>
+  <div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-9"/></svg>Review</div>
+  <div class="on"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg>Fasting</div>
+</nav>
 </div>
 </body></html>

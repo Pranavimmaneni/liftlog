@@ -8,7 +8,7 @@ This addendum adds to `docs/PRD.md` (v3). The PRD rules (priorities, IDs, tracea
 |---|---|---|
 | 1.1.1 | Fixes from real use | M7 |
 | 1.1.2 | Bigger library, a pictogram for every exercise | M8 |
-| 1.2.0 | Game-style redesign, food tracking, combined food + training feedback | M9–M13 (draft IDs below, waiting on Pranav's answers) |
+| 1.2.0 | Food section (its own look) next to an unchanged LiftLog, sharing data and feedback | M9–M12 (draft IDs below) |
 | 1.3.0 | Supersets, on-device metrics, split builder 2, rem type sizes | later |
 
 **Platform change (D81):** the Android APK is frozen. The PWA added to the home screen is the only supported install. §2 rows for the APK and M6 stay as history; the `android/` project and native adapter are kept but not built, tested or changed.
@@ -38,8 +38,13 @@ Requirement IDs for 1.2.0 are drafted from this brief after M7.
 6. M8 runs in the background; food mockups come first, before any food code.
 
 7. Style: direction A ("logbook + game", F01) for all screens (2026-10-27). Then (same day) "too cluttered": all screens redone minimal: one big number per screen, hairline rules instead of boxes, one primary button, details one tap away; style B removed.
+8. **LiftLog's UI does not change** (2026-10-27, replaces answer 1 and brief item 8). Training and food are **two sections** of one app that share data:
+   - A `LiftLog | Food` switch at the top of each section's main screens is the only addition to LiftLog screens.
+   - LiftLog keeps its tab bar (Today · Plan · Progress) and every screen as in 1.1.1. Food has its own tab bar: Diary · Review · Fasting (targets from the Diary header).
+   - Food reads training data (planned workout times, training volume, bodyweight); all combined feedback shows only in the Food section. LiftLog screens show no food data.
+   - Food has its own minimal look built from the same Paper & Iron tokens and fonts.
 
-Mockups: `design/screens-v2/food/` (F01–F08 plus F01b, Paper and Iron; PNGs in `png/`), rendered with `npx tsx scripts/render-mockups.ts food`.
+Mockups: `design/screens-v2/food/` (F01–F07 Food screens, X01 LiftLog Home with only the switch added; Paper and Iron; PNGs in `png/`), rendered with `npx tsx scripts/render-mockups.ts food`.
 
 ## 1.1.1 requirements (M7)
 
@@ -84,7 +89,8 @@ Sources: Pranav's food brief (above) and a data-source check on 2026-10-26 (USDA
 ### Diary (FR-DIARY)
 | ID | Requirement | Pri |
 |---|---|---|
-| FR-DIARY-1 | Food tab: a day view by meal (Breakfast, Lunch, Dinner, Snacks), each entry with a time (default now) so meals can be matched to workouts. | M |
+| FR-NAV-2 | Two sections, LiftLog and Food, with a `LiftLog \| Food` switch at the top of each section's main screens. The app reopens in the last section used. LiftLog's screens and tab bar stay as in 1.1.1. | M |
+| FR-DIARY-1 | Food section, Diary tab: a day view by meal (Breakfast, Lunch, Dinner, Snacks), each entry with a time (default now) so meals can be matched to workouts. | M |
 | FR-DIARY-2 | Portions in household measures, grams or ounces, with a servings stepper. Every entry is saved the moment it's logged. | M |
 | FR-DIARY-3 | Fast logging: copy a meal or a whole day, saved meals, log again from recent. | M |
 | FR-DIARY-4 | Water tracking with a daily target. Not in the mockups; kept only if Pranav wants it. | C |
@@ -105,8 +111,8 @@ Sources: Pranav's food brief (above) and a data-source check on 2026-10-26 (USDA
 | FR-NUT-1 | Today: calories left, macro bars, micros as % of target. | M |
 | FR-NUT-2 | Weekly and monthly food review: averages, days on target, macro and micro adequacy, top food sources per nutrient, trends. | M |
 | FR-COACH-1 | Rule-based combined insights, e.g. protein below target on training days; under 30 g carbs in the 3 h before a workout; a gain phase with flat weight; losing more than 1%/week while e1RM drops; a micro under 70% for the week, with foods from the user's own diary or the library that are rich in it. | M |
-| FR-COACH-2 | S10 gets a Food section; "Going well" and "Needs work" draw on both sides, each with a reason and a one-tap fix. | M |
-| FR-GAME-1 | Food counts toward XP, streaks and quests only for hitting targets (in range, not "more"), e.g. "Hit protein 5 of 7 days". | S |
+| FR-COACH-2 | The Food section's Review tab (weekly and monthly) has "Going well" and "Needs work" drawn from both food and training data, each with a reason and a one-tap fix. LiftLog's S10 does not change. | M |
+| FR-GAME-1 | Food quests and a food streak live in the Food section and reward hitting targets (in range, never "more"), e.g. "Hit protein 5 of 7 days". Their XP adds to the one shared level, so LiftLog's level number can rise from food, with no LiftLog screen change. | S |
 
 ### Fasting (FR-FAST)
 | ID | Requirement | Pri |
@@ -122,11 +128,10 @@ Sources: Pranav's food brief (above) and a data-source check on 2026-10-26 (USDA
 ### Milestones (draft)
 | Milestone | Scope |
 |---|---|
-| M9 Design | Game-style mockups for training and food screens, Paper and Iron |
+| M9 Design | Food section mockups, Paper and Iron (done when Pranav approves) |
 | M10 Food data and engines | Seed script, schema v2, target and review engines with tests |
 | M11 Food UI | Food tab, diary, search, barcode, recipes, water |
 | M12 Combined coach | Food reviews, combined insights, food in XP and quests |
-| M13 Redesign | The approved mockups on the training screens |
 
 Not possible without a server: scheduled meal reminders (a web app can't fire them while closed), and live product lookups for barcodes outside the library.
 

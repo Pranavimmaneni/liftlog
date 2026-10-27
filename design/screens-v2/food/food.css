@@ -81,7 +81,12 @@ button { font: inherit; color: inherit; cursor: pointer; padding: 0; margin: 0; 
 .toggle { width: 46px; height: 28px; border-radius: 14px; background: var(--ll-ink); position: relative; flex-shrink: 0; }
 .toggle i { position: absolute; right: 3px; top: 3px; width: 22px; height: 22px; border-radius: 50%; background: var(--ll-card); }
 
-/* tab bar: Today · Plan · Food · Progress */
+/* section switch: the only addition to LiftLog screens (FR-NAV-2) */
+.switch { display: inline-flex; border: 1px solid var(--ll-rule); border-radius: 22px; padding: 3px; }
+.switch span { min-width: 76px; text-align: center; padding: 9px 14px; border-radius: 18px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--ll-ink2); }
+.switch span.on { background: var(--ll-ink); color: var(--ll-card); }
+
+/* Food section tab bar: Diary · Review · Fasting (LiftLog keeps its own) */
 .tabbar { height: 70px; flex-shrink: 0; border-top: 1px solid var(--ll-rule); background: var(--ll-paper); display: flex; justify-content: space-around; align-items: center; }
 .tabbar div { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 76px; color: var(--ll-ink2); font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
 .tabbar div.on { color: var(--ll-accent); }
