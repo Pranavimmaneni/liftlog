@@ -751,15 +751,19 @@ const MACHINE_KEYWORDS: [RegExp, string][] = [
   [/seated cable row|low row|seated one-arm cable/i, 'cable-row-station'],
 ];
 
+/** machines.json `cable_station` ids: the only machines a cable exercise can link to (D97). */
+export const CABLE_MACHINES = ['cable-tower', 'functional-trainer', 'cable-row-station', 'lat-pulldown'];
+
 export function machineFor(
   canonical: string,
   equipment: string,
   byExercise: Map<string, string>,
 ): string | undefined {
+  const fits = (id: string) => equipment !== 'cable' || CABLE_MACHINES.includes(id);
   const listed = byExercise.get(canonical.toLowerCase());
-  if (listed) return EQUIPMENT_NOT_MACHINE.includes(listed) ? undefined : listed;
+  if (listed && fits(listed)) return EQUIPMENT_NOT_MACHINE.includes(listed) ? undefined : listed;
   if (equipment !== 'machine' && equipment !== 'cable') return undefined;
-  for (const [re, id] of MACHINE_KEYWORDS) if (re.test(canonical)) return id;
+  for (const [re, id] of MACHINE_KEYWORDS) if (fits(id) && re.test(canonical)) return id;
   return equipment === 'cable' ? 'cable-tower' : undefined;
 }
 
@@ -816,6 +820,8 @@ export function requiresFor(canonical: string, equipment: string, machineId: str
     return req;
   }
   if (machineId) req.push(['cable-tower', 'functional-trainer']);
+  // The bench in front of a low pulley; preacher-bench is no longer the machine (D97).
+  if (equipment === 'cable' && /preacher/.test(n)) req.push(['preacher-bench']);
   switch (equipment) {
     case 'barbell':
       req.push(['barbell']);
