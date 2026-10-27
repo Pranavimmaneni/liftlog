@@ -15,6 +15,7 @@ import type {
   Side,
   Units,
 } from '@/engine/types';
+import type { FoodItem, Nutrients, Portion } from '@/engine/food-types';
 
 export interface MetaRow {
   key: 'schemaVersion' | 'installedAt' | 'lastBackupAt' | 'onboardingStep' | 'onboardingDraft' | string;
@@ -32,7 +33,14 @@ export interface ProfileRow {
   sex?: 'male' | 'female' | 'unspecified';
   birthYear?: number;
   limitations: string[];
+  /** Schema v2, PRD-1.2 FR-TGT-1: inputs for Food targets, shared with body stats (FR-SHR-1). */
+  heightCm?: number;
+  activity?: Activity;
+  diet?: { phase: DietPhase; rateKgPerWeek: number };
 }
+
+export type Activity = 'desk' | 'light' | 'active' | 'very';
+export type DietPhase = 'lose' | 'maintain' | 'gain';
 
 export interface BodyweightRow {
   id?: number;
@@ -206,4 +214,59 @@ export interface ErrorRow {
   message: string;
   stack?: string;
   route?: string;
+}
+
+// ---------- schema v2: Food (PRD-1.2) ----------
+
+export type MealSlot = 'breakfast' | 'lunch' | 'snacks' | 'dinner';
+export const MEAL_SLOTS: MealSlot[] = ['breakfast', 'lunch', 'snacks', 'dinner'];
+
+/** An imported library food (FR-FOOD-1/2). `terms` are normalised search words (multi-entry index). */
+export interface FoodLibRow extends FoodItem {
+  terms: string[];
+}
+
+/** FR-FOOD-5: the user's own food, recipe (ingredients + yield) or quick add. Deleting keeps history. */
+export interface CustomFoodRow extends FoodLibRow {
+  isRecipe: 0 | 1;
+  ingredients?: { foodId: string; grams: number }[];
+  /** Cooked weight of the whole recipe in grams; per-100 g values are computed from it. */
+  yieldGrams?: number;
+  createdAt: number;
+  updatedAt: number;
+  deletedAt?: number;
+}
+
+/**
+ * FR-DIARY-1/2: one logged food. `per100g` is a snapshot taken when logging, so editing or
+ * re-importing the food never rewrites past days. Grams = portion grams × servings.
+ */
+export interface DiaryRow {
+  id: string;
+  date: string;
+  meal: MealSlot;
+  loggedAt: number;
+  foodId: string;
+  name: string;
+  brand?: string;
+  portion: Portion;
+  servings: number;
+  grams: number;
+  per100g: Nutrients;
+}
+
+/** FR-DIARY-3: a named group of foods logged together. */
+export interface SavedMealRow {
+  id: string;
+  name: string;
+  items: { foodId: string; portion: Portion; servings: number }[];
+  createdAt: number;
+}
+
+/** FR-FAST-1: one fast; open while `endedAt` is missing. */
+export interface FastRow {
+  id: string;
+  startedAt: number;
+  endedAt?: number;
+  planHours: number;
 }

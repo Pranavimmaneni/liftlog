@@ -3,7 +3,7 @@
  * Upper / Lower training by running the real goal engine session after session, so the
  * progression, reasons, PRs and reviews all come from the app's own rules. Deterministic.
  */
-import { db, TABLES } from '@/db/schema';
+import { db, USER_TABLES } from '@/db/schema';
 import { getExerciseMap } from '@/db/catalog';
 import { completeOnboarding, saveWeighIn, type OnboardingDraft } from '@/db/repo';
 import { finishSession, goalFromHistory, historyFor, logSet, setEffort, startSession } from '@/db/workout';
@@ -64,7 +64,7 @@ export async function loadFixture(opts: FixtureOptions = {}): Promise<void> {
   const weeks = opts.weeks ?? 6;
   const now = opts.now ?? Date.now();
   const rand = rng(42);
-  for (const t of TABLES) await db.table(t).clear();
+  for (const t of USER_TABLES) await db.table(t).clear();
 
   const draft: OnboardingDraft = {
     experience: 'intermediate',
