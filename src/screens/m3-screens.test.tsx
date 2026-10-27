@@ -173,6 +173,10 @@ describe('M3 screens', () => {
   it('/dev/poses lists every pictogram', async () => {
     renderRoute('/dev/poses');
     expect(await screen.findByTestId('pose-count', {}, W)).toHaveTextContent(/\d{3} pictograms · 10 Tier 1/);
+    // FR-ILL-6: 600+ poses are paged; "More" reaches the rest.
+    expect(screen.getAllByRole('listitem')).toHaveLength(120);
+    fireEvent.click(screen.getByRole('button', { name: 'More' }));
+    expect(screen.getAllByRole('listitem')).toHaveLength(240);
     fireEvent.change(screen.getByRole('searchbox', { name: 'Filter poses' }), {
       target: { value: 'machine-hip-thrust' },
     });

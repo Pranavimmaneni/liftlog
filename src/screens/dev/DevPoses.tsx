@@ -8,11 +8,15 @@ import { poseIds } from '@/illustration/svg';
 import { TIER1 } from '@/illustration/tier1';
 import type { Exercise } from '@/engine/types';
 
-/** /dev/poses: review gallery for every pictogram, Tier 1 and Tier 2 (FR-ILL-2, DECISIONS D33). */
+/** 600+ live SVGs at once are slow on a phone (and in jsdom); the filter still searches all of them. */
+const PAGE = 120;
+
+/** /dev/poses: review gallery for every pictogram, Tier 1 and Tier 2 (FR-ILL-2, FR-ILL-6, DECISIONS D33, D96). */
 export default function DevPoses() {
   const [exercises, setExercises] = useState<Exercise[] | null>(null);
   const [q, setQ] = useState('');
   const [animate, setAnimate] = useState(false);
+  const [limit, setLimit] = useState(PAGE);
   useEffect(() => {
     void loadCatalog().then(setExercises);
   }, []);
@@ -33,7 +37,10 @@ export default function DevPoses() {
           aria-label={en.dev.posesFilter}
           placeholder={en.dev.posesFilter}
           value={q}
-          onChange={(e) => setQ(e.target.value)}
+          onChange={(e) => {
+            setQ(e.target.value);
+            setLimit(PAGE);
+          }}
         />
         <Switch checked={animate} onChange={setAnimate} label={en.dev.posesAnimate} />
       </div>
@@ -41,7 +48,7 @@ export default function DevPoses() {
         {en.dev.posesCount(ids.length, t1)}
       </p>
       <ul className="grid grid-cols-2 gap-2.5 px-5 pt-3">
-        {shown.map((id) => (
+        {shown.slice(0, limit).map((id) => (
           <li
             key={id}
             className="overflow-hidden rounded-lg border-[1.5px] border-line bg-panel"
@@ -55,6 +62,13 @@ export default function DevPoses() {
           </li>
         ))}
       </ul>
+      {shown.length > limit && (
+        <div className="px-5 pt-3">
+          <button type="button" className="ll-link w-full" onClick={() => setLimit(limit + PAGE)}>
+            {en.common.more}
+          </button>
+        </div>
+      )}
     </main>
   );
 }
