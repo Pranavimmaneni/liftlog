@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.3 (2026-10-27)
+- 11 cable exercises (cable triceps extensions, cable chest presses, cable hip adduction, cable preacher curl) now use the cable tower with 2.5 kg steps, instead of a stack machine. Logged sets, PRs and history stay the same.
+
 ## 1.1.2 (2026-10-27)
 - The library has 605 exercises (was 410): Olympic lifts, kettlebell swings and cleans, jumps, landmine work, more core, glute and calisthenics moves, and common gym lifts such as the Bayesian curl, Meadows row, Z press and side plank.
 - Search knows common gym names: "tricep press", "tricep press machine", "skull crusher", "pec deck", "lat pull down", "RDL", "chest fly machine", "leg press machine", "preacher curl machine" and many more.
