@@ -123,17 +123,17 @@ test.describe('M3 progression', () => {
     await page.goto('/library/new');
     await page.getByRole('button', { name: 'Save exercise' }).click();
     await expect(page.getByText('Give it a name.')).toBeVisible();
-    await page.getByRole('textbox', { name: 'Name' }).fill('Landmine Press');
+    await page.getByRole('textbox', { name: 'Name' }).fill('Kneeling Landmine Press');
     await page.getByRole('group', { name: 'Main muscle' }).getByRole('button', { name: 'Chest' }).click();
     await page.getByRole('combobox', { name: 'How is it loaded?' }).selectOption('plate_loaded');
     await expectNoAxeViolations(page);
     await page.getByRole('button', { name: 'Save exercise' }).click();
-    await expect(page.getByRole('heading', { name: 'Landmine Press' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Kneeling Landmine Press' })).toBeVisible();
     await expect(page.getByRole('img', { name: /muscles worked/i })).toBeVisible();
     await page.goto('/library');
-    await page.getByRole('searchbox').fill('landmine');
-    await page.getByRole('link', { name: /landmine press/i }).click();
-    await expect(page).toHaveURL(/\/library\/custom-landmine-press-/);
+    await page.getByRole('searchbox').fill('kneeling landmine');
+    await page.getByRole('link', { name: /kneeling landmine press/i }).click();
+    await expect(page).toHaveURL(/\/library\/custom-kneeling-landmine-press-/);
 
     // A seeded Tier 2 exercise shows its animated pictogram.
     await page.goto('/library/barbell-curl');
@@ -144,8 +144,10 @@ test.describe('M3 progression', () => {
   test('M3 phone check: /dev/poses shows every pictogram (FR-ILL-2)', async ({ page }) => {
     await page.goto('/dev/poses');
     await expect(page.getByTestId('pose-count')).toContainText(/\d{3} pictograms/);
-    const n = await page.locator('[data-pose]').count();
-    expect(n).toBeGreaterThanOrEqual(130);
+    // FR-ILL-6: 600+ poses, paged 120 at a time (D96).
+    await expect(page.locator('[data-pose]')).toHaveCount(120);
+    await page.getByRole('button', { name: 'More' }).click();
+    await expect(page.locator('[data-pose]')).toHaveCount(240);
     await page.getByRole('searchbox', { name: 'Filter poses' }).fill('squat');
     await expect(page.locator('[data-pose]').first()).toBeVisible();
   });

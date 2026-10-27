@@ -599,11 +599,28 @@ describe('search (FR-LIB-3, NFR-PERF-4)', () => {
     expect(search(index, 'zzzzqqqq')).toEqual([]);
   });
 
+  it.each([
+    ['tricep press', 'Seated Triceps Press'],
+    ['tricep press machine', 'Machine Triceps Extension'],
+    ['skull crusher', 'Lying Triceps Extension'],
+    ['pec deck', 'Pec Deck Fly'],
+    ['lat pull down', 'Lat Pulldown'],
+    ['RDL', 'Romanian Deadlift'],
+    ['chest fly machine', 'Pec Deck Fly'],
+    ['leg press machine', 'Leg Press'],
+    ['preacher curl machine', 'Machine Preacher Curl'],
+    ['nordic curl', 'Natural Glute Ham Raise'],
+    ['kb swing', 'Kettlebell Swing'],
+  ])('FR-LIB-9: the gym name "%s" finds %s first', (q, name) => {
+    expect(top(q)[0]).toBe(name);
+  });
+
   it('reports the alias that matched', () => {
     expect(search(index, 'pendlay')[0]).toMatchObject({ viaAlias: 'pendlay row' });
   });
 
-  it('NFR-PERF-4: under 100 ms for the whole library', () => {
+  it('NFR-PERF-4: under 100 ms for the whole library (600+ exercises)', () => {
+    expect(EX.length).toBeGreaterThanOrEqual(600);
     const t0 = performance.now();
     for (const q of ['row', 'press', 'curl', 'squat', 'bech', 'lat pull']) search(index, q);
     expect((performance.now() - t0) / 6).toBeLessThan(100);

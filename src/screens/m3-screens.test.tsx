@@ -62,7 +62,9 @@ describe('M3 screens', () => {
 
     fireEvent.change(screen.getByRole('textbox', { name: 'Name' }), { target: { value: 'barbell curl' } });
     expect(await screen.findByText(/already exists/i, {}, W)).toBeInTheDocument();
-    fireEvent.change(screen.getByRole('textbox', { name: 'Name' }), { target: { value: 'Landmine Press' } });
+    fireEvent.change(screen.getByRole('textbox', { name: 'Name' }), {
+      target: { value: 'Kneeling Landmine Press' },
+    });
     fireEvent.click(
       within(screen.getByRole('group', { name: 'Main muscle' })).getByRole('button', { name: 'Chest' }),
     );
@@ -70,18 +72,20 @@ describe('M3 screens', () => {
       target: { value: 'plate_loaded' },
     });
     fireEvent.click(screen.getByRole('button', { name: 'Save exercise' }));
-    expect(await screen.findByRole('heading', { name: 'Landmine Press' }, W)).toBeInTheDocument();
-    const row = (await db.exercises.filter((e) => e.name === 'Landmine Press').first())!;
+    expect(await screen.findByRole('heading', { name: 'Kneeling Landmine Press' }, W)).toBeInTheDocument();
+    const row = (await db.exercises.filter((e) => e.name === 'Kneeling Landmine Press').first())!;
     expect(row.isCustom).toBe(1);
     expect(row.loadType).toBe('plate_loaded');
     expect(row.primary).toEqual(['chest']);
 
     fireEvent.click(screen.getByRole('link', { name: 'Edit' }));
     const name = await screen.findByRole('textbox', { name: 'Name' }, W);
-    await waitFor(() => expect(name).toHaveValue('Landmine Press'));
-    fireEvent.change(name, { target: { value: 'Landmine Press (1 arm)' } });
+    await waitFor(() => expect(name).toHaveValue('Kneeling Landmine Press'));
+    fireEvent.change(name, { target: { value: 'Kneeling Landmine Press (1 arm)' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save exercise' }));
-    expect(await screen.findByRole('heading', { name: 'Landmine Press (1 arm)' }, W)).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: 'Kneeling Landmine Press (1 arm)' }, W),
+    ).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
     const d = await screen.findByRole('dialog', {}, W);
@@ -169,8 +173,12 @@ describe('M3 screens', () => {
   it('/dev/poses lists every pictogram', async () => {
     renderRoute('/dev/poses');
     expect(await screen.findByTestId('pose-count', {}, W)).toHaveTextContent(/\d{3} pictograms · 10 Tier 1/);
+    // FR-ILL-6: 600+ poses are paged; "More" reaches the rest.
+    expect(screen.getAllByRole('listitem')).toHaveLength(120);
+    fireEvent.click(screen.getByRole('button', { name: 'More' }));
+    expect(screen.getAllByRole('listitem')).toHaveLength(240);
     fireEvent.change(screen.getByRole('searchbox', { name: 'Filter poses' }), {
-      target: { value: 'hip-thrust' },
+      target: { value: 'machine-hip-thrust' },
     });
     await waitFor(() => expect(screen.getAllByRole('listitem').length).toBeLessThan(5));
   });

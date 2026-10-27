@@ -1,5 +1,5 @@
 /**
- * FR-LIB-1: builds src/data/exercises.json from a pinned free-exercise-db snapshot
+ * FR-LIB-1, FR-LIB-9: builds src/data/exercises.json from a pinned free-exercise-db snapshot
  * (scripts/vendor, public domain) and writes SEED-REPORT.md. Deterministic: same input → same output.
  *
  *   npm run seed
@@ -20,6 +20,7 @@ import {
   KEEP_EQUIPMENT,
   levelFor,
   limitationAreasFor,
+  M8_INCLUDE,
   loadTypeFor,
   machineFor,
   mapMuscles,
@@ -32,6 +33,7 @@ import {
   type MachineDef,
   type RawExercise,
 } from './seed-rules';
+import { M8_CUSTOM_SEEDS } from './seed-custom';
 
 const root = process.cwd();
 const read = <T>(p: string): T => JSON.parse(readFileSync(join(root, p), 'utf8')) as T;
@@ -159,12 +161,20 @@ export function buildSeed(): SeedResult {
     return undefined;
   };
   const added: string[] = [];
-  for (const c of CUSTOM_SEEDS) {
-    if (findByName(c.name)) continue;
+  const addedM8: string[] = [];
+  const skippedM8: string[] = [];
+  for (const c of [...CUSTOM_SEEDS, ...M8_CUSTOM_SEEDS]) {
+    const m8 = M8_CUSTOM_SEEDS.includes(c);
+    const existing = findByName(c.name);
+    if (existing) {
+      if (m8) skippedM8.push(`${c.name} (already "${existing.name}")`);
+      continue;
+    }
     const res = build(c.name, null, c.equipment, c.primary, c.secondary, c.mechanic, c.level, c.instructions);
     if ('drop' in res) throw new Error(`custom seed ${c.name}: ${res.drop}`);
+    if (byId.has(res.id)) throw new Error(`custom seed ${c.name}: id ${res.id} is taken`);
     byId.set(res.id, res);
-    added.push(c.name);
+    (m8 ? addedM8 : added).push(c.name);
   }
   const unresolved: string[] = [];
   for (const m of machines)
@@ -175,8 +185,11 @@ export function buildSeed(): SeedResult {
     if (!findByName(a)) throw new Error(`aliases.json key "${a}" has no exercise`);
 
   const exercises = [...byId.values()].sort((a, b) => a.name.localeCompare(b.name));
-  if (exercises.length < 400 || exercises.length > 600)
-    throw new Error(`FR-LIB-1: ${exercises.length} exercises is outside 400–600`);
+  if (exercises.length < 600) throw new Error(`FR-LIB-9: ${exercises.length} exercises is fewer than 600`);
+  const keptM8 = Object.keys(M8_INCLUDE)
+    .map((n) => RENAMES[n] ?? n)
+    .filter((n) => byId.has(slug(n)))
+    .sort((a, b) => a.localeCompare(b));
 
   // ---------- report ----------
   const count = <T extends string>(xs: T[]) =>
@@ -196,8 +209,10 @@ export function buildSeed(): SeedResult {
   lines.push('## Totals', '');
   lines.push('| | Count |', '|---|---|');
   lines.push(`| Dataset rows | ${raw.length} |`);
-  lines.push(`| Kept from the dataset | ${exercises.length - added.length} |`);
+  lines.push(`| Kept from the dataset | ${exercises.length - added.length - addedM8.length} |`);
+  lines.push(`| … of which kept in M8 (FR-LIB-9, rules relaxed) | ${keptM8.length} |`);
   lines.push(`| Added as custom seeds (named in machines.json or staples) | ${added.length} |`);
+  lines.push(`| Added as M8 custom seeds (common gym lifts the dataset lacks) | ${addedM8.length} |`);
   lines.push(`| **Exercises shipped** | **${exercises.length}** |`);
   lines.push(`| Dropped | ${dropped.length} |`);
   lines.push(`| Renamed to canonical names | ${renamed.length} |`);
@@ -240,6 +255,35 @@ export function buildSeed(): SeedResult {
     '',
   );
   lines.push('## Custom seeds added', '', ...added.map((n) => `- ${n}`), '');
+  lines.push(
+    '## M8 additions (FR-LIB-9)',
+    '',
+    'Dataset rows that the M1 rules dropped and M8 keeps (DECISIONS D89). Olympic, ballistic and plyometric lifts get no movement pattern, so auto-suggest never picks them; they are found by search and in the Library.',
+    '',
+    ...keptM8.map((n) => `- ${n}`),
+    '',
+    'Custom seeds written for M8 (`scripts/seed-custom.ts`, D90):',
+    '',
+    ...addedM8.map((n) => `- ${n}`),
+    '',
+  );
+  if (skippedM8.length)
+    lines.push(
+      'M8 custom seeds skipped because the name already exists:',
+      '',
+      ...skippedM8.map((n) => `- ${n}`),
+      '',
+    );
+  lines.push(
+    '## Aliases (data/aliases.json)',
+    '',
+    '| Exercise | Aliases |',
+    '|---|---|',
+    ...Object.entries(aliasesJson)
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([k, v]) => `| ${k} | ${v.join(', ')} |`),
+    '',
+  );
   lines.push(
     '## Renamed',
     '',
