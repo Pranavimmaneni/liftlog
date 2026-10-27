@@ -1,0 +1,61 @@
+<!doctype html><html lang="en" data-theme="paper"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LiftLog F05 Targets</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="food.css">
+<script>document.documentElement.dataset.theme=new URLSearchParams(location.search).get('theme')==='iron'?'iron':'paper'</script>
+</head><body>
+<div class="phone">
+<div class="scroll">
+
+<div class="backhdr">
+  <button type="button" class="iconbtn" aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <div class="grow"><div class="display" style="font-size:34px">Your targets</div><div class="label mt4">Shared with training · body stats</div></div>
+</div>
+
+<!-- Inputs: bodyweight comes from the same weigh-ins as training; height and activity join body stats -->
+<div class="px mt12"><div class="card">
+  <div class="grid3 padsm" style="grid-template-columns:repeat(4,1fr);text-align:center">
+    <div><div class="num" style="font-size:24px">78.4</div><div class="label" style="font-size:9px">kg · Mon</div></div>
+    <div><div class="num" style="font-size:24px">178</div><div class="label" style="font-size:9px">cm</div></div>
+    <div><div class="num" style="font-size:24px">29</div><div class="label" style="font-size:9px">years</div></div>
+    <div><div class="num" style="font-size:24px">M</div><div class="label" style="font-size:9px">sex</div></div>
+  </div>
+  <div class="rule padsm">
+    <div class="label">Activity outside the gym</div>
+    <div class="seg mt8"><span>Desk</span><span class="on">Light</span><span>Active</span><span>Very</span></div>
+    <div class="label mt12">Phase</div>
+    <div class="seg mt8"><span>Lose</span><span>Maintain</span><span class="on">Gain</span></div>
+    <div class="between mt8"><span class="small">Rate</span><span class="row"><span class="chip ghost">+0.1</span><span class="chip on">+0.25 kg/wk</span><span class="chip ghost">+0.5</span></span></div>
+  </div>
+</div></div>
+
+<!-- Result: the coach's pick, with the reason, like goals on S07 -->
+<div class="px mt12"><div class="card hard pad">
+  <div class="between"><span class="label accent">Coach's pick</span><span class="chip soft">4 lifts a week</span></div>
+  <div class="mt8"><span class="num" style="font-size:52px">2,950</span><span class="mono ink2" style="font-size:13px"> kcal a day</span></div>
+  <div class="small ink2 mt4" style="line-height:1.4">You burn about 2,700 (Mifflin-St Jeor × 1.55 with training). +250 for slow gain.</div>
+  <div class="mt12" style="display:flex;flex-direction:column;gap:8px">
+    <div class="stat"><span class="k" style="background:var(--ll-accent);color:var(--ll-onAccent)">P</span><span class="small">1.8 g per kg bodyweight</span><span class="v">140 g</span></div>
+    <div class="stat"><span class="k">F</span><span class="small">0.9 g per kg</span><span class="v">70 g</span></div>
+    <div class="stat"><span class="k">C</span><span class="small">the rest</span><span class="v">440 g</span></div>
+  </div>
+  <div class="dashrule mt12" style="padding-top:10px">
+    <div class="between"><span class="small"><b>More carbs on training days</b><br><span class="ink2">+60 g C on lift days, −60 g on rest days</span></span>
+      <span style="width:48px;height:28px;border-radius:14px;background:var(--ll-ink);position:relative;flex-shrink:0"><span style="position:absolute;right:3px;top:3px;width:22px;height:22px;border-radius:50%;background:var(--ll-card)"></span></span></div>
+  </div>
+</div></div>
+
+<div class="px mt12"><div class="card padsm">
+  <div class="between"><span class="label">Micros · US intake guide, men 19–30</span><span class="linkbtn">Edit</span></div>
+  <div class="mono mt8" style="font-size:12px;line-height:1.9;display:grid;grid-template-columns:1fr 1fr;column-gap:12px">
+    <span>Fibre 41 g</span><span>Iron 8 mg</span>
+    <span>Calcium 1,000 mg</span><span>Magnesium 400 mg</span>
+    <span>Potassium 3,400 mg</span><span>Vitamin D 15 µg</span>
+    <span>Vitamin B12 2.4 µg</span><span>Sodium &lt; 2,300 mg</span>
+  </div>
+</div></div>
+
+<div class="px mt12 small"><span class="ink2">General guidelines, not medical advice.</span> <span class="linkbtn">Reset</span></div>
+
+</div>
+</div>
+</body></html>

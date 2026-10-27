@@ -1,0 +1,56 @@
+<!doctype html><html lang="en" data-theme="paper"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LiftLog F03 Portion</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="food.css">
+<script>document.documentElement.dataset.theme=new URLSearchParams(location.search).get('theme')==='iron'?'iron':'paper'</script>
+</head><body>
+<div class="phone">
+<!-- The search screen (F02) stays behind; the portion sheet slides up over it -->
+<div class="scroll" style="opacity:.6">
+  <div class="backhdr"><button type="button" class="iconbtn"></button><div class="grow"><div class="display" style="font-size:34px">Add to dinner</div></div></div>
+  <div class="px mt16"><div class="field"><span class="ph">paneer</span></div></div>
+</div>
+<div class="scrim"></div>
+<div class="sheet" style="top:120px">
+  <div class="grabber"></div>
+  <div class="between" style="align-items:flex-start">
+    <div><div class="display" style="font-size:32px">Paneer bhurji</div><div class="label mt4">Indian dish · built from a recipe</div></div>
+    <button type="button" class="iconbtn" aria-label="Favourite"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3l2.8 5.8 6.2.9-4.5 4.4 1 6.3L12 17.5 6.5 20.4l1-6.3L3 9.7l6.2-.9z"/></svg></button>
+  </div>
+
+  <div class="label mt16">Portion</div>
+  <div class="row mt8" style="flex-wrap:wrap;gap:6px">
+    <span class="chip on">1 katori · 150 g</span><span class="chip">1 plate · 250 g</span><span class="chip">1 tbsp · 15 g</span><span class="chip">Grams</span>
+  </div>
+  <div class="mt12 grid2">
+    <div class="stepper"><span class="b">−</span><span class="v">1<small>katori</small></span><span class="b">+</span></div>
+    <div class="stepper"><span class="b">−</span><span class="v">150<small>grams</small></span><span class="b">+</span></div>
+  </div>
+
+  <div class="mt16 grid3" style="grid-template-columns:1.2fr 1fr 1fr 1fr">
+    <div class="card padsm" style="text-align:center;border-width:2px"><div class="num" style="font-size:26px">290</div><div class="label" style="font-size:10px">kcal</div></div>
+    <div class="card padsm" style="text-align:center"><div class="num accent" style="font-size:26px">18</div><div class="label" style="font-size:10px">P · g</div></div>
+    <div class="card padsm" style="text-align:center"><div class="num" style="font-size:26px">9</div><div class="label" style="font-size:10px">C · g</div></div>
+    <div class="card padsm" style="text-align:center"><div class="num" style="font-size:26px">21</div><div class="label" style="font-size:10px">F · g</div></div>
+  </div>
+
+  <!-- Game feel: show what this portion does to today's bars before adding -->
+  <div class="card mt12 padsm">
+    <div class="between"><span class="label">After this</span><span class="label brass">Protein quest 82/140</span></div>
+    <div class="stat mt8"><span class="k" style="background:var(--ll-accent);color:var(--ll-onAccent);width:24px;height:24px;font-size:17px">P</span><div class="segs"><i class="a"></i><i class="a"></i><i class="a"></i><i class="a"></i><i class="a"></i><i class="b"></i><i class="b"></i><i></i><i></i><i></i><i></i></div><span class="v">64 → 82 g</span></div>
+    <div class="stat mt8"><span class="mono" style="font-size:10px;width:28px;text-align:center">KCAL</span><div class="segs"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="b"></i><i></i><i></i><i></i><i></i><i></i></div><span class="v">1,430 → 1,720</span></div>
+  </div>
+
+  <div class="mt12">
+    <div class="between small" style="padding:6px 0"><span>Calcium</span><span class="mono">31% of day</span></div>
+    <div class="bar"><b style="width:31%"></b></div>
+    <div class="between small" style="padding:8px 0 6px"><span>Iron</span><span class="mono">9% of day</span></div>
+    <div class="bar"><b style="width:9%"></b></div>
+    <div class="between small" style="padding:8px 0 6px"><span>Sodium</span><span class="mono">22% of limit</span></div>
+    <div class="bar"><b class="b" style="width:22%"></b></div>
+  </div>
+  <div class="mt8 small ink2">Values are estimates from a standard recipe. <span class="linkbtn">All nutrients</span></div>
+
+  <button type="button" class="btn primary mt16">Add to dinner · 290 kcal</button>
+</div>
+</div>
+</body></html>

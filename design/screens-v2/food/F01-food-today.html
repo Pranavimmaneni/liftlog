@@ -1,0 +1,79 @@
+<!doctype html><html lang="en" data-theme="paper"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LiftLog F01 Food today</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="food.css">
+<script>document.documentElement.dataset.theme=new URLSearchParams(location.search).get('theme')==='iron'?'iron':'paper'</script>
+</head><body>
+<div class="phone">
+<div class="scroll">
+
+<div class="hdr">
+  <div><div class="display">Food</div><div class="label mt4">Tue · Oct 27</div></div>
+  <div class="row" style="gap:6px">
+    <span class="chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 2-5 3-7 0 2 1 3 2 3 0-3-1-5 1-8z"/></svg>5-day streak</span>
+    <span class="chip on">Lv 14</span>
+    <button type="button" class="iconbtn" aria-label="Food settings"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg></button>
+  </div>
+</div>
+
+<!-- Fuel gauge: the one hard-shadow element on the screen -->
+<div class="px mt16"><div class="card hard pad">
+  <div class="between"><span class="label accent">Fuel today</span><span class="chip soft">Training day · 6:30 pm</span></div>
+  <div class="between mt8" style="align-items:flex-end">
+    <div><span class="num" style="font-size:56px">1,430</span><span class="mono ink2" style="font-size:13px"> / 2,950 kcal</span></div>
+    <div style="text-align:right"><div class="num" style="font-size:26px">1,520</div><div class="label">left</div></div>
+  </div>
+  <div class="segs tall mt8"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="mt12" style="display:flex;flex-direction:column;gap:9px">
+    <div class="stat"><span class="k" style="background:var(--ll-accent);color:var(--ll-onAccent)">P</span><div class="segs"><i class="a"></i><i class="a"></i><i class="a"></i><i class="a"></i><i class="a"></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="v">64 / 140 g</span></div>
+    <div class="stat"><span class="k">C</span><div class="segs"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="v">212 / 440 g</span></div>
+    <div class="stat"><span class="k">F</span><div class="segs"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i><i></i><i></i><i></i></div><span class="v">39 / 70 g</span></div>
+  </div>
+  <div class="between mt12 dashrule" style="padding-top:10px">
+    <span class="row small"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg>Eating window open · closes 8:00 pm</span>
+    <span class="linkbtn">Fasting</span>
+  </div>
+</div></div>
+
+<!-- Quests: game layer, same rules as the weekly quest (targets in range, never "eat more") -->
+<div class="px mt12">
+  <div class="between"><span class="label">Today's quests</span><span class="label brass">+80 XP to earn</span></div>
+  <div class="grid3 mt8">
+    <div class="card padsm"><div class="between"><span class="mono small">Protein</span><span class="label brass" style="font-size:9px">+40</span></div><div class="num mt4" style="font-size:22px">64<span class="mono ink2" style="font-size:11px">/140 g</span></div><div class="segs thin mt8"><i class="a"></i><i class="a"></i><i class="a"></i><i class="a"></i><i class="a"></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+    <div class="card padsm"><div class="between"><span class="mono small">Pre-lift</span><span class="label brass" style="font-size:9px">+20</span></div><div class="num mt4" style="font-size:22px">0<span class="mono ink2" style="font-size:11px">/30 g C</span></div><div class="segs thin mt8"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+    <div class="card padsm" style="position:relative;overflow:hidden"><div class="between"><span class="mono small">Fibre</span><span class="label brass" style="font-size:9px">+20</span></div><div class="num mt4" style="font-size:22px">18<span class="mono ink2" style="font-size:11px">/41 g</span></div><div class="segs thin mt8"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+  </div>
+</div>
+
+<!-- Coach line: rule-based, picks from the user's own foods -->
+<div class="px mt12"><div class="card warn padsm row" style="gap:10px">
+  <span class="badge warn" style="width:30px;height:30px;font-size:15px">!</span>
+  <div class="grow small" style="font-size:13px;line-height:1.35">76 g protein to go before bed. From your foods: <b>paneer bhurji + 2 roti</b> = 38 g.</div>
+  <span class="chip red">+ Add</span>
+</div></div>
+
+<!-- Diary -->
+<div class="px mt12"><div class="card">
+  <div class="mealhdr"><span class="t">Breakfast</span><span class="mono small ink2">8:10 am · 360 kcal</span></div>
+  <div class="food dashrule"><span class="thumb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12h18a9 9 0 0 1-18 0z"/><path d="M8 8c0-1.2.8-1.8.8-3M12 8c0-1.2.8-1.8.8-3M16 8c0-1.2.8-1.8.8-3"/></svg></span><div class="grow"><div class="name">Poha</div><div class="sub">1 plate · P5 C45 F6</div></div><div class="kcal">250<span>kcal</span></div></div>
+  <div class="food"><span class="thumb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 9h11v6a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM16 11h2a2 2 0 0 1 0 4h-2"/></svg></span><div class="grow"><div class="name">Masala chai</div><div class="sub">1 cup · P3 C14 F4</div></div><div class="kcal">110<span>kcal</span></div></div>
+  <div class="mealhdr rule"><span class="t">Lunch</span><span class="mono small ink2">1:05 pm · 730 kcal</span></div>
+  <div class="food dashrule"><span class="thumb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12h18a9 9 0 0 1-18 0z"/></svg></span><div class="grow"><div class="name">Dal tadka, jeera rice, 2 roti, curd</div><div class="sub">4 items · P27 C119 F17</div></div><div class="kcal">730<span>kcal</span></div></div>
+</div></div>
+
+</div>
+
+<div style="position:absolute;left:0;right:0;bottom:70px;height:96px;background:linear-gradient(to bottom,transparent,var(--ll-paper) 45%)"></div>
+<!-- Primary actions stay in the bottom 40% (NFR-UX-1) -->
+<div style="position:absolute;left:20px;right:20px;bottom:84px;display:flex;gap:8px">
+  <button type="button" class="btn primary" style="flex:1"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Log food</button>
+  <button type="button" class="btn" style="width:56px;flex:none;box-shadow:3px 3px 0 var(--ll-shadow)" aria-label="Scan barcode"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7V4h3M18 4h3v3M21 17v3h-3M6 20H3v-3M7 8v8M10 8v8M13 8v8M17 8v8"/></svg></button>
+</div>
+
+<nav class="tabbar" aria-label="Main">
+  <div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>Today</div>
+  <div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Plan</div>
+  <div class="on"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18a9 9 0 0 1-18 0z"/><path d="M8 8c0-1.2.8-1.8.8-3M12 8c0-1.2.8-1.8.8-3M16 8c0-1.2.8-1.8.8-3"/></svg>Food</div>
+  <div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-9"/></svg>Progress</div>
+</nav>
+</div>
+</body></html>
