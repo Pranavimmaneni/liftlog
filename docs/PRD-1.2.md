@@ -28,6 +28,17 @@ Requirement IDs for 1.2.0 are drafted from this brief after M7.
 7. Include the other features diet tracking apps have, as long as they need no AI API calls.
 8. Game-style redesign with new mockups (from the same message as the M7 fixes).
 
+### Answers from Pranav (2026-10-27)
+
+1. Game feel: nothing about how the app is used changes; only the look (UI) becomes more game-like.
+2. About 30,000 foods is enough; users can also add their own foods (FR-FOOD-5).
+3. Regional food: Indian food and cuisine. Plan: a curated set of common Indian dishes whose nutrients are computed from USDA ingredients through standard recipes (portions in katori, roti, plate), because the Indian Food Composition Tables (IFCT 2017) don't appear to be openly licensed (to be checked before M10).
+4. The micros list (fibre, sodium, potassium, calcium, iron, magnesium, vitamin D, B12) is enough.
+5. Extras: only a fasting timer (FR-FAST-1). No body measurements, no progress photos.
+6. M8 runs in the background; food mockups come first, before any food code.
+
+Mockups: `design/screens-v2/food/` (F01–F08 plus F01b, Paper and Iron; PNGs in `png/`), rendered with `npx tsx scripts/render-mockups.ts food`.
+
 ## 1.1.1 requirements (M7)
 
 | ID | Requirement | Pri |
@@ -74,7 +85,7 @@ Sources: Pranav's food brief (above) and a data-source check on 2026-10-26 (USDA
 | FR-DIARY-1 | Food tab: a day view by meal (Breakfast, Lunch, Dinner, Snacks), each entry with a time (default now) so meals can be matched to workouts. | M |
 | FR-DIARY-2 | Portions in household measures, grams or ounces, with a servings stepper. Every entry is saved the moment it's logged. | M |
 | FR-DIARY-3 | Fast logging: copy a meal or a whole day, saved meals, log again from recent. | M |
-| FR-DIARY-4 | Water tracking with a daily target. | S |
+| FR-DIARY-4 | Water tracking with a daily target. Not in the mockups; kept only if Pranav wants it. | C |
 
 ### Targets (FR-TGT)
 | ID | Requirement | Pri |
@@ -94,6 +105,11 @@ Sources: Pranav's food brief (above) and a data-source check on 2026-10-26 (USDA
 | FR-COACH-1 | Rule-based combined insights, e.g. protein below target on training days; under 30 g carbs in the 3 h before a workout; a gain phase with flat weight; losing more than 1%/week while e1RM drops; a micro under 70% for the week, with foods from the user's own diary or the library that are rich in it. | M |
 | FR-COACH-2 | S10 gets a Food section; "Going well" and "Needs work" draw on both sides, each with a reason and a one-tap fix. | M |
 | FR-GAME-1 | Food counts toward XP, streaks and quests only for hitting targets (in range, not "more"), e.g. "Hit protein 5 of 7 days". | S |
+
+### Fasting (FR-FAST)
+| ID | Requirement | Pri |
+|---|---|---|
+| FR-FAST-1 | Fasting timer: presets 12:12, 14:10, 16:8, 18:6 and custom; start and end by tap (times editable); a dial with elapsed and remaining time computed from timestamps (like the rest timer); the week's fasts as stamps; a note when a planned workout falls inside the fast. No notifications while the app is closed (web limit). | S |
 
 ### Shared (FR-SHR)
 | ID | Requirement | Pri |
