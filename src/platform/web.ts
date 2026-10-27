@@ -87,6 +87,39 @@ export function download(file: ShareFile): void {
   setTimeout(() => URL.revokeObjectURL(url), 10_000);
 }
 
+/** PRD-1.2 FR-FOOD-4: barcodes printed on food packs. */
+export const PRODUCT_FORMATS = ['ean_13', 'ean_8', 'upc_a', 'upc_e'];
+
+/**
+ * Native BarcodeDetector when it exists and supports the formats, else the lazy self-hosted
+ * zxing-wasm polyfill (FR-PLT-5). Feature-detected, never assumed (iOS has none).
+ */
+async function detector(formats: string[]): Promise<QrDetector> {
+  type Det = { detect(src: CanvasImageSource): Promise<{ rawValue: string }[]> };
+  type DetCtor = (new (opts: { formats: string[] }) => Det) & {
+    getSupportedFormats?: () => Promise<string[]>;
+  };
+  const native = (window as unknown as { BarcodeDetector?: DetCtor }).BarcodeDetector;
+  let det: Det | null = null;
+  if (native) {
+    const supported = native.getSupportedFormats
+      ? await native.getSupportedFormats().catch(() => formats)
+      : formats;
+    if (formats.every((f) => supported.includes(f))) det = new native({ formats });
+  }
+  if (!det) {
+    const mod = await import('./qr-polyfill');
+    det = await mod.createPolyfillDetector(formats);
+  }
+  const d = det;
+  return {
+    async detect(source) {
+      const codes = await d.detect(source);
+      return codes.map((c) => c.rawValue);
+    },
+  };
+}
+
 export const webPlatform: Platform = {
   kind: 'web',
   os: typeof navigator === 'undefined' ? 'other' : detectOS(navigator.userAgent, navigator.maxTouchPoints),
@@ -174,22 +207,11 @@ export const webPlatform: Platform = {
   },
 
   async qrDetector(): Promise<QrDetector> {
-    type Det = { detect(src: CanvasImageSource): Promise<{ rawValue: string }[]> };
-    type DetCtor = new (opts: { formats: string[] }) => Det;
-    const native = (window as unknown as { BarcodeDetector?: DetCtor }).BarcodeDetector;
-    let det: Det;
-    if (native) {
-      det = new native({ formats: ['qr_code'] });
-    } else {
-      const mod = await import('./qr-polyfill');
-      det = await mod.createPolyfillDetector();
-    }
-    return {
-      async detect(source) {
-        const codes = await det.detect(source);
-        return codes.map((c) => c.rawValue);
-      },
-    };
+    return detector(['qr_code']);
+  },
+
+  async productCodeDetector(): Promise<QrDetector> {
+    return detector(PRODUCT_FORMATS);
   },
 
   async openCamera() {
