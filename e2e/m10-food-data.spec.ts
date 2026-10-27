@@ -9,15 +9,19 @@ test('FR-FOOD-2 / NFR-OFF-3: the food library imports once, searches, and works 
   page,
   browserName,
 }) => {
-  test.slow(); // ~30,000 IndexedDB rows; WebKit's IndexedDB is slow on Windows (D58)
-  await page.goto('/dev/food');
+  test.slow();
+  // Playwright's WebKit on Windows writes IndexedDB far slower than a real iPhone (D58), so it
+  // imports only the Indian chunk; Chromium imports the whole library (D113).
+  const webkit = browserName === 'webkit';
+  await page.goto(webkit ? '/dev/food?subset=indian' : '/dev/food');
   const status = page.getByTestId('food-lib-status');
-  await expect(status).toContainText('0 foods stored');
+  await expect(status).toContainText(' 0 foods stored');
   await expectNoAxeViolations(page);
 
   await page.getByRole('button', { name: /import library now/i }).click();
-  await expect(status).not.toContainText(' 0 foods stored', { timeout: 120_000 });
-  await expect(page.getByRole('button', { name: /import library now/i })).toBeEnabled({ timeout: 120_000 });
+  // The version shows once the import has finished.
+  await expect(status).toContainText(/Library \d{4}-\d{2}-\d{2}/, { timeout: 150_000 });
+  await expect(status).not.toContainText(' 0 foods stored');
 
   const search = page.getByRole('searchbox', { name: 'Search foods' });
   await search.fill('paneer');
@@ -26,6 +30,10 @@ test('FR-FOOD-2 / NFR-OFF-3: the food library imports once, searches, and works 
   });
   await search.fill('dal tadka');
   await expect(page.getByTestId('food-results')).toContainText(/dal/i);
+  if (!webkit) {
+    await search.fill('kirkland');
+    await expect(page.getByTestId('food-results').getByRole('listitem').first()).toContainText(/kirkland/i);
+  }
 
   // FR-TGT-2: the sample person's numbers match the F05 mockup.
   await expect(page.getByTestId('food-targets')).toContainText('kcal 2950');

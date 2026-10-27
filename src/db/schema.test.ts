@@ -50,7 +50,7 @@ describe('Dexie schema (PRD §7, NFR-REL-3)', () => {
     const { foodLib, foods, diary, savedMeals, fasts, ...rest } = STORES_V2;
     expect(rest).toEqual(STORES_V1);
     expect({ foodLib, foods, diary, savedMeals, fasts }).toEqual({
-      foodLib: 'id, *terms, gtin',
+      foodLib: 'id, gtin',
       foods: 'id, *terms, gtin, isRecipe',
       diary: 'id, date, [date+meal], loggedAt, foodId',
       savedMeals: 'id',

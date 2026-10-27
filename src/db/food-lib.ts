@@ -1,8 +1,7 @@
 import { db } from './schema';
 import { logError } from './errors';
 import type { FoodLibRow } from './types';
-import { decodeRow, type FoodChunk } from '@/engine/food-types';
-import { foodTerms } from '@/engine/food-search';
+import { decodeRow, type FoodChunk, type FoodItem } from '@/engine/food-types';
 
 /**
  * PRD-1.2 FR-FOOD-2, NFR-OFF-3: the bundled food library (src/data/foods/foods-*.json, emitted as
@@ -35,10 +34,7 @@ export function chunkUrls(): Record<string, string> {
 const BATCH = 2000;
 
 export function chunkToRows(chunk: FoodChunk): FoodLibRow[] {
-  return chunk.foods.map((r) => {
-    const f = decodeRow(r, chunk.nutrients, chunk.source);
-    return { ...f, terms: foodTerms(f) };
-  });
+  return chunk.foods.map((r) => decodeRow(r, chunk.nutrients, chunk.source));
 }
 
 export interface ImportOptions {
@@ -90,7 +86,7 @@ export function scheduleLibraryImport(): void {
 }
 
 /** All library rows plus the user's own (non-deleted) foods, for the in-memory search index. */
-export async function searchableFoods(): Promise<FoodLibRow[]> {
+export async function searchableFoods(): Promise<FoodItem[]> {
   const [lib, own] = await Promise.all([db.foodLib.toArray(), db.foods.toArray()]);
   return [...own.filter((f) => !f.deletedAt), ...lib];
 }

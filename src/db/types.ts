@@ -221,13 +221,16 @@ export interface ErrorRow {
 export type MealSlot = 'breakfast' | 'lunch' | 'snacks' | 'dinner';
 export const MEAL_SLOTS: MealSlot[] = ['breakfast', 'lunch', 'snacks', 'dinner'];
 
-/** An imported library food (FR-FOOD-1/2). `terms` are normalised search words (multi-entry index). */
-export interface FoodLibRow extends FoodItem {
-  terms: string[];
-}
+/**
+ * An imported library food (FR-FOOD-1/2). Search runs on an in-memory index, so library rows carry
+ * no word index: indexing ~140,000 words made the one-time import several times slower (D113).
+ */
+export type FoodLibRow = FoodItem;
 
 /** FR-FOOD-5: the user's own food, recipe (ingredients + yield) or quick add. Deleting keeps history. */
-export interface CustomFoodRow extends FoodLibRow {
+export interface CustomFoodRow extends FoodItem {
+  /** Normalised search words (multi-entry index). */
+  terms: string[];
   isRecipe: 0 | 1;
   ingredients?: { foodId: string; grams: number }[];
   /** Cooked weight of the whole recipe in grams; per-100 g values are computed from it. */

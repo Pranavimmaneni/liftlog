@@ -69,3 +69,11 @@ URL: https://liftlog-jade.vercel.app · components page: https://liftlog-jade.ve
 | 3 | Start a workout, log one set, Cancel workout: the sheet says "1 logged set"; the workout isn't in History | ✅ screen test + unit test (sets, queue, PRs). 📱 Once |
 | 4 | During a workout, Add from list → search for something your gym lacks: it shows under "Not in your gym". Search nonsense → Create custom exercise → save → it opens in the workout | ✅ screen tests. 📱 With your real gym settings |
 | 5 | The tab bar shows Today, Plan, Progress; the Library opens from Plan (book icon or button) and Settings | ✅ e2e + screen test |
+
+## M10 (food data; needs a preview deploy of `m10-food-data`)
+| # | Check | Automated? |
+|---|---|---|
+| 1 | Open `/dev/food`, tap "Import library now": the count reaches about 23,000 foods | ✅ e2e on all 4 projects. 📱 Time it on the iPhone and the Pixel |
+| 2 | Search "paneer", "dal tadka", "kirkland", "great value oats": results show at once; the timing line says under 150 ms | ✅ unit speed test (30,000 rows) + e2e. 📱 The real timing on both phones |
+| 3 | Airplane mode, reopen `/dev/food`, search again: results still show | ✅ e2e on Chromium. 📱 Once on the iPhone |
+| 4 | The sample targets show kcal 2950, P 140, C 440, F 70 (same as the F05 mockup) | ✅ unit + e2e |

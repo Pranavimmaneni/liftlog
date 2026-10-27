@@ -199,7 +199,6 @@ describe('error log (NFR-REL-4)', () => {
       source: 'generic',
       per100g,
       portions: [{ label: '1 cup', grams: 158 }],
-      terms: ['rice'],
     });
     const backup = await buildBackup(new Date('2026-10-27T12:00:00Z'));
     expect(backup.tables).not.toHaveProperty('foodLib');

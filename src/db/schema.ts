@@ -51,7 +51,7 @@ export const STORES_V1 = {
  */
 export const STORES_V2 = {
   ...STORES_V1,
-  foodLib: 'id, *terms, gtin',
+  foodLib: 'id, gtin',
   foods: 'id, *terms, gtin, isRecipe',
   diary: 'id, date, [date+meal], loggedAt, foodId',
   savedMeals: 'id',

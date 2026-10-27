@@ -214,7 +214,7 @@ describe('own foods and recipes (FR-FOOD-4, FR-FOOD-5)', () => {
   });
 
   it('FR-FOOD-4: a barcode finds own foods first, then the library, as 14 digits', async () => {
-    await db.foodLib.add({ ...PANEER, id: 'b:1', name: 'Library yogurt', gtin: '00012345678905', terms: [] });
+    await db.foodLib.add({ ...PANEER, id: 'b:1', name: 'Library yogurt', gtin: '00012345678905' });
     expect((await findByGtin('012345678905'))?.id).toBe('b:1');
     const own = await saveCustomFood({
       name: 'My yogurt',
@@ -258,7 +258,7 @@ describe('food library import (FR-FOOD-2, NFR-OFF-3)', () => {
   };
 
   it('FR-FOOD-2: decodes chunks with search terms', () => {
-    expect(chunkToRows(chunk)[0]).toEqual({ ...PANEER, terms: ['paneer', 'bhurji', 'scrambled'] });
+    expect(chunkToRows(chunk)[0]).toEqual(PANEER);
   });
 
   it('FR-FOOD-2: imports once per version and replaces old rows', async () => {
@@ -268,7 +268,7 @@ describe('food library import (FR-FOOD-2, NFR-OFF-3)', () => {
       return chunk;
     };
     expect(await importLibrary({ manifest: null })).toBe('no-library');
-    await db.foodLib.add({ ...PANEER, id: 'g:old', terms: [] });
+    await db.foodLib.add({ ...PANEER, id: 'g:old' });
     expect(await importLibrary({ manifest, load })).toBe('imported');
     expect(await db.foodLib.toCollection().primaryKeys()).toEqual(['in:paneer-bhurji']);
     expect(await importLibrary({ manifest, load })).toBe('up-to-date');

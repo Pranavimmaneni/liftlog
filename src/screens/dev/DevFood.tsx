@@ -1,17 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { Button } from '@/components/Button';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { en } from '@/copy/en';
 import { db } from '@/db/schema';
 import { importLibrary, LIBRARY_MANIFEST, searchableFoods } from '@/db/food-lib';
-import type { FoodLibRow } from '@/db/types';
 import { buildFoodIndex, searchFoods, type FoodIndex } from '@/engine/food-search';
 import { energyTarget } from '@/engine/energy';
 import { macroTargets } from '@/engine/macros';
 import { microTargets } from '@/engine/micros';
 import { scale } from '@/engine/nutrition';
-import { MICROS } from '@/engine/food-types';
+import { MICROS, type FoodItem } from '@/engine/food-types';
 
 /** The F05 mockup's sample person, so the numbers can be checked against the design. */
 const SAMPLE = {
@@ -35,7 +35,18 @@ export default function DevFood() {
     v: ((await db.meta.get('foodLibVersion'))?.value as string | undefined) ?? '–',
   }));
   const [progress, setProgress] = useState<[number, number] | null>(null);
-  const [index, setIndex] = useState<FoodIndex<FoodLibRow> | null>(null);
+  const [index, setIndex] = useState<FoodIndex<FoodItem> | null>(null);
+  // `?subset=indian` imports one small chunk: Playwright's WebKit on Windows writes IndexedDB too
+  // slowly for the full library (D58, D113). The version gets a suffix so a later full import runs.
+  const [params] = useSearchParams();
+  const subset = params.get('subset');
+  const manifest =
+    LIBRARY_MANIFEST && subset
+      ? {
+          v: `${LIBRARY_MANIFEST.v}+${subset}`,
+          chunks: LIBRARY_MANIFEST.chunks.filter((c) => c.source === subset),
+        }
+      : LIBRARY_MANIFEST;
   const [q, setQ] = useState('');
 
   useEffect(() => {
@@ -82,7 +93,7 @@ export default function DevFood() {
             onClick={async () => {
               setProgress([0, 1]);
               try {
-                await importLibrary({ onProgress: (d, t) => setProgress([d, t]) });
+                await importLibrary({ manifest, onProgress: (d, t) => setProgress([d, t]) });
               } finally {
                 setProgress(null);
               }

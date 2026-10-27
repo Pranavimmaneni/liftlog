@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased (M10, branch m10-food-data)
+- Food library: 23,365 foods (USDA generic and branded, plus 147 Indian dishes), stored on the phone and searchable offline.
+- Data model version 2 for food (diary, own foods, recipes, fasts); training data is unchanged.
+- Food engines: calorie, macro and micro targets; reviews; combined food and training feedback; fasting timer; food quests. Screens come in M11.
+
 ## 1.1.1 (2026-10-27)
 - Weights like 22.5 or 122.5 now show in full while you type and after (the number used to be cut to two characters on narrow phones).
 - "Add from list" during a workout also shows matching exercises that aren't in your gym, always shows your custom exercises, and can create a new exercise straight into the workout.
