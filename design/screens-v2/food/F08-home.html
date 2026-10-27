@@ -4,57 +4,36 @@
 <script>document.documentElement.dataset.theme=new URLSearchParams(location.search).get('theme')==='iron'?'iron':'paper'</script>
 </head><body>
 <div class="phone">
-<div class="scroll">
 
-<!-- S05 Home keeps "Up next" first; a Fuel card joins it (training + food in one place) -->
-<div class="hdr">
-  <div><div class="display">LiftLog</div><div class="label mt4">Tue · Oct 27</div></div>
-  <div class="row" style="gap:6px">
-    <span class="chip">3-wk streak</span><span class="chip on">Lv 14</span>
-    <button type="button" class="iconbtn" aria-label="Settings"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
-  </div>
-</div>
+<header class="top">
+  <div><div class="title">LiftLog</div><div class="sm muted gap8">Tue 27 Oct · Level 14 · 3-week streak</div></div>
+  <button type="button" class="icon" aria-label="Settings"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+</header>
 
-<div class="px mt16"><div class="card hard pad">
-  <div class="between"><span class="label accent">Up next · Session 3 of 4</span><span class="chip soft">6:30 pm</span></div>
-  <div class="display mt8" style="font-size:60px">Upper B</div>
-  <div class="small ink2 mt4" style="font-size:14px">5 exercises · 15 sets · Back, chest, shoulders, triceps</div>
-  <div class="row mt12 small" style="font-size:13px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>Last time: every goal hit. 2 lifts go up today.</div>
-  <button type="button" class="btn primary mt12">Start workout</button>
-</div></div>
+<main class="body">
+  <div class="gap40 label accent">Up next · 6:30 pm</div>
+  <div class="big gap8" style="font-size:72px;text-transform:uppercase">Upper B</div>
+  <div class="sm muted gap8">5 exercises · ~55 min · 2 lifts go up today</div>
+  <div class="gap24"><button type="button" class="cta">Start workout</button></div>
 
-<div class="px mt12"><div class="card pad">
-  <div class="between"><span class="label">Fuel today</span><span class="linkbtn">Food</span></div>
-  <div class="between mt8" style="align-items:flex-end">
-    <div><span class="num" style="font-size:34px">1,430</span><span class="mono ink2 small"> / 2,950 kcal</span></div>
-    <span class="chip soft">Fast ends 12:00 pm</span>
-  </div>
-  <div class="segs mt8"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-  <div class="grid3 mt12 mono small">
-    <div><span class="accent">P</span> 64/140</div><div>C 212/440</div><div>F 39/70</div>
-  </div>
-  <div class="dashrule mt12 row" style="padding-top:10px;gap:10px">
-    <span class="badge warn" style="width:26px;height:26px;font-size:13px">!</span>
-    <span class="grow small" style="font-size:13px">Pre-lift: 30 g carbs by 6:00 pm</span>
-    <span class="chip red">+ Log</span>
-  </div>
-</div></div>
+  <div class="between gap40"><span class="label">Food today</span><span class="link">Log</span></div>
+  <div class="gap8"><span class="big" style="font-size:44px">1,520</span><span class="mono muted sm"> kcal left</span></div>
+  <div class="bar gap16"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="between gap16 sm"><span>Protein <span class="mono">64<span class="muted">/140 g</span></span></span><span class="muted">30 g carbs before training</span></div>
 
-<div class="px mt12"><div class="card padsm">
-  <div class="between"><span class="label">This week</span><span class="label">2 of 4 done</span></div>
-  <div class="row mt8" style="gap:6px">
-    <div style="flex:1;height:48px;border-radius:5px;background:var(--ll-ink);color:var(--ll-card);display:flex;align-items:center;justify-content:center" class="display">Upper A</div>
-    <div style="flex:1;height:48px;border-radius:5px;background:var(--ll-ink);color:var(--ll-card);display:flex;align-items:center;justify-content:center" class="display">Lower A</div>
-    <div style="flex:1;height:48px;border-radius:5px;background:var(--ll-accent);color:var(--ll-onAccent);display:flex;align-items:center;justify-content:center;border:1.5px solid var(--ll-line)" class="display">Upper B</div>
-    <div style="flex:1;height:48px;border-radius:5px;border:1.5px dashed var(--ll-ink2);color:var(--ll-ink2);display:flex;align-items:center;justify-content:center" class="display">Lower B</div>
+  <div class="label gap40">This week · 2 of 4</div>
+  <div class="gap16" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+    <div><div class="bar thick"><i class="on"></i></div><div class="sm gap8">Upper A</div></div>
+    <div><div class="bar thick"><i class="on"></i></div><div class="sm gap8">Lower A</div></div>
+    <div><div class="bar thick"><i class="hot"></i></div><div class="sm gap8 accent">Upper B</div></div>
+    <div><div class="bar thick"><i></i></div><div class="sm gap8 muted">Lower B</div></div>
   </div>
-</div></div>
+</main>
 
-</div>
 <nav class="tabbar" aria-label="Main">
-  <div class="on"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>Today</div>
+  <div class="on"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>Today</div>
   <div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Plan</div>
-  <div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18a9 9 0 0 1-18 0z"/><path d="M8 8c0-1.2.8-1.8.8-3M12 8c0-1.2.8-1.8.8-3M16 8c0-1.2.8-1.8.8-3"/></svg>Food</div>
+  <div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18a9 9 0 0 1-18 0z"/><path d="M8 8c0-1.2.8-1.8.8-3M12 8c0-1.2.8-1.8.8-3M16 8c0-1.2.8-1.8.8-3"/></svg>Food</div>
   <div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-9"/></svg>Progress</div>
 </nav>
 </div>
