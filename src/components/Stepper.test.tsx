@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
-import { formatStepValue, nextStep, Stepper } from './Stepper';
+import { formatStepValue, nextStep, stepFontSize, Stepper } from './Stepper';
 
 function Harness({ start = 26 as number | null, step = 2 }) {
   const [v, setV] = useState<number | null>(start);
@@ -74,6 +74,25 @@ describe('Stepper (FR-WRK-5, NFR-A11Y-2)', () => {
     expect(nextStep(25.3, 2.5, 1)).toBe(27.5);
     expect(nextStep(25.3, 2.5, -1)).toBe(25);
     expect(nextStep(10, 0, 1)).toBe(10);
+  });
+
+  it('FR-WRK-5a: typing 122.5 keeps every digit; − and + step aside while typing', () => {
+    render(<Harness start={22} step={2.5} />);
+    fireEvent.click(screen.getByRole('spinbutton'));
+    expect(screen.queryByRole('button', { name: /increase|decrease/ })).toBeNull();
+    const input = screen.getByRole('textbox');
+    fireEvent.change(input, { target: { value: '122.5' } });
+    expect(input).toHaveValue('122.5');
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(screen.getByRole('spinbutton')).toHaveAttribute('aria-valuenow', '122.5');
+    expect(screen.getByRole('button', { name: /increase/ })).toBeInTheDocument();
+  });
+
+  it('FR-WRK-5a: longer numbers use a smaller size so they fit between − and +', () => {
+    expect(stepFontSize('22')).toBe(32);
+    expect(stepFontSize('22.5')).toBe(28);
+    expect(stepFontSize('122.5')).toBe(24);
+    expect(stepFontSize('1122.5')).toBe(20);
   });
 
   it('formats values without trailing zeros', () => {

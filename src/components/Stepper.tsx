@@ -36,6 +36,15 @@ export function nextStep(value: number, step: number, dir: 1 | -1): number {
   return (dir > 0 ? Math.ceil(q) : Math.floor(q)) * step;
 }
 
+/**
+ * FR-WRK-5a: the number shrinks as it gets longer, so "122.5" fits between − and + at 360 px.
+ * Big Shoulders Display is about 0.42 em per character.
+ */
+export function stepFontSize(text: string): number {
+  const n = text.length;
+  return n <= 3 ? 32 : n === 4 ? 28 : n === 5 ? 24 : 20;
+}
+
 export function formatStepValue(v: number | null, decimals = 1): string {
   if (v === null || Number.isNaN(v)) return '–';
   const r = roundTo(v, decimals);
@@ -121,20 +130,24 @@ export function Stepper({
       className="flex h-14 min-w-0 items-center rounded-lg border-2 border-ink bg-card"
       data-testid={id ? `stepper-${id}` : undefined}
     >
-      <button
-        type="button"
-        className="flex h-12 w-11 shrink-0 items-center justify-center rounded-md text-ink"
-        aria-label={`${srLabel}, ${spoken}, ${en.common.decrease}`}
-        onClick={() => bump(-1)}
-        disabled={value !== null && value <= min}
-      >
-        <Icon name="minus" size={22} strokeWidth={2.6} />
-      </button>
+      {/* While typing, the field takes the whole stepper so every digit stays visible (FR-WRK-5a). */}
+      {!editing && (
+        <button
+          type="button"
+          className="flex h-12 w-11 shrink-0 items-center justify-center rounded-md text-ink"
+          aria-label={`${srLabel}, ${spoken}, ${en.common.decrease}`}
+          onClick={() => bump(-1)}
+          disabled={value !== null && value <= min}
+        >
+          <Icon name="minus" size={22} strokeWidth={2.6} />
+        </button>
+      )}
       {editing ? (
         <input
           ref={inputRef}
           id={id}
-          className="t-display h-12 w-full min-w-0 bg-transparent text-center text-[30px] outline-none"
+          className="t-display h-12 w-full min-w-0 bg-transparent px-2 text-center outline-none"
+          style={{ fontSize: Math.min(30, stepFontSize(draft) + 2) }}
           inputMode="decimal"
           enterKeyHint="done"
           aria-label={`${srLabel} (${srUnit})`}
@@ -163,7 +176,11 @@ export function Stepper({
           onPointerUp={cancelPress}
           onPointerLeave={cancelPress}
         >
-          <span className="t-display text-[32px] leading-none" aria-hidden="true">
+          <span
+            className="t-display whitespace-nowrap leading-none"
+            style={{ fontSize: stepFontSize(text) }}
+            aria-hidden="true"
+          >
             {text}
           </span>
           <span
@@ -174,15 +191,17 @@ export function Stepper({
           </span>
         </div>
       )}
-      <button
-        type="button"
-        className="flex h-12 w-11 shrink-0 items-center justify-center rounded-md text-ink"
-        aria-label={`${srLabel}, ${spoken}, ${en.common.increase}`}
-        onClick={() => bump(1)}
-        disabled={value !== null && value >= max}
-      >
-        <Icon name="plus" size={22} strokeWidth={2.6} />
-      </button>
+      {!editing && (
+        <button
+          type="button"
+          className="flex h-12 w-11 shrink-0 items-center justify-center rounded-md text-ink"
+          aria-label={`${srLabel}, ${spoken}, ${en.common.increase}`}
+          onClick={() => bump(1)}
+          disabled={value !== null && value >= max}
+        >
+          <Icon name="plus" size={22} strokeWidth={2.6} />
+        </button>
+      )}
     </div>
   );
 }

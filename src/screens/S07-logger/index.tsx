@@ -391,16 +391,19 @@ export default function Logger() {
 
         {!done && (
           <div className="bg-card px-3 py-2.5">
+            {/* The set label sits above the steppers so each gets half the row (FR-WRK-5a, D87). */}
             <div className="flex items-center gap-2.5">
               <span
                 className="h-[22px] w-[22px] shrink-0 rounded-full border-[2.5px] border-accent"
                 aria-hidden="true"
               />
-              <span className="t-mono w-[42px] text-[11px] font-semibold uppercase text-accent">
+              <span className="t-mono text-[11px] font-semibold uppercase text-accent">
                 {idx > g.sets ? en.logger.extraShort : en.logger.set(idx)}
                 {item.nextSide ? ` ${item.nextSide}` : ''}
               </span>
-              <span className={`grid grow gap-1.5 ${hasLoad(lt) ? 'grid-cols-2' : 'grid-cols-1'}`}>
+            </div>
+            <div className="mt-2">
+              <span className={`grid gap-1.5 ${hasLoad(lt) ? 'grid-cols-2' : 'grid-cols-1'}`}>
                 {hasLoad(lt) && (
                   <Stepper
                     id="load"
