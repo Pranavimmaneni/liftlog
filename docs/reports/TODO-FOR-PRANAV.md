@@ -13,9 +13,9 @@ It's live at **https://liftlog-jade.vercel.app**.
 In-app help is at `/install`. Full steps are in `docs/INSTALL.md`.
 
 ## 3. Do the phone checks
-`docs/reports/PHONE-CHECKS.md` lists every check for M0–M6. The ones marked 📱 need a real phone: install flows, the real camera, the share sheets, real airplane mode, whether logging feels instant on the iPhone, and whether you agree with the poses at `/dev/poses`.
+`docs/reports/PHONE-CHECKS.md` lists every check for M0–M7 (skip M6: Android is frozen). The ones marked 📱 need a real phone: install flows, the real camera, the share sheets, real airplane mode, whether logging feels instant on the iPhone, and whether you agree with the poses at `/dev/poses`.
 
-## 4. Get the Android APK (after step 1)
+## 4. ~~Get the Android APK~~ ⏸ frozen 2026-10-26 (D81: web app only for now)
 There's no Android SDK or JDK on this PC, so GitHub Actions builds the APK.
 1. GitHub → **liftlog** → **Actions** → **Android APK** → **Run workflow** → `debug`.
 2. Download the **liftlog-apk** artifact and unzip it. Copy `app-debug.apk` to the Pixel, open it, and allow installs from your file manager.
@@ -38,5 +38,5 @@ Vercel previews sit behind Vercel Authentication.
 
 Until then, Lighthouse CI audits the production build, served with the same Brotli compression, on every push.
 
-## 8. Signed release APK (optional)
+## 8. ~~Signed release APK~~ ⏸ frozen 2026-10-26 (D81)
 Follow `docs/RELEASE.md` §4: create a keystore, then add 4 GitHub secrets. Then run the workflow with `release`, or push a `v1.0.0` tag. Keep the keystore safe: every future update must be signed with it.
