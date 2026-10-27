@@ -65,6 +65,7 @@ export function buildSeed(): SeedResult {
 
   const dropped: { name: string; reason: string }[] = [];
   const renamed: [string, string][] = [];
+  const cableMoved: string[] = [];
   const byId = new Map<string, Exercise>();
 
   const build = (
@@ -109,6 +110,16 @@ export function buildSeed(): SeedResult {
       level,
     };
     if (machineId) ex.machineId = machineId;
+    // D97: before, a cable exercise took any keyword machine (or a machines.json listing).
+    const before =
+      equip === 'cable' ? (machineFor(canonical, 'machine', machineByExercise) ?? 'cable-tower') : machineId;
+    if (before !== machineId) {
+      const was = machineById.get(before!);
+      const wasLoad = loadTypeFor(canonical, equip, was);
+      cableMoved.push(
+        `| ${canonical} | ${before} (${wasLoad}, ${incrementFor(wasLoad, was, loadTypes)} kg) | ${machineId} (${loadType}, ${ex.incrementKg} kg) |`,
+      );
+    }
     if (TIER1_POSES[canonical]) ex.poseId = TIER1_POSES[canonical];
     return ex;
   };
@@ -274,6 +285,16 @@ export function buildSeed(): SeedResult {
       ...skippedM8.map((n) => `- ${n}`),
       '',
     );
+  lines.push(
+    '## Cable exercises moved to a cable station (D97)',
+    '',
+    'A cable exercise links only to a cable station (cable tower, functional trainer, low row station, lat pulldown). These names matched a stack-machine keyword before.',
+    '',
+    '| Exercise | Was | Now |',
+    '|---|---|---|',
+    ...cableMoved.sort((a, b) => a.localeCompare(b)),
+    '',
+  );
   lines.push(
     '## Aliases (data/aliases.json)',
     '',

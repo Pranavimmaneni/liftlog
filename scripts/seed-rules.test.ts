@@ -3,6 +3,7 @@ import exercises from '../src/data/exercises.json';
 import machines from '../data/machines.json';
 import aliases from '../data/aliases.json';
 import {
+  CABLE_MACHINES,
   cleanText,
   DROP_RULES,
   INCLUDE_ANYWAY,
@@ -11,6 +12,7 @@ import {
   isUnilateral,
   limitationAreasFor,
   loadTypeFor,
+  machineFor,
   mapMuscles,
   patternFor,
   requiresFor,
@@ -159,6 +161,63 @@ describe('seed rules (FR-LIB-1, FR-LIB-2)', () => {
     expect(slug("Farmer's Carry")).toBe('farmers-carry');
     expect(slug('45° Leg Press')).toBe('45-leg-press');
     expect(cleanText('  go  � of the way .')).toBe('go ¾ of the way.');
+  });
+
+  describe('FR-LIB-2: cable exercises link only to a cable station (D97)', () => {
+    const listed = new Map<string, string>();
+    for (const m of machines.machines)
+      for (const e of m.exercises) if (!listed.has(e.toLowerCase())) listed.set(e.toLowerCase(), m.id);
+
+    it('CABLE_MACHINES are the machines.json cable stations', () => {
+      const stations = machines.machines.filter((m) => m.category === 'cable_station').map((m) => m.id);
+      expect([...CABLE_MACHINES].sort()).toEqual(stations.sort());
+    });
+
+    it.each([
+      ['Cable Hip Adduction', 'cable-tower'],
+      ['Cable Incline Triceps Extension', 'cable-tower'],
+      ['Cable Lying Triceps Extension', 'cable-tower'],
+      ['Kneeling Cable Triceps Extension', 'cable-tower'],
+      ['Low Cable Triceps Extension', 'cable-tower'],
+      ['Standing Low-Pulley One-Arm Triceps Extension', 'cable-tower'],
+      ['Standing Cable Chest Press', 'cable-tower'],
+      ['Cable Preacher Curl', 'cable-tower'],
+      ['Seated Cable Row', 'cable-row-station'],
+      ['Wide-Grip Seated Cable Row', 'cable-row-station'],
+      ['Underhand Cable Pulldowns', 'lat-pulldown'],
+      ['Straight-Arm Pulldown', 'lat-pulldown'],
+    ])('cable: %s → %s', (name, id) => {
+      expect(machineFor(name, 'cable', listed)).toBe(id);
+    });
+
+    it('machine exercises keep their stack machine', () => {
+      expect(machineFor('Hip Adduction', 'machine', listed)).toBe('hip-adduction');
+      expect(machineFor('Machine Triceps Extension', 'machine', listed)).toBe('triceps-extension-machine');
+      expect(machineFor('Machine Chest Press', 'machine', listed)).toBe('chest-press');
+    });
+
+    it('every seeded cable exercise uses a cable station, a cable load type and its increment', () => {
+      const cable = all.filter((e) => e.machineId && CABLE_MACHINES.includes(e.machineId));
+      for (const name of [
+        'Cable Hip Adduction',
+        'Standing Cable Chest Press',
+        'Low Cable Triceps Extension',
+      ]) {
+        const e = byName.get(name)!;
+        expect(cable, name).toContain(e);
+        expect(e.loadType, name).toBe('cable');
+        expect(e.incrementKg, name).toBe(2.5);
+      }
+      for (const e of all.filter((x) => x.loadType === 'cable'))
+        expect(CABLE_MACHINES, e.name).toContain(e.machineId);
+    });
+
+    it('a cable preacher curl still needs the preacher bench', () => {
+      expect(byName.get('Cable Preacher Curl')!.requires).toEqual([
+        ['cable-tower', 'functional-trainer'],
+        ['preacher-bench'],
+      ]);
+    });
   });
 
   describe('FR-LIB-9: M8 additions', () => {
