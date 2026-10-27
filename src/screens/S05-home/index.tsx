@@ -7,6 +7,7 @@ import { Icon } from '@/components/Icon';
 import { ExerciseThumb } from '@/illustration/Pictogram';
 import { muscleName } from '@/components/ExerciseRow';
 import { en } from '@/copy/en';
+import { SectionSwitch } from '@/components/SectionSwitch';
 import { lastWeekday, list, monthName, shortDate, weekdayDate } from '@/copy/format';
 import { db } from '@/db/schema';
 import { useExerciseMap } from '@/db/catalog';
@@ -121,8 +122,10 @@ export default function Home() {
   };
 
   return (
-    <main className="px-5 pt-[18px]">
-      <header className="flex items-center justify-between">
+    <main className="px-5 pt-[14px]">
+      {/* PRD-1.2 FR-NAV-2: the section switch is the only Food addition to LiftLog (mockup X01). */}
+      <SectionSwitch current="liftlog" />
+      <header className="mt-3 flex items-center justify-between">
         <div>
           <h1 className="t-display text-[30px] leading-none tracking-[0.08em]">{en.app.name}</h1>
           <p className="t-label mt-1">{weekdayDate(now)}</p>

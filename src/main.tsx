@@ -21,6 +21,9 @@ async function start() {
     try {
       const step = (await db.meta.get('onboardingStep'))?.value as string | undefined;
       if (step !== 'done') history.replaceState(null, '', `/onboarding/${step ?? 'about'}`);
+      // PRD-1.2 FR-NAV-2: reopen in the section used last.
+      else if (location.pathname === '/' && (await db.settings.get('lastSection'))?.value === 'food')
+        history.replaceState(null, '', '/food');
     } catch {
       // Storage unavailable: the gate and the storage banner take it from here.
     }
