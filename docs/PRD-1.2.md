@@ -37,6 +37,8 @@ Requirement IDs for 1.2.0 are drafted from this brief after M7.
 5. Extras: only a fasting timer (FR-FAST-1). No body measurements, no progress photos.
 6. M8 runs in the background; food mockups come first, before any food code.
 
+7. Style: direction A ("logbook + game", F01) for all screens (2026-10-27). F01b (arcade) stays in the folder for reference only.
+
 Mockups: `design/screens-v2/food/` (F01–F08 plus F01b, Paper and Iron; PNGs in `png/`), rendered with `npx tsx scripts/render-mockups.ts food`.
 
 ## 1.1.1 requirements (M7)
