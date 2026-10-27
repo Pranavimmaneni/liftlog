@@ -5,7 +5,7 @@ All six milestones (M0–M6) are built, tested, committed on `main` and deployed
 - **Source:** private repo https://github.com/Pranavimmaneni/liftlog
 - **Android APK:** built by GitHub Actions (Actions → Android APK → Run workflow).
 
-Per-milestone detail is in `docs/reports/M0.md` … `M6.md`; decisions D1–D78 are in `DECISIONS.md`.
+Handoff summary for the next planning session: `docs/HANDOFF.md`. Per-milestone detail is in `docs/reports/M0.md` … `M6.md`; decisions D1–D78 are in `DECISIONS.md`.
 
 ## What works, by requirement (PRD §15 traceability)
 
@@ -27,9 +27,9 @@ Per-milestone detail is in `docs/reports/M0.md` … `M6.md`; decisions D1–D78 
 | Non-functional | NFR-* | ✅ with notes below | all milestones | Lighthouse, axe sweep (21 views × 2 themes × 2 phones), coverage gates, migration test, budget script |
 
 ## Test results
-- **Unit, integration and screen tests:** 326 passing (Vitest).
+- **Unit, integration and screen tests:** 334 passing (Vitest) as of 1.1.0.
 - **Coverage:** `src/engine` 99.9% lines (gate 90%), overall 84.4% (gate 70%).
-- **End-to-end:** **124/124 passing** on Pixel 7 (Chromium) and iPhone 14 (WebKit), each in Paper and Iron. That covers e2e #1–#7, the phone checks for every milestone, and an accessibility sweep with axe on every screen.
+- **End-to-end:** **128/128 passing** (1.1.0) on Pixel 7 (Chromium) and iPhone 14 (WebKit), each in Paper and Iron. That covers e2e #1–#7, the phone checks for every milestone, and an accessibility sweep with axe on every screen.
 - **Performance:**
   - First-load JS is **163 KB gzipped** (budget 250 KB, `npm run budget`).
   - Library search takes under 100 ms.
