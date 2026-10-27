@@ -74,7 +74,8 @@ describe('M7 screens', () => {
     await openWorkout(sessions);
     const { router } = renderRoute('/workout');
     const sheet = await search('zzz qqq');
-    expect(await within(sheet).findByText(/no results for “zzz qqq”/i, {}, W)).toBeInTheDocument();
+    // Looked up again on each try: the sheet re-renders when the library chunk finishes loading.
+    await waitFor(() => expect(within(sheet).getByText(/no results for “zzz qqq”/i)).toBeInTheDocument(), W);
     fireEvent.click(within(sheet).getByRole('button', { name: /create custom exercise/i }));
     await waitFor(() => expect(router.state.location.pathname).toBe('/library/new'), W);
     expect(await screen.findByDisplayValue('zzz qqq', {}, W)).toBeInTheDocument();

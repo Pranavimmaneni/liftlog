@@ -31,7 +31,7 @@ export const KEEP_EQUIPMENT = [
 ];
 
 /** Useful lifts whose dataset category/equipment would otherwise drop them. */
-export const INCLUDE_ANYWAY: Record<string, string> = {
+const M1_INCLUDE: Record<string, string> = {
   'Trap Bar Deadlift': 'trap bar',
   "Farmer's Walk": 'dumbbell',
   'Ab Roller': 'body only',
@@ -39,6 +39,99 @@ export const INCLUDE_ANYWAY: Record<string, string> = {
   'Parallel Bar Dip': 'body only',
   'Dips - Chest Version': 'body only',
 };
+
+/** FR-LIB-9 (M8, D89): real gym lifts that the M1 rules dropped. Near-duplicates stay dropped. */
+export const M8_INCLUDE: Record<string, string> = {
+  // core drills that are not repeats of a kept one
+  'Air Bike': 'body only',
+  'Alternate Heel Touchers': 'body only',
+  'Body Tricep Press': 'body only',
+  'Dead Bug': 'body only',
+  'Flutter Kicks': 'body only',
+  'Hanging Pike': 'body only',
+  'Mountain Climbers': 'body only',
+  'Seated Leg Tucks': 'body only',
+  'Step-up with Knee Raise': 'body only',
+  'Tuck Crunch': 'body only',
+  // Olympic lifts and kettlebell ballistics: logged as sets × reps × load like any lift
+  Clean: 'barbell',
+  'Clean and Jerk': 'barbell',
+  'Clean and Press': 'barbell',
+  'Clean Deadlift': 'barbell',
+  'Clean Pull': 'barbell',
+  'Clean Shrug': 'barbell',
+  'Hang Clean': 'barbell',
+  'Hang Snatch': 'barbell',
+  'Muscle Snatch': 'barbell',
+  'Overhead Squat': 'barbell',
+  'Power Clean': 'barbell',
+  'Power Jerk': 'barbell',
+  'Power Snatch': 'barbell',
+  'Romanian Deadlift from Deficit': 'barbell',
+  Snatch: 'barbell',
+  'Snatch Balance': 'barbell',
+  'Snatch Deadlift': 'barbell',
+  'Snatch Pull': 'barbell',
+  'Split Jerk': 'barbell',
+  'Dumbbell Clean': 'dumbbell',
+  'Double Kettlebell Jerk': 'kettlebells',
+  'Double Kettlebell Snatch': 'kettlebells',
+  'Kettlebell Halo': 'kettlebells',
+  'Kettlebell Sumo High Pull': 'kettlebells',
+  'Kettlebell Thruster': 'kettlebells',
+  'Kettlebell Turkish Get-Up (Squat style)': 'kettlebells',
+  'Kettlebell Windmill': 'kettlebells',
+  'One-Arm Kettlebell Clean': 'kettlebells',
+  'One-Arm Kettlebell Clean and Jerk': 'kettlebells',
+  'One-Arm Kettlebell Jerk': 'kettlebells',
+  'One-Arm Kettlebell Snatch': 'kettlebells',
+  'Two-Arm Kettlebell Clean': 'kettlebells',
+  // plyometrics: bodyweight reps
+  'Box Jump (Multiple Response)': 'body only',
+  'Freehand Jump Squat': 'body only',
+  'Knee Tuck Jump': 'body only',
+  'Lateral Box Jump': 'body only',
+  'Lateral Bound': 'body only',
+  'Linear Depth Jump': 'body only',
+  'Plyo Push-up': 'body only',
+  'Split Jump': 'body only',
+  'Standing Long Jump': 'body only',
+  // powerlifting, landmine, rotator cuff, behind-the-neck and skill work
+  'Board Press': 'barbell',
+  'Pin Presses': 'barbell',
+  "Landmine 180's": 'barbell',
+  'Single-Arm Linear Jammer': 'barbell',
+  'Cuban Press': 'dumbbell',
+  'External Rotation': 'dumbbell',
+  'External Rotation with Cable': 'cable',
+  'Cable Internal Rotation': 'cable',
+  'Standing Barbell Press Behind Neck': 'barbell',
+  'Wide-Grip Pulldown Behind The Neck': 'cable',
+  'Handstand Push-Ups': 'body only',
+  'Kettlebell Pistol Squat': 'kettlebells',
+  // distinct variations the M1 list called duplicates
+  'Triceps Pushdown - V-Bar Attachment': 'cable',
+  'Push-Up Wide': 'body only',
+  'Barbell Shrug Behind The Back': 'barbell',
+  'Wide Stance Barbell Squat': 'barbell',
+  // dataset equipment "none" / "other" rows that use normal gym equipment
+  'Bodyweight Walking Lunge': 'body only',
+  'Decline Push-Up': 'body only',
+  'Inverted Row': 'body only',
+  'Scapular Pull-Up': 'body only',
+  'Donkey Calf Raises': 'machine',
+  'Front Plate Raise': 'barbell',
+  'Svend Press': 'barbell',
+  'Plate Pinch': 'barbell',
+  'Wrist Roller': 'barbell',
+  'Axle Deadlift': 'barbell',
+  'Weighted Bench Dip': 'body only',
+  'Weighted Pull Ups': 'body only',
+  'Gironda Sternum Chins': 'body only',
+  'One Arm Chin-Up': 'body only',
+};
+
+export const INCLUDE_ANYWAY: Record<string, string> = { ...M1_INCLUDE, ...M8_INCLUDE };
 
 /** Explicit drops with reasons (listed in SEED-REPORT.md). Regexes are tested against the dataset name. */
 export const DROP_RULES: { re: RegExp; reason: string }[] = [
@@ -174,6 +267,32 @@ export const RENAMES: Record<string, string> = {
   'Reverse Flyes': 'Dumbbell Reverse Fly',
   'Seated Calf Raise': 'Seated Calf Raise',
   'Tricep Dumbbell Kickback': 'Dumbbell Triceps Kickback',
+  // M8 (FR-LIB-9)
+  'Air Bike': 'Bicycle Crunch',
+  'Body Tricep Press': 'Bodyweight Triceps Extension',
+  'Kettlebell Turkish Get-Up (Squat style)': 'Turkish Get-Up',
+  'Box Jump (Multiple Response)': 'Box Jump',
+  'Freehand Jump Squat': 'Jump Squat',
+  'Knee Tuck Jump': 'Tuck Jump',
+  'Linear Depth Jump': 'Depth Jump',
+  'Plyo Push-up': 'Plyo Push-Up',
+  'Standing Long Jump': 'Broad Jump',
+  'Pin Presses': 'Pin Press',
+  "Landmine 180's": 'Landmine 180',
+  'Single-Arm Linear Jammer': 'Single-Arm Landmine Press',
+  'External Rotation': 'Dumbbell External Rotation',
+  'External Rotation with Cable': 'Cable External Rotation',
+  'Standing Barbell Press Behind Neck': 'Behind-the-Neck Press',
+  'Wide-Grip Pulldown Behind The Neck': 'Behind-the-Neck Pulldown',
+  'Handstand Push-Ups': 'Handstand Push-Up',
+  'Triceps Pushdown - V-Bar Attachment': 'V-Bar Pushdown',
+  'Push-Up Wide': 'Wide Push-Up',
+  'Barbell Shrug Behind The Back': 'Behind-the-Back Barbell Shrug',
+  'Wide Stance Barbell Squat': 'Wide-Stance Squat',
+  'Romanian Deadlift from Deficit': 'Deficit Romanian Deadlift',
+  'Donkey Calf Raises': 'Donkey Calf Raise',
+  'Weighted Pull Ups': 'Weighted Pull-Up',
+  'Gironda Sternum Chins': 'Gironda Sternum Chin-Up',
 };
 
 /** Extra aliases per canonical name (on top of aliases.json and the original dataset name). */
@@ -502,14 +621,32 @@ export function mapMuscles(list: string[]): MuscleGroup[] {
 
 /** Ordered: first match wins. Tested against the lower-cased canonical name. */
 const PATTERN_RULES: [RegExp, Pattern | null][] = [
+  // M8 (D89): Olympic, ballistic, plyometric and small accessory work never fills an auto-suggest slot.
+  [/\bjump\b|bound|plyo|burpee|mountain climber|skater/, null],
+  [
+    /\b(clean|snatch|jerk)\b(?!-grip| deadlift)|swing|thruster|get-up|windmill|halo|high pull\b|devil press/,
+    null,
+  ],
+  [
+    /scapular|cuban press|svend|external rotation|internal rotation|plate pinch|wrist roller|copenhagen|wall sit|dead hang|flexed-arm hang|tibialis|l-sit/,
+    null,
+  ],
+  [/landmine 180/, 'core_flexion'],
+  [
+    /handstand push-up|pike push-up|z press|landmine press|bottoms-up press|behind-the-neck press/,
+    'overhead_press',
+  ],
   [/calf/, 'calf_raise'],
   [/wrist curl/, 'elbow_flexion'],
   [/leg curl|hamstring curl|glute-ham|glute ham/, 'knee_flexion'],
-  [/leg extension|sissy squat/, 'knee_extension'],
-  [/curl/, 'elbow_flexion'],
-  [/face pull|rear delt|reverse fly|reverse pec|rear lateral|band pull apart|back flyes/, 'rear_delt'],
+  [/leg extension|sissy squat|reverse nordic/, 'knee_extension'],
+  [/curl|21s/, 'elbow_flexion'],
   [
-    /lateral raise|side lateral|deltoid raise|laterals|scaption|shoulder raise|front .*raise|raise.*front|dumbbell raise|cable raise/,
+    /face pull|rear delt|reverse fly|reverse pec|rear lateral|band pull apart|back flyes|t-raise/,
+    'rear_delt',
+  ],
+  [
+    /lateral raise|side lateral|deltoid raise|laterals|scaption|shoulder raise|front .*raise|raise.*front|dumbbell raise|cable raise|y-raise|lu raise/,
     'lateral_raise',
   ],
   [/upright row|shrug/, null],
@@ -519,17 +656,17 @@ const PATTERN_RULES: [RegExp, Pattern | null][] = [
   [/pull-through|pull through|good morning|deadlift|rdl|rack pull/, 'hinge'],
   [/row/, 'horizontal_pull'],
   [
-    /pushdown|kickback(?!.*glute)|triceps? extension|tricep extension|skull|jm press|tate press|triceps press|dip machine|bench dips|^dip$|assisted dip|parallel bar dip|triceps? .*extension/,
+    /pushdown|kickback(?!.*glute)|triceps? extension|tricep extension|skull|jm press|tate press|triceps press|dip machine|bench dips?|^dip$|assisted dip|parallel bar dip|weighted dip|triceps? .*extension/,
     'elbow_extension',
   ],
   [/chest dip/, 'horizontal_press'],
   [
-    /hip thrust|glute bridge|hip raise|butt lift|kickback|back extension|hyperextension|hip extension|hip lift/,
+    /hip thrust|glute bridge|hip raise|butt lift|kickback|back extension|hyperextension|hip extension|hip lift|frog pump|superman/,
     'hip_extension',
   ],
-  [/abduct|monster walk/, 'hip_abduction'],
+  [/abduct|monster walk|fire hydrant|side-lying leg raise/, 'hip_abduction'],
   [/adduct/, null],
-  [/leg press|lunge|split squat|step-up|step up/, 'leg_press_or_lunge'],
+  [/leg press|lunge|split squat|step-up|step up|cossack/, 'leg_press_or_lunge'],
   [/incline.*(press|bench)|(press|bench).*incline/, 'incline_press'],
   [
     /shoulder press|military press|overhead press|arnold|push press|seesaw press|see-saw press|kettlebell press|seated press|dumbbell press(?!.*bench)|standing .*press|alternating .*press|cable shoulder/,
@@ -540,9 +677,9 @@ const PATTERN_RULES: [RegExp, Pattern | null][] = [
     'horizontal_press',
   ],
   [/squat/, 'squat'],
-  [/plank|rollout|ab wheel|pallof|side bridge|dead bug/, 'core_antiextension'],
+  [/plank|rollout|ab wheel|pallof|side bridge|dead bug|hollow|bird dog/, 'core_antiextension'],
   [
-    /crunch|sit-up|situp|leg raise|knee raise|jackknife|leg lift|russian twist|side bend|wood chop|cable lift|leg pull-in|twist|rotary torso|tuck/,
+    /crunch|sit-up|situp|leg raise|knee raise|jackknife|leg lift|russian twist|side bend|wood chop|cable lift|leg pull-in|twist|rotary torso|tuck|v-up|toes-to-bar|flutter|heel touch|dragon flag|windshield|pike/,
     'core_flexion',
   ],
   [/carry|farmer/, 'carry'],
@@ -589,6 +726,7 @@ export interface MachineDef {
 /** Keyword → machine id for dataset machine/cable exercises not listed in machines.json. */
 const MACHINE_KEYWORDS: [RegExp, string][] = [
   [/^smith|smith /i, 'smith-machine'],
+  [/donkey calf/i, 'standing-calf'],
   [/hack squat/i, 'hack-squat'],
   [/leg press/i, 'leg-press'],
   [/leg extension/i, 'leg-extension'],
@@ -613,15 +751,19 @@ const MACHINE_KEYWORDS: [RegExp, string][] = [
   [/seated cable row|low row|seated one-arm cable/i, 'cable-row-station'],
 ];
 
+/** machines.json `cable_station` ids: the only machines a cable exercise can link to (D97). */
+export const CABLE_MACHINES = ['cable-tower', 'functional-trainer', 'cable-row-station', 'lat-pulldown'];
+
 export function machineFor(
   canonical: string,
   equipment: string,
   byExercise: Map<string, string>,
 ): string | undefined {
+  const fits = (id: string) => equipment !== 'cable' || CABLE_MACHINES.includes(id);
   const listed = byExercise.get(canonical.toLowerCase());
-  if (listed) return EQUIPMENT_NOT_MACHINE.includes(listed) ? undefined : listed;
+  if (listed && fits(listed)) return EQUIPMENT_NOT_MACHINE.includes(listed) ? undefined : listed;
   if (equipment !== 'machine' && equipment !== 'cable') return undefined;
-  for (const [re, id] of MACHINE_KEYWORDS) if (re.test(canonical)) return id;
+  for (const [re, id] of MACHINE_KEYWORDS) if (fits(id) && re.test(canonical)) return id;
   return equipment === 'cable' ? 'cable-tower' : undefined;
 }
 
@@ -633,9 +775,14 @@ export const EQUIPMENT_NOT_MACHINE = ['pullup-bar', 'dip-station'];
 
 export function loadTypeFor(canonical: string, equipment: string, machine: MachineDef | undefined): LoadType {
   const n = canonical.toLowerCase();
-  if (/plank|side bridge/.test(n)) return 'timed';
+  if (
+    /plank|side bridge|dead hang|wall sit|hollow body|l-sit|flexed-arm hang|plate pinch/.test(n) &&
+    !/shoulder tap|up-down/.test(n)
+  )
+    return 'timed';
   if (/farmer|carry/.test(n)) return 'dumbbell';
   if (/^assisted /.test(n)) return 'assisted';
+  if (/^weighted (pull-up|chin-up|dip|push-up|bench dip)/.test(n)) return 'bodyweight_plus';
   if (machine) {
     // Bodyweight stations (pull-up bar, dip station, 45° bench) start as bodyweight; FR-PRG-5
     // suggests bodyweight_plus once reps outgrow the range.
@@ -673,6 +820,8 @@ export function requiresFor(canonical: string, equipment: string, machineId: str
     return req;
   }
   if (machineId) req.push(['cable-tower', 'functional-trainer']);
+  // The bench in front of a low pulley; preacher-bench is no longer the machine (D97).
+  if (equipment === 'cable' && /preacher/.test(n)) req.push(['preacher-bench']);
   switch (equipment) {
     case 'barbell':
       req.push(['barbell']);
@@ -691,24 +840,36 @@ export function requiresFor(canonical: string, equipment: string, machineId: str
       break;
   }
   if (equipment === 'body only') {
-    if (/pull-up|pullup|chin-up|hanging|pull up/.test(n)) req.push(['pullup-bar']);
+    if (/pull-up|pullup|chin-up|hanging|pull up|toes-to-bar|dead hang|flexed-arm hang/.test(n))
+      req.push(['pullup-bar']);
     else if (/captain/.test(n)) req.push(['dip-station']);
-    else if (/^dip$|parallel bar dip|chest dip/.test(n)) req.push(['dip-station']);
-    else if (/bench dips|flat bench|decline|jackknife|leg pull-in|lying leg raise/.test(n))
+    else if (/^dip$|parallel bar dip|chest dip|weighted dip|l-sit/.test(n)) req.push(['dip-station']);
+    else if (
+      /bench dips?|flat bench|decline|jackknife|leg pull-in|(?<!side-)lying leg raise|dragon flag|hip thrust|seated leg tucks|copenhagen|step-up/.test(
+        n,
+      )
+    )
       req.push(BENCH_ANY);
     else if (/back extension/.test(n)) req.push(['roman-chair']);
+    // A bar set low in a rack or Smith machine.
+    else if (/inverted row|bodyweight triceps extension/.test(n)) req.push(['squat-rack', 'smith-machine']);
     return req;
   }
   if (/goblet/.test(n)) return [['kettlebells', 'dumbbells']];
-  if (/incline|decline/.test(n)) req.push(['adjustable-bench']);
+  if (/incline|decline|kelso|dumbbell spider/.test(n)) req.push(['adjustable-bench']);
   else if (
-    /bench press|bench|fly|flye|pullover|lying|seated|skull|chest-supported|tate press|jm press|split squat|step-up|prone|hip thrust/.test(
+    /bench press|bench|fly|flye|pullover|lying|seated|skull|chest-supported|tate press|jm press|split squat|step-up|prone|hip thrust|seal row|board press|pin press|spoto|larsen|squeeze press|dumbbell leg curl/.test(
       n,
     ) &&
-    equipment !== 'cable'
+    equipment !== 'cable' &&
+    !(equipment === 'machine' && /^machine /.test(n))
   )
     req.push(BENCH_ANY);
-  if (equipment === 'barbell' && /squat|overhead press|military press|standing press/.test(n))
+  if (
+    equipment === 'barbell' &&
+    /squat|overhead press|military press|standing press|pin press/.test(n) &&
+    !/landmine/.test(n)
+  )
     req.push(['squat-rack']);
   return req;
 }
@@ -738,7 +899,7 @@ export function equipmentLabel(
 // ---------- unilateral, limitations, poses ----------
 
 export function isUnilateral(name: string): boolean {
-  return /one-arm|one arm|single-arm|single arm|one-leg|one leg|single-leg|single leg|split squat|lunge|step-up|step up|bulgarian|kickback(?!.*triceps)|cable lateral raise|concentration curl/i.test(
+  return /one-arm|one arm|single-arm|single arm|one-leg|one leg|single-leg|single leg|split squat|lunge|step-up|step up|bulgarian|kickback(?!.*triceps)|cable lateral raise|concentration curl|pistol|fire hydrant|side-lying|copenhagen|^side plank$|suitcase|get-up|windmill|meadows row|bottoms-up press|lean-away|bayesian|b-stance|skater/i.test(
     name,
   );
 }
@@ -767,6 +928,13 @@ export function limitationAreasFor(name: string, pattern: Pattern | null, equipm
     )
   )
     out.add('wrists');
+  // M8 additions (D89).
+  if (/\bjump\b|bound|burpee|pistol|cossack|reverse nordic|skater|wall sit/.test(n)) out.add('knees');
+  if (/\bclean\b|snatch|swing|jerk|thruster|high pull\b|devil press|superman|axle/.test(n))
+    out.add('lower back');
+  if (/snatch|jerk|overhead squat|windmill|get-up|behind-the-neck|thruster|devil press|halo/.test(n))
+    out.add('shoulders');
+  if (/\bclean\b|overhead squat|plyo push|archer|wrist roller/.test(n)) out.add('wrists');
   return [...out].sort();
 }
 

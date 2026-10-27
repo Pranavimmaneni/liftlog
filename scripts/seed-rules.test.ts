@@ -3,11 +3,16 @@ import exercises from '../src/data/exercises.json';
 import machines from '../data/machines.json';
 import aliases from '../data/aliases.json';
 import {
+  CABLE_MACHINES,
   cleanText,
   DROP_RULES,
+  INCLUDE_ANYWAY,
+  M8_INCLUDE,
+  RENAMES,
   isUnilateral,
   limitationAreasFor,
   loadTypeFor,
+  machineFor,
   mapMuscles,
   patternFor,
   requiresFor,
@@ -15,14 +20,14 @@ import {
   slug,
 } from './seed-rules';
 import type { Exercise } from '../src/engine/types';
+import { M8_CUSTOM_SEEDS } from './seed-custom';
 
 const all = exercises as Exercise[];
 const byName = new Map(all.map((e) => [e.name, e]));
 
 describe('seed rules (FR-LIB-1, FR-LIB-2)', () => {
-  it('FR-LIB-1: ships 400–600 exercises with unique ids', () => {
-    expect(all.length).toBeGreaterThanOrEqual(400);
-    expect(all.length).toBeLessThanOrEqual(600);
+  it('FR-LIB-9: ships 600 or more exercises with unique ids (FR-LIB-1 range raised)', () => {
+    expect(all.length).toBeGreaterThanOrEqual(600);
     expect(new Set(all.map((e) => e.id)).size).toBe(all.length);
   });
 
@@ -156,5 +161,129 @@ describe('seed rules (FR-LIB-1, FR-LIB-2)', () => {
     expect(slug("Farmer's Carry")).toBe('farmers-carry');
     expect(slug('45° Leg Press')).toBe('45-leg-press');
     expect(cleanText('  go  � of the way .')).toBe('go ¾ of the way.');
+  });
+
+  describe('FR-LIB-2: cable exercises link only to a cable station (D97)', () => {
+    const listed = new Map<string, string>();
+    for (const m of machines.machines)
+      for (const e of m.exercises) if (!listed.has(e.toLowerCase())) listed.set(e.toLowerCase(), m.id);
+
+    it('CABLE_MACHINES are the machines.json cable stations', () => {
+      const stations = machines.machines.filter((m) => m.category === 'cable_station').map((m) => m.id);
+      expect([...CABLE_MACHINES].sort()).toEqual(stations.sort());
+    });
+
+    it.each([
+      ['Cable Hip Adduction', 'cable-tower'],
+      ['Cable Incline Triceps Extension', 'cable-tower'],
+      ['Cable Lying Triceps Extension', 'cable-tower'],
+      ['Kneeling Cable Triceps Extension', 'cable-tower'],
+      ['Low Cable Triceps Extension', 'cable-tower'],
+      ['Standing Low-Pulley One-Arm Triceps Extension', 'cable-tower'],
+      ['Standing Cable Chest Press', 'cable-tower'],
+      ['Cable Preacher Curl', 'cable-tower'],
+      ['Seated Cable Row', 'cable-row-station'],
+      ['Wide-Grip Seated Cable Row', 'cable-row-station'],
+      ['Underhand Cable Pulldowns', 'lat-pulldown'],
+      ['Straight-Arm Pulldown', 'lat-pulldown'],
+    ])('cable: %s → %s', (name, id) => {
+      expect(machineFor(name, 'cable', listed)).toBe(id);
+    });
+
+    it('machine exercises keep their stack machine', () => {
+      expect(machineFor('Hip Adduction', 'machine', listed)).toBe('hip-adduction');
+      expect(machineFor('Machine Triceps Extension', 'machine', listed)).toBe('triceps-extension-machine');
+      expect(machineFor('Machine Chest Press', 'machine', listed)).toBe('chest-press');
+    });
+
+    it('every seeded cable exercise uses a cable station, a cable load type and its increment', () => {
+      const cable = all.filter((e) => e.machineId && CABLE_MACHINES.includes(e.machineId));
+      for (const name of [
+        'Cable Hip Adduction',
+        'Standing Cable Chest Press',
+        'Low Cable Triceps Extension',
+      ]) {
+        const e = byName.get(name)!;
+        expect(cable, name).toContain(e);
+        expect(e.loadType, name).toBe('cable');
+        expect(e.incrementKg, name).toBe(2.5);
+      }
+      for (const e of all.filter((x) => x.loadType === 'cable'))
+        expect(CABLE_MACHINES, e.name).toContain(e.machineId);
+    });
+
+    it('a cable preacher curl still needs the preacher bench', () => {
+      expect(byName.get('Cable Preacher Curl')!.requires).toEqual([
+        ['cable-tower', 'functional-trainer'],
+        ['preacher-bench'],
+      ]);
+    });
+  });
+
+  describe('FR-LIB-9: M8 additions', () => {
+    it('every M8 dataset row and custom seed ships, once', () => {
+      for (const n of Object.keys(M8_INCLUDE)) expect(byName.has(RENAMES[n] ?? n), n).toBe(true);
+      for (const c of M8_CUSTOM_SEEDS) expect(byName.has(c.name), c.name).toBe(true);
+      expect(INCLUDE_ANYWAY['Trap Bar Deadlift']).toBe('trap bar');
+    });
+
+    it.each([
+      ['Power Clean', null],
+      ['Kettlebell Swing', null],
+      ['Barbell Thruster', null],
+      ['Box Jump', null],
+      ['Scapular Pull-Up', null],
+      ['Clean Deadlift', 'hinge'],
+      ['Snatch-Grip Deadlift', 'hinge'],
+      ['Push Press', 'overhead_press'],
+      ['Handstand Push-Up', 'overhead_press'],
+      ['Z Press', 'overhead_press'],
+      ['Landmine Press', 'overhead_press'],
+      ['Weighted Dip', 'elbow_extension'],
+      ['Barbell 21s', 'elbow_flexion'],
+      ['Incline T-Raise', 'rear_delt'],
+      ['Cable Y-Raise', 'lateral_raise'],
+      ['Side-Lying Leg Raise', 'hip_abduction'],
+      ['Cossack Squat', 'leg_press_or_lunge'],
+      ['Reverse Nordic', 'knee_extension'],
+      ['Bird Dog', 'core_antiextension'],
+      ['Toes-to-Bar', 'core_flexion'],
+      ['Kneeling High Pulley Row', 'horizontal_pull'],
+    ])('pattern: %s → %s', (name, pattern) => {
+      expect(patternFor(name)).toBe(pattern);
+    });
+
+    it('load types for holds, weighted bodyweight lifts and donkey calf raises', () => {
+      expect(byName.get('Side Plank')!.loadType).toBe('timed');
+      expect(byName.get('Dead Hang')!.loadType).toBe('timed');
+      expect(byName.get('Plank Shoulder Tap')!.loadType).toBe('bodyweight');
+      expect(byName.get('Weighted Pull-Up')!.loadType).toBe('bodyweight_plus');
+      expect(byName.get('Weighted Dip')!.loadType).toBe('bodyweight_plus');
+      expect(byName.get('Donkey Calf Raise')!.machineId).toBe('standing-calf');
+    });
+
+    it('requirements for the new bodyweight, landmine and machine lifts', () => {
+      expect(requiresFor('Toes-to-Bar', 'body only', undefined)).toEqual([['pullup-bar']]);
+      expect(requiresFor('Weighted Dip', 'body only', undefined)).toEqual([['dip-station']]);
+      expect(requiresFor('Inverted Row', 'body only', undefined)).toEqual([['squat-rack', 'smith-machine']]);
+      expect(requiresFor('Side-Lying Leg Raise', 'body only', undefined)).toEqual([]);
+      expect(requiresFor('Landmine Squat', 'barbell', undefined)).toEqual([['barbell']]);
+      expect(requiresFor('Pin Press', 'barbell', undefined)).toEqual([
+        ['barbell'],
+        ['flat-bench', 'adjustable-bench'],
+        ['squat-rack'],
+      ]);
+      expect(requiresFor('Machine Pullover', 'machine', undefined)).toEqual([]);
+    });
+
+    it('limitation areas and unilateral flags', () => {
+      expect(limitationAreasFor('Power Clean', null, 'barbell')).toEqual(['lower back', 'wrists']);
+      expect(limitationAreasFor('Snatch', null, 'barbell')).toEqual(['lower back', 'shoulders']);
+      expect(limitationAreasFor('Box Jump', null, 'body only')).toEqual(['knees']);
+      expect(limitationAreasFor('Kneeling High Pulley Row', 'horizontal_pull', 'cable')).toEqual([]);
+      expect(isUnilateral('Side Plank')).toBe(true);
+      expect(isUnilateral('Push Up to Side Plank')).toBe(false);
+      expect(isUnilateral('Pistol Squat')).toBe(true);
+    });
   });
 });

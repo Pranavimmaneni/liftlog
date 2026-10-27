@@ -5,6 +5,14 @@
 - Data model version 2 for food (diary, own foods, recipes, fasts); training data is unchanged.
 - Food engines: calorie, macro and micro targets; reviews; combined food and training feedback; fasting timer; food quests. Screens come in M11.
 
+## 1.1.3 (2026-10-27)
+- 11 cable exercises (cable triceps extensions, cable chest presses, cable hip adduction, cable preacher curl) now use the cable tower with 2.5 kg steps, instead of a stack machine. Logged sets, PRs and history stay the same.
+
+## 1.1.2 (2026-10-27)
+- The library has 605 exercises (was 410): Olympic lifts, kettlebell swings and cleans, jumps, landmine work, more core, glute and calisthenics moves, and common gym lifts such as the Bayesian curl, Meadows row, Z press and side plank.
+- Search knows common gym names: "tricep press", "tricep press machine", "skull crusher", "pec deck", "lat pull down", "RDL", "chest fly machine", "leg press machine", "preacher curl machine" and many more.
+- Every exercise now has a movement pictogram as well as its muscle map. Only custom exercises still show the muscle map alone.
+
 ## 1.1.1 (2026-10-27)
 - Weights like 22.5 or 122.5 now show in full while you type and after (the number used to be cut to two characters on narrow phones).
 - "Add from list" during a workout also shows matching exercises that aren't in your gym, always shows your custom exercises, and can create a new exercise straight into the workout.
