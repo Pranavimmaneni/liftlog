@@ -48,6 +48,8 @@ export default defineConfig(({ mode }) => {
         includeAssets: ['icons/*.png', 'theme-boot.js', 'zxing/*.wasm'],
         injectManifest: {
           globPatterns: ['**/*.{js,css,html,woff2,png,svg,json,wasm,webmanifest}'],
+          // PRD-1.2 FR-FOOD-2: the food library downloads once into IndexedDB, outside the precache.
+          globIgnores: ['**/foods-*.json'],
           maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
         },
         manifest: {

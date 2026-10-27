@@ -75,6 +75,15 @@ export const en = {
     posesFilter: 'Filter poses',
     posesAnimate: 'Animate',
     posesTier1: 'Tier 1',
+    food: 'Food data',
+    foodLibrary: (v: string, rows: number) => `Library ${v} · ${rows.toLocaleString()} foods stored`,
+    foodNoLibrary: 'No food library in this build',
+    foodImport: 'Import library now',
+    foodImporting: (done: number, total: number) =>
+      `Importing ${done.toLocaleString()} of ${total.toLocaleString()}…`,
+    foodSearch: 'Search foods',
+    foodTook: (ms: number, n: number) => `${n} results in ${ms.toFixed(0)} ms`,
+    foodTargets: 'Targets for the sample profile',
   },
   experience: {
     beginner: { name: 'Beginner', desc: 'Under 6 months of regular lifting' },

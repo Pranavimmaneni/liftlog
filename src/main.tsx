@@ -30,5 +30,8 @@ async function start() {
       <RouterProvider router={createAppRouter()} />
     </StrictMode>,
   );
+  // PRD-1.2 NFR-OFF-3: fetch the food library once in the background so Food works offline later.
+  // Skipped under automation, where a 30,000-row import would slow every e2e run (D101).
+  if (!isNative && !navigator.webdriver) void import('./db/food-lib').then((m) => m.scheduleLibraryImport());
 }
 void start();

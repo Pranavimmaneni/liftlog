@@ -62,6 +62,7 @@ export const routes: RouteObject[] = [
           { path: 'dev/components', ...page(() => import('@/screens/dev/DevComponents')) },
           { path: 'dev/fixture', ...page(() => import('@/screens/dev/DevFixture')) },
           { path: 'dev/poses', ...page(() => import('@/screens/dev/DevPoses')) },
+          { path: 'dev/food', ...page(() => import('@/screens/dev/DevFood')) },
           { path: '*', ...page(() => import('@/screens/NotFound')) },
         ],
       },
