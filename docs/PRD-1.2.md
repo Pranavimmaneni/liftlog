@@ -81,10 +81,12 @@ Sources: Pranav's food brief (above) and a data-source check on 2026-10-26 (USDA
 | ID | Requirement | Pri |
 |---|---|---|
 | FR-FOOD-1 | `scripts/seed-foods.ts` builds the food library deterministically and writes `FOOD-SEED-REPORT.md`. Generic foods: USDA FNDDS 2021–23 (5,432 "as eaten" foods, 65 nutrients, household portions like "1 cup"). Branded foods: a subset of USDA Branded Foods (about 15–25k products) from store brands (Kirkland Signature, Member's Mark, Great Value, Trader Joe's, Good & Gather, Kroger, 365, Aldi) and the biggest national brands, latest record per barcode, nothing older than 2020. Branded foods carry label nutrients only; other micros show "not on label". | M |
-| FR-FOOD-2 | The library (about 2 MB compressed) downloads once from LiftLog's own site on first use of Food, is stored in IndexedDB and then works offline. It isn't precached (NFR-SIZE-1). | M |
+| FR-FOOD-2 | The library (about 2 MB compressed) downloads once from LiftLog's own site in the background after the app first loads, is stored in IndexedDB and then works offline. It isn't precached (NFR-SIZE-1). | M |
 | FR-FOOD-3 | Search by name, brand and alias, with the same typo tolerance as exercises, in under 150 ms over the whole library. Recent, frequent and favourite foods come first. | M |
 | FR-FOOD-4 | Offline barcode scanning (UPC/EAN) against the library, using the scanner LiftLog already has. A miss offers "Create food" with the barcode filled in. | S |
 | FR-FOOD-5 | Custom foods, recipes (ingredients plus number of servings) and quick add (calories and macros only). | M |
+| FR-FOOD-6 | About 150 common Indian dishes with Indian names and aliases, computed from standard recipes of USDA ingredients (or from IFCT 2017 if it turns out to be openly licensed). | M |
+| FR-FOOD-7 | Portion units shared across foods (katori, cup, tbsp, piece, plate, grams, ounces) with per-food gram weights. | M |
 
 ### Diary (FR-DIARY)
 | ID | Requirement | Pri |
@@ -111,6 +113,7 @@ Sources: Pranav's food brief (above) and a data-source check on 2026-10-26 (USDA
 | FR-NUT-1 | Today: calories left, macro bars, micros as % of target. | M |
 | FR-NUT-2 | Weekly and monthly food review: averages, days on target, macro and micro adequacy, top food sources per nutrient, trends. | M |
 | FR-COACH-1 | Rule-based combined insights, e.g. protein below target on training days; under 30 g carbs in the 3 h before a workout; a gain phase with flat weight; losing more than 1%/week while e1RM drops; a micro under 70% for the week, with foods from the user's own diary or the library that are rich in it. | M |
+| FR-COACH-3 | Food reads from LiftLog, never the other way: usual training time (median start of the last 6 sessions; LiftLog has no planned times), training days, weekly volume change, e1RM trend and bodyweight. | M |
 | FR-COACH-2 | The Food section's Review tab (weekly and monthly) has "Going well" and "Needs work" drawn from both food and training data, each with a reason and a one-tap fix. LiftLog's S10 does not change. | M |
 | FR-GAME-1 | Food quests and a food streak live in the Food section and reward hitting targets (in range, never "more"), e.g. "Hit protein 5 of 7 days". Their XP adds to the one shared level, so LiftLog's level number can rise from food, with no LiftLog screen change. | S |
 
@@ -125,11 +128,19 @@ Sources: Pranav's food brief (above) and a data-source check on 2026-10-26 (USDA
 | FR-SHR-1 | One bodyweight log, one body stats form (now with height and activity) and one goal feed both sides. | M |
 | FR-SHR-2 | Backup, restore and CSV export include the food tables (schema version 2 with a migration test). | M |
 
+### Non-functional (1.2.0)
+| ID | Requirement |
+|---|---|
+| NFR-REL-6 | Schema v2 is additive (new tables, optional profile fields); a v1 database and a v1 backup upgrade with every training row unchanged, proven by migration tests. |
+| NFR-OFF-3 | After the one background library download, all of Food works offline. Before it finishes, search covers custom and recent foods and says the library is still downloading. |
+| NFR-PERF-5 | Food search returns in under 150 ms over the full library (about 30,000 rows) on a mid-range phone. |
+| NFR-LIC-2 | Food data is public domain (USDA FoodData Central, CC0) and credited in Settings and `LICENSES.md`; DRI values cite the National Academies tables. No ODbL data (Open Food Facts) is bundled. |
+
 ### Milestones (draft)
 | Milestone | Scope |
 |---|---|
 | M9 Design | Food section mockups, Paper and Iron (done when Pranav approves) |
-| M10 Food data and engines | Seed script, schema v2, target and review engines with tests |
+| M10 Food data and engines | Food library seed, schema v2 and repositories, all Food engines with tests, `/dev/food` (plan: `docs/plans/M10.md`) |
 | M11 Food UI | Food tab, diary, search, barcode, recipes, water |
 | M12 Combined coach | Food reviews, combined insights, food in XP and quests |
 
