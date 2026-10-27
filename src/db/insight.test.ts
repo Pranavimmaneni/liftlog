@@ -144,7 +144,12 @@ describe('lift series, history edits (FR-PRO-1, S18)', () => {
   it('series per exercise, weekly best, and deleting a session rebuilds PRs', async () => {
     const sessions = await seedOnboarded();
     const a = await seedSession({ routineSession: sessions[0]!, startedAt: NOW - 9 * DAY, loadKg: 50 });
-    const b = await seedSession({ routineSession: sessions[0]!, startedAt: NOW - 2 * DAY, loadKg: 60 });
+    // Kept inside the current week: on a Monday or Tuesday, 2 days ago is last week (D86).
+    const b = await seedSession({
+      routineSession: sessions[0]!,
+      startedAt: Math.max(THIS_WEEK, NOW - 2 * DAY),
+      loadKg: 60,
+    });
     const lifts = await getLiftSeries();
     expect(lifts.length).toBeGreaterThan(0);
     expect(lifts[0]!.points).toHaveLength(2);
