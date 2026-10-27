@@ -5,6 +5,7 @@ import { db } from './schema';
 import {
   addToSession,
   autoFinishStale,
+  cancelSession,
   AUTO_FINISH_MS,
   deleteSet,
   discardSession,
@@ -113,6 +114,36 @@ describe('workout lifecycle (FR-WRK-1/10/11/12/13, FR-RTN-4)', () => {
     expect(await db.sessions.count()).toBe(0);
     expect(await db.sets.count()).toBe(0);
     expect(await finishSession('missing')).toEqual({ status: 'discarded' });
+  });
+
+  it('FR-WRK-16: cancelling deletes the session and its sets, keeps the queue and earlier PRs', async () => {
+    const sessions = await seedOnboarded();
+    await seedSession({ routineSession: sessions[0]!, startedAt: T0 - 86_400_000, loadKg: 50 });
+    const queueBefore = await db.queue.get('me');
+    const prsBefore = await db.prs.toArray();
+    const s = await startSession({
+      routineSessionId: sessions[1]!.id,
+      name: sessions[1]!.name,
+      exerciseIds: sessions[1]!.items.map((i) => i.exerciseId),
+      now: T0,
+    });
+    await logSet({
+      sessionId: s.id,
+      exerciseId: sessions[1]!.items[0]!.exerciseId,
+      idx: 1,
+      kind: 'work',
+      loadKg: 200,
+      reps: 10,
+      goalMet: true,
+      bonusReps: 0,
+      now: T0 + 1000,
+    });
+    await cancelSession(s.id);
+    expect(await getActiveSession()).toBeUndefined();
+    expect(await db.sessions.get(s.id)).toBeUndefined();
+    expect(await db.sets.where('sessionId').equals(s.id).count()).toBe(0);
+    expect(await db.queue.get('me')).toEqual(queueBefore);
+    expect(await db.prs.toArray()).toEqual(prsBefore);
   });
 
   it('FR-WRK-12: a session idle for 3 h auto-finishes at its last activity', async () => {

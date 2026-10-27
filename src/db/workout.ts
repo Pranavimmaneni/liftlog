@@ -347,6 +347,14 @@ export async function discardSession(sessionId: string): Promise<void> {
   });
 }
 
+/**
+ * FR-WRK-16: cancels an open workout started by mistake. The session and its sets go; the Up next
+ * queue is untouched (it only advances on finish), and PR caches for its exercises are rebuilt.
+ */
+export async function cancelSession(sessionId: string): Promise<void> {
+  await deleteSession(sessionId);
+}
+
 /** S18: deletes a finished session and its sets, then rebuilds PRs for the exercises in it. */
 export async function deleteSession(sessionId: string): Promise<void> {
   const ids = [

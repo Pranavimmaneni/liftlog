@@ -219,6 +219,14 @@ export const en = {
     finishConfirmBody: 'This workout has no work sets, so it will be discarded.',
     discard: 'Discard workout',
     keepGoing: 'Keep going',
+    started: 'Workout started.',
+    undo: 'Undo',
+    undoLabel: 'Undo start workout',
+    cancel: 'Cancel workout',
+    cancelTitle: 'Cancel this workout?',
+    cancelBody: (sets: number, next: string) =>
+      `This deletes the workout and its ${sets === 1 ? '1 logged set' : `${sets} logged sets`}. Up next stays ${next}.`,
+    cancelled: 'Workout cancelled.',
     unplanned: 'Extra',
     keepAwakeHint: 'Tip: set Auto-Lock to a longer time while you train.',
     target: (sets: number, reps: string, load: string) =>
