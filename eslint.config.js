@@ -11,6 +11,9 @@ export default tseslint.config(
     ignores: [
       'dist',
       'dev-dist',
+      // other Claude sessions' worktrees (e.g. M8) live here; they lint themselves
+      '.claude',
+      '.cache',
       'coverage',
       'android',
       'design',

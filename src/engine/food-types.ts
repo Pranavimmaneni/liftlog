@@ -26,7 +26,16 @@ export type NutrientKey = (typeof NUTRIENTS)[number];
 export type Nutrients = Record<NutrientKey, number | null>;
 
 /** The 8 tracked micros (PRD-1.2 answer 4); sodium is a limit, the rest are targets. */
-export const MICROS = ['fibre', 'sodium', 'potassium', 'calcium', 'iron', 'magnesium', 'vitD', 'b12'] as const;
+export const MICROS = [
+  'fibre',
+  'sodium',
+  'potassium',
+  'calcium',
+  'iron',
+  'magnesium',
+  'vitD',
+  'b12',
+] as const;
 export type MicroKey = (typeof MICROS)[number];
 
 export type FoodSource = 'generic' | 'branded' | 'indian' | 'custom';

@@ -205,6 +205,18 @@ describe('adaptive expenditure (FR-TGT-5)', () => {
     ]);
     expect(t.map((w) => w.kg)).toEqual([80, 80.2, expect.closeTo(80.08, 5)]);
     expect(trendRatePerWeek(t.slice(0, 1))).toBeNull();
+    expect(
+      trendRatePerWeek([
+        { date: '2026-10-01', kg: 80 },
+        { date: '2026-10-15', kg: 79 },
+      ]),
+    ).toBeCloseTo(-0.5);
+    expect(
+      trendRatePerWeek([
+        { date: '2026-10-01', kg: 80 },
+        { date: '2026-10-01', kg: 79 },
+      ]),
+    ).toBeNull();
   });
 
   it('FR-TGT-5: losing on 2,500 kcal means burning more than 2,500', () => {
@@ -232,6 +244,12 @@ describe('adaptive expenditure (FR-TGT-5)', () => {
         long.slice(0, 10).map((date) => ({ date, kcal: 2500 })),
         long.map((date) => ({ date, kg: 80 })),
       ),
+    ).toBeNull();
+  });
+
+  it('FR-TGT-5: one weigh-in is not a trend', () => {
+    expect(
+      estimateExpenditure([{ date: '2026-10-01', kcal: 2500 }], [{ date: '2026-10-01', kg: 80 }]),
     ).toBeNull();
   });
 
