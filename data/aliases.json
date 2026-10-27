@@ -1,5 +1,5 @@
 {
-  "_note": "Seed aliases for search. Key = canonical name after seeding; values = alternative names. Extend freely.",
+  "_note": "Seed aliases for search (FR-LIB-3, FR-LIB-9). Key = canonical name after seeding; values = alternative names. Extend freely.",
   "aliases": {
     "Lying Triceps Extension": [
       "skull crusher",
@@ -50,21 +50,28 @@
     "Pec Deck Fly": [
       "pec deck",
       "machine fly",
-      "butterfly"
+      "butterfly",
+      "chest fly machine",
+      "machine chest fly",
+      "pec fly"
     ],
     "Reverse Pec Deck": [
       "rear delt fly machine",
       "reverse fly"
     ],
     "Leg Extension": [
-      "quad extension"
+      "quad extension",
+      "leg extension machine"
     ],
     "Seated Leg Curl": [
       "hamstring curl",
-      "leg curl"
+      "leg curl",
+      "leg curl machine"
     ],
     "Standing Calf Raise": [
-      "calf raise"
+      "calf raise",
+      "calf raise machine",
+      "standing calf machine"
     ],
     "Pull-Up": [
       "pullup",
@@ -83,7 +90,8 @@
       "neutral grip curl"
     ],
     "Goblet Squat": [
-      "kb squat"
+      "kb squat",
+      "kettlebell goblet squat"
     ],
     "Trap Bar Deadlift": [
       "hex bar deadlift"
@@ -93,10 +101,378 @@
       "farmer walk"
     ],
     "Ab Wheel Rollout": [
-      "ab roller"
+      "ab roller",
+      "ab wheel"
     ],
     "Hanging Leg Raise": [
       "hanging knee raise"
+    ],
+    "Seated Triceps Press": [
+      "tricep press",
+      "triceps press",
+      "seated tricep press",
+      "overhead tricep press"
+    ],
+    "Machine Triceps Extension": [
+      "tricep press machine",
+      "triceps press machine",
+      "tricep extension machine",
+      "tricep machine"
+    ],
+    "EZ-Bar Skullcrusher": [
+      "ez bar skull crusher"
+    ],
+    "Lying Dumbbell Tricep Extension": [
+      "dumbbell skull crusher"
+    ],
+    "Leg Press": [
+      "leg press machine"
+    ],
+    "Machine Preacher Curl": [
+      "preacher curl machine"
+    ],
+    "Machine Biceps Curl": [
+      "bicep curl machine",
+      "biceps curl machine"
+    ],
+    "Stiff-Legged Dumbbell Deadlift": [
+      "dumbbell rdl",
+      "dumbbell romanian deadlift",
+      "db rdl"
+    ],
+    "Natural Glute Ham Raise": [
+      "nordic curl",
+      "nordic hamstring curl",
+      "nordics"
+    ],
+    "Push-Ups - Close Triceps Position": [
+      "diamond push-up",
+      "close-grip push-up"
+    ],
+    "Seated Leg Press": [
+      "horizontal leg press"
+    ],
+    "Hack Squat": [
+      "hack squat machine"
+    ],
+    "Seated Machine Row": [
+      "machine row",
+      "chest-supported machine row"
+    ],
+    "Iso-Lateral Chest Press": [
+      "hammer strength chest press",
+      "plate-loaded chest press"
+    ],
+    "Iso-Lateral Row": [
+      "hammer strength row"
+    ],
+    "Machine Chest Press": [
+      "chest press machine",
+      "chest press"
+    ],
+    "Machine Incline Chest Press": [
+      "incline chest press machine"
+    ],
+    "Machine Lateral Raise": [
+      "lateral raise machine"
+    ],
+    "Hip Abduction": [
+      "abductor machine",
+      "hip abductor",
+      "seated hip abduction"
+    ],
+    "Hip Adduction": [
+      "adductor machine",
+      "hip adductor"
+    ],
+    "Machine Hip Thrust": [
+      "glute drive",
+      "hip thrust machine"
+    ],
+    "Machine Glute Kickback": [
+      "glute kickback machine"
+    ],
+    "One-Legged Cable Kickback": [
+      "cable glute kickback",
+      "cable kickback"
+    ],
+    "Glute Kickback": [
+      "donkey kick"
+    ],
+    "Seated Dip Machine": [
+      "tricep dip machine",
+      "dip machine"
+    ],
+    "Dip": [
+      "tricep dip",
+      "triceps dip"
+    ],
+    "Bench Dips": [
+      "chair dip",
+      "bench dip"
+    ],
+    "Standing Dumbbell Triceps Extension": [
+      "overhead dumbbell extension",
+      "overhead tricep extension"
+    ],
+    "Triceps Pushdown": [
+      "straight bar pushdown",
+      "cable tricep pushdown"
+    ],
+    "Seated Calf Raise": [
+      "seated calf machine"
+    ],
+    "Lying Leg Curl": [
+      "lying hamstring curl",
+      "prone leg curl"
+    ],
+    "Assisted Pull-Up": [
+      "assisted chin-up",
+      "assisted pull-up machine"
+    ],
+    "Straight-Arm Pulldown": [
+      "cable pullover",
+      "lat prayer"
+    ],
+    "Underhand Cable Pulldowns": [
+      "reverse-grip lat pulldown",
+      "underhand lat pulldown"
+    ],
+    "V-Bar Pulldown": [
+      "neutral-grip lat pulldown"
+    ],
+    "Close-Grip Pulldown": [
+      "close-grip lat pulldown"
+    ],
+    "Seated One-arm Cable Pulley Rows": [
+      "single-arm cable row",
+      "one-arm cable row"
+    ],
+    "Single-Arm Dumbbell Row": [
+      "kroc row"
+    ],
+    "Bent Over Two-Arm Long Bar Row": [
+      "landmine row"
+    ],
+    "One-Arm Long Bar Row": [
+      "single-arm landmine row"
+    ],
+    "Reverse Grip Bent-Over Rows": [
+      "yates row",
+      "underhand barbell row"
+    ],
+    "Inverted Row": [
+      "australian pull-up",
+      "bodyweight row"
+    ],
+    "45 Degree Back Extension": [
+      "back extension",
+      "hyperextension",
+      "roman chair back extension"
+    ],
+    "Butt Lift (Bridge)": [
+      "glute bridge",
+      "bodyweight glute bridge"
+    ],
+    "Plie Dumbbell Squat": [
+      "sumo squat",
+      "dumbbell sumo squat"
+    ],
+    "Dumbbell Rear Lunge": [
+      "dumbbell reverse lunge",
+      "reverse lunge"
+    ],
+    "Dumbbell Step-Up": [
+      "box step-up"
+    ],
+    "Kettlebell One-Legged Deadlift": [
+      "single-leg kettlebell deadlift"
+    ],
+    "Cable Deadlifts": [
+      "cable rdl"
+    ],
+    "Straight-Arm Dumbbell Pullover": [
+      "dumbbell pullover"
+    ],
+    "Low Cable Crossover": [
+      "low-to-high cable fly"
+    ],
+    "Dumbbell Squeeze Press": [
+      "hex press"
+    ],
+    "Reverse Triceps Bench Press": [
+      "reverse-grip bench press"
+    ],
+    "Smith Hip Raise": [
+      "smith hip thrust",
+      "smith machine hip thrust"
+    ],
+    "Smith Shrug": [
+      "smith machine shrug"
+    ],
+    "Smith Front Squat": [
+      "smith machine front squat"
+    ],
+    "Smith Reverse Lunge": [
+      "smith machine lunge"
+    ],
+    "Smith Bulgarian Split Squat": [
+      "smith machine bulgarian split squat"
+    ],
+    "Cross Body Hammer Curl": [
+      "pinwheel curl"
+    ],
+    "Incline Dumbbell Curl": [
+      "incline curl",
+      "seated incline curl"
+    ],
+    "Dumbbell Bicep Curl": [
+      "dumbbell curl",
+      "bicep curl"
+    ],
+    "Barbell Curl": [
+      "straight bar curl"
+    ],
+    "Bayesian Curl": [
+      "behind-the-body cable curl"
+    ],
+    "Barbell 21s": [
+      "21s",
+      "21 curls"
+    ],
+    "Wide Push-Up": [
+      "wide-grip push-up"
+    ],
+    "Plyo Push-Up": [
+      "clap push-up"
+    ],
+    "Split Jump": [
+      "jumping lunge"
+    ],
+    "Side Plank": [
+      "side bridge"
+    ],
+    "Kettlebell Swing": [
+      "kb swing",
+      "russian swing",
+      "two-hand kettlebell swing"
+    ],
+    "Turkish Get-Up": [
+      "tgu"
+    ],
+    "Landmine 180": [
+      "landmine rotation"
+    ],
+    "Front Plate Raise": [
+      "plate front raise"
+    ],
+    "Svend Press": [
+      "plate press",
+      "plate squeeze press"
+    ],
+    "Dead Hang": [
+      "bar hang"
+    ],
+    "Hollow Body Hold": [
+      "hollow hold"
+    ],
+    "Lean-Away Lateral Raise": [
+      "egyptian lateral raise"
+    ],
+    "Behind-the-Neck Press": [
+      "btn press"
+    ],
+    "Captain's Chair Leg Raise": [
+      "captains chair",
+      "vertical knee raise"
+    ],
+    "Cable Crunch": [
+      "kneeling cable crunch"
+    ],
+    "Standing Cable Wood Chop": [
+      "cable woodchop",
+      "woodchopper"
+    ],
+    "Pallof Press": [
+      "anti-rotation press"
+    ],
+    "Good Morning": [
+      "barbell good morning"
+    ],
+    "Front Squat": [
+      "barbell front squat"
+    ],
+    "Seated Barbell Military Press": [
+      "seated overhead press",
+      "seated barbell press"
+    ],
+    "Arnold Dumbbell Press": [
+      "arnold press"
+    ],
+    "Seated Side Lateral Raise": [
+      "seated lateral raise",
+      "seated dumbbell lateral raise"
+    ],
+    "One-Arm Side Laterals": [
+      "single-arm lateral raise"
+    ],
+    "Dumbbell Reverse Fly": [
+      "bent-over lateral raise",
+      "rear delt fly"
+    ],
+    "Upright Barbell Row": [
+      "upright row"
+    ],
+    "Barbell Shrug": [
+      "shrug"
+    ],
+    "Close-Grip Barbell Bench Press": [
+      "close-grip bench"
+    ],
+    "Incline Barbell Bench Press": [
+      "incline bench press",
+      "incline bench"
+    ],
+    "Decline Barbell Bench Press": [
+      "decline bench press",
+      "decline bench"
+    ],
+    "Dumbbell Fly": [
+      "chest fly"
+    ],
+    "Machine Pullover": [
+      "pullover machine"
+    ],
+    "Neutral-Grip Pull-Up": [
+      "hammer grip pull-up"
+    ],
+    "Kneeling Push-Up": [
+      "knee push-up"
+    ],
+    "Single-Leg Romanian Deadlift": [
+      "single-leg rdl"
+    ],
+    "Kettlebell Deadlift": [
+      "kb deadlift"
+    ],
+    "Rack Pulls": [
+      "rack pull",
+      "block pull"
+    ],
+    "Rotary Torso": [
+      "torso rotation machine"
+    ],
+    "Machine Back Extension": [
+      "back extension machine"
+    ],
+    "Chest-Supported T-Bar Row": [
+      "t-bar row machine"
+    ],
+    "Single-Arm Cable Press": [
+      "single-arm cable chest press"
+    ],
+    "Wide-Stance Squat": [
+      "wide squat"
     ]
   }
 }

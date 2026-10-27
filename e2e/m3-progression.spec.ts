@@ -123,17 +123,17 @@ test.describe('M3 progression', () => {
     await page.goto('/library/new');
     await page.getByRole('button', { name: 'Save exercise' }).click();
     await expect(page.getByText('Give it a name.')).toBeVisible();
-    await page.getByRole('textbox', { name: 'Name' }).fill('Landmine Press');
+    await page.getByRole('textbox', { name: 'Name' }).fill('Kneeling Landmine Press');
     await page.getByRole('group', { name: 'Main muscle' }).getByRole('button', { name: 'Chest' }).click();
     await page.getByRole('combobox', { name: 'How is it loaded?' }).selectOption('plate_loaded');
     await expectNoAxeViolations(page);
     await page.getByRole('button', { name: 'Save exercise' }).click();
-    await expect(page.getByRole('heading', { name: 'Landmine Press' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Kneeling Landmine Press' })).toBeVisible();
     await expect(page.getByRole('img', { name: /muscles worked/i })).toBeVisible();
     await page.goto('/library');
-    await page.getByRole('searchbox').fill('landmine');
-    await page.getByRole('link', { name: /landmine press/i }).click();
-    await expect(page).toHaveURL(/\/library\/custom-landmine-press-/);
+    await page.getByRole('searchbox').fill('kneeling landmine');
+    await page.getByRole('link', { name: /kneeling landmine press/i }).click();
+    await expect(page).toHaveURL(/\/library\/custom-kneeling-landmine-press-/);
 
     // A seeded Tier 2 exercise shows its animated pictogram.
     await page.goto('/library/barbell-curl');
