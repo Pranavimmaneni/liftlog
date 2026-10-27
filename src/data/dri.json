@@ -1,0 +1,38 @@
+{
+  "_note": "Daily targets for the 8 tracked micros (PRD-1.2 FR-TGT-4). Values are the US Dietary Reference Intakes (RDA, or AI where no RDA exists), transcribed as facts with citation. Sodium is a limit (Chronic Disease Risk Reduction intake), not a target. 'ul' = Tolerable Upper Intake Level from all food sources where one applies. Unspecified sex uses the lower of the two values, as S19 does for strength standards.",
+  "source": "National Academies of Sciences, Engineering, and Medicine. Dietary Reference Intakes summary tables (2011, with sodium and potassium updated 2019). Fibre target scales with energy (14 g per 1,000 kcal); the table value is the fallback.",
+  "ageBands": [
+    { "from": 14, "to": 18 },
+    { "from": 19, "to": 30 },
+    { "from": 31, "to": 50 },
+    { "from": 51, "to": 70 },
+    { "from": 71, "to": 120 }
+  ],
+  "units": { "fibre": "g", "sodium": "mg", "potassium": "mg", "calcium": "mg", "iron": "mg", "magnesium": "mg", "vitD": "µg", "b12": "µg" },
+  "male": {
+    "fibre": [38, 38, 38, 30, 30],
+    "sodium": [2300, 2300, 2300, 2300, 2300],
+    "potassium": [3000, 3400, 3400, 3400, 3400],
+    "calcium": [1300, 1000, 1000, 1000, 1200],
+    "iron": [11, 8, 8, 8, 8],
+    "magnesium": [410, 400, 420, 420, 420],
+    "vitD": [15, 15, 15, 15, 20],
+    "b12": [2.4, 2.4, 2.4, 2.4, 2.4]
+  },
+  "female": {
+    "fibre": [26, 25, 25, 21, 21],
+    "sodium": [2300, 2300, 2300, 2300, 2300],
+    "potassium": [2300, 2600, 2600, 2600, 2600],
+    "calcium": [1300, 1000, 1000, 1200, 1200],
+    "iron": [15, 18, 18, 8, 8],
+    "magnesium": [360, 310, 320, 320, 320],
+    "vitD": [15, 15, 15, 15, 20],
+    "b12": [2.4, 2.4, 2.4, 2.4, 2.4]
+  },
+  "ul": {
+    "calcium": [3000, 2500, 2500, 2000, 2000],
+    "iron": [45, 45, 45, 45, 45],
+    "vitD": [100, 100, 100, 100, 100]
+  },
+  "limits": ["sodium"]
+}
