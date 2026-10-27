@@ -148,6 +148,7 @@ export default function Workout() {
           await addToSession(sessionId, e.id);
           navigate(`/workout/${e.id}`);
         }}
+        onCreate={(name) => navigate('/library/new', { state: { addToWorkout: true, name } })}
       />
       <Sheet
         open={confirmDiscard}

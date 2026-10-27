@@ -321,6 +321,8 @@ export const en = {
     perSide: 'per side',
     create: 'Create custom exercise',
     none: (q: string) => `No results for “${q}”: create a custom exercise.`,
+    noneYet: 'No exercises match these filters.',
+    outsideGym: 'Not in your gym',
     footer:
       'Pictograms cover the most common lifts. Others show the muscles they work until a drawing is added.',
     pickFor: (name: string) => `Add to ${name}`,

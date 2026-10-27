@@ -56,7 +56,13 @@ export default function Library() {
   const [equipment, setEquipment] = useState<string | null>(null);
   const [level, setLevel] = useState<Experience | null>(null);
   const [limit, setLimit] = useState(PAGE);
-  const { results, total, recentIds, loading } = useLibrary({ query, inGym, muscle, equipment, level });
+  const { results, outside, total, recentIds, loading } = useLibrary({
+    query,
+    inGym,
+    muscle,
+    equipment,
+    level,
+  });
   const recentCount = !query ? results.filter((r) => recentIds.includes(r.exercise.id)).length : 0;
 
   const rows: ReactNode[] = [];
@@ -138,7 +144,7 @@ export default function Library() {
       <p className="t-label mt-4" aria-live="polite">
         {loading ? en.common.loading : en.library.results(results.length)}
       </p>
-      {!loading && results.length === 0 ? (
+      {!loading && results.length === 0 && outside.length === 0 ? (
         <div className="mt-2">
           <EmptyState
             action={
@@ -151,12 +157,26 @@ export default function Library() {
           </EmptyState>
         </div>
       ) : (
-        <ul className="ll-card mt-2 overflow-hidden">{rows}</ul>
+        rows.length > 0 && <ul className="ll-card mt-2 overflow-hidden">{rows}</ul>
       )}
       {results.length > limit && (
         <button type="button" className="ll-link w-full" onClick={() => setLimit(limit + PAGE)}>
           {en.common.more}
         </button>
+      )}
+      {outside.length > 0 && (
+        <>
+          <h2 className="t-label mt-4">{en.library.outsideGym}</h2>
+          <ul className="ll-card mt-2 overflow-hidden" aria-label={en.library.outsideGym}>
+            {outside.slice(0, PAGE).map((r) => (
+              <li key={r.exercise.id}>
+                <Link to={`/library/${r.exercise.id}`} className="block text-ink no-underline">
+                  <ExerciseRow exercise={r.exercise} alias={r.alias} dimmed thumbClass="h-[42px] w-[58px]" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </>
       )}
       <Link to="/library/new" className="ll-btn mt-3 h-14 w-full" data-variant="ghost">
         <Icon name="plus" /> {en.library.create}

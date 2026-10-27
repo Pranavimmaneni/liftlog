@@ -21,7 +21,10 @@ export interface LibraryResult {
   alias?: string;
 }
 
-/** FR-LIB-3/4/5: search, filters (in my gym by default), recently used first when the search is empty. */
+/**
+ * FR-LIB-3/4/5: search, filters (in my gym by default), recently used first when the search is empty.
+ * FR-LIB-8: `outside` holds the search matches that "In my gym" filtered out.
+ */
 export function useLibrary(f: LibraryFilters) {
   const map = useExerciseMap();
   const gym = useGym();
@@ -50,8 +53,8 @@ export function useLibrary(f: LibraryFilters) {
   );
   const g = gym ?? presetGym('full-gym');
 
-  const results: LibraryResult[] = useMemo(() => {
-    if (!map) return [];
+  const results = useMemo((): { filtered: LibraryResult[]; outside: LibraryResult[] } => {
+    if (!map) return { filtered: [], outside: [] };
     const q = f.query.trim();
     const base: LibraryResult[] = q
       ? search(index, q).map((h) => ({
@@ -60,15 +63,17 @@ export function useLibrary(f: LibraryFilters) {
           alias: h.viaAlias,
         }))
       : all.map((e) => ({ exercise: e, available: isAvailable(e, g) }));
-    const filtered = base.filter(
+    const matches = base.filter(
       (r) =>
-        (!f.inGym || r.available) &&
         (!f.muscle || r.exercise.primary.includes(f.muscle)) &&
         (!f.equipment ||
           r.exercise.requires.some((grp) => grp.includes(f.equipment!)) ||
           r.exercise.machineId === f.equipment) &&
         (!f.level || r.exercise.level === f.level),
     );
+    // FR-LIB-8: the user made their custom exercises, so "In my gym" never hides them.
+    const inGym = (r: LibraryResult) => !f.inGym || r.available || !!r.exercise.isCustom;
+    const filtered = matches.filter(inGym);
     if (!q) {
       const rank = new Map((recent ?? []).map((id, i) => [id, i]));
       filtered.sort((a, b) => {
@@ -77,8 +82,17 @@ export function useLibrary(f: LibraryFilters) {
         return ra - rb || a.exercise.name.localeCompare(b.exercise.name);
       });
     }
-    return filtered;
+    // FR-LIB-8: a search never hides a match; ones outside the gym are listed after, separately.
+    const outside = q && f.inGym ? matches.filter((r) => !inGym(r)) : [];
+    return { filtered, outside };
   }, [map, index, all, f.query, f.inGym, f.muscle, f.equipment, f.level, g, recent]);
 
-  return { loading: !map, results, total: all.length, recentIds: recent ?? [], map };
+  return {
+    loading: !map,
+    results: results.filtered,
+    outside: results.outside,
+    total: all.length,
+    recentIds: recent ?? [],
+    map,
+  };
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { Button } from '@/components/Button';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { SegmentedControl } from '@/components/SegmentedControl';
@@ -17,6 +17,7 @@ import {
   type CustomInput,
 } from '@/db/custom';
 import { useCustomMachines } from '@/db/machines';
+import { addToSession, getActiveSession } from '@/db/workout';
 import { useProfile } from '@/db/repo';
 import { EQUIPMENT, MACHINES } from '@/engine/data';
 import { fromDisplay, toDisplay } from '@/engine/units';
@@ -52,10 +53,12 @@ const EMPTY: CustomInput = {
 export default function CustomExercise() {
   const { exerciseId } = useParams();
   const navigate = useNavigate();
+  // FR-LIB-8: opened from the workout's add sheet, with the search as the name.
+  const from = (useLocation().state ?? {}) as { addToWorkout?: boolean; name?: string };
   const map = useExerciseMap();
   const profile = useProfile();
   const customs = useCustomMachines();
-  const [v, setV] = useState<CustomInput>(EMPTY);
+  const [v, setV] = useState<CustomInput>(() => ({ ...EMPTY, name: from.name ?? '' }));
   const [errors, setErrors] = useState<CustomErrors>({});
   const [touched, setTouched] = useState(false);
   const units = profile?.units ?? 'kg';
@@ -93,6 +96,12 @@ export default function CustomExercise() {
     if (Object.keys(e).length || !map) return;
     const id = await saveCustomExercise(v, exerciseId);
     toast(c.saved);
+    const open = from.addToWorkout ? await getActiveSession() : undefined;
+    if (open) {
+      await addToSession(open.id, id);
+      navigate(`/workout/${id}`, { replace: true });
+      return;
+    }
     navigate(`/library/${id}`, { replace: true });
   };
 
@@ -110,7 +119,7 @@ export default function CustomExercise() {
     <main className="pb-[calc(24px+env(safe-area-inset-bottom))]">
       <ScreenHeader
         title={exerciseId ? c.editTitle : c.newTitle}
-        backTo={exerciseId ? `/library/${exerciseId}` : '/library'}
+        backTo={exerciseId ? `/library/${exerciseId}` : from.addToWorkout ? '/workout' : '/library'}
       />
       <form
         className="flex flex-col gap-4 px-5 pt-4"

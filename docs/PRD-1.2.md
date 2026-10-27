@@ -15,6 +15,19 @@ This addendum adds to `docs/PRD.md` (v3). The PRD rules (priorities, IDs, tracea
 
 **Scope change (D82):** nutrition moves out of §14 "Out of scope" into 1.2.0.
 
+## Food brief from Pranav (received 2026-10-26)
+
+Requirement IDs for 1.2.0 are drafted from this brief after M7.
+
+1. Two in one: food tracking and training in one app.
+2. Some things are shared by both, e.g. weight tracking.
+3. Combine food and training to say what's lacking and give feedback, e.g. lifting a lot but not eating enough protein, or not enough carbs before a workout. A weekly food review (macros and micros), like the training review.
+4. A built-in food library of default foods available everywhere: as much data as can be found, including foods common at Costco, Walmart, etc.
+5. Take the user's weight and requirements as input, give macro and micro targets from them, and help track against them.
+6. Like the training side: goals, weekly and monthly summaries.
+7. Include the other features diet tracking apps have, as long as they need no AI API calls.
+8. Game-style redesign with new mockups (from the same message as the M7 fixes).
+
 ## 1.1.1 requirements (M7)
 
 | ID | Requirement | Pri |
