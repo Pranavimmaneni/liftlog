@@ -35,7 +35,6 @@ export const en = {
   tabs: {
     today: 'Today',
     plan: 'Plan',
-    library: 'Library',
     progress: 'Progress',
     nav: 'Main',
   },
@@ -314,6 +313,8 @@ export const en = {
   },
   library: {
     title: 'Library',
+    open: 'Exercise library',
+    openSub: 'Search lifts or add your own',
     count: (n: number) => `${n} exercises`,
     search: 'Search exercises',
     inMyGym: 'In my gym',

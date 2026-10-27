@@ -5,11 +5,10 @@ import { en } from '@/copy/en';
 const TABS: { to: string; label: string; icon: IconName; end?: boolean }[] = [
   { to: '/', label: en.tabs.today, icon: 'bolt', end: true },
   { to: '/plan', label: en.tabs.plan, icon: 'calendar' },
-  { to: '/library', label: en.tabs.library, icon: 'book' },
   { to: '/progress', label: en.tabs.progress, icon: 'trend' },
 ];
 
-/** Bottom tab bar (S05). Clears the home indicator (FR-PLT-10). */
+/** Bottom tab bar (S05): Today, Plan, Progress (FR-NAV-1). Clears the home indicator (FR-PLT-10). */
 export function TabBar() {
   return (
     <nav

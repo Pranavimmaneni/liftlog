@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react';
-import { Link } from 'react-router';
-import { Chip, ToggleChip } from '@/components/Chip';
+import { Link, useNavigate } from 'react-router';
+import { ScreenHeader } from '@/components/ScreenHeader';
+import { ToggleChip } from '@/components/Chip';
 import { ExerciseRow } from '@/components/ExerciseRow';
 import { Icon } from '@/components/Icon';
 import { EmptyState } from '@/components/Toast';
@@ -63,6 +64,10 @@ export default function Library() {
     equipment,
     level,
   });
+  const navigate = useNavigate();
+  // FR-NAV-1: opened from Plan or Settings; a direct visit has no history, so back goes to Plan.
+  const back = () =>
+    (window.history.state as { idx?: number } | null)?.idx ? navigate(-1) : navigate('/plan');
   const recentCount = !query ? results.filter((r) => recentIds.includes(r.exercise.id)).length : 0;
 
   const rows: ReactNode[] = [];
@@ -94,12 +99,9 @@ export default function Library() {
   });
 
   return (
-    <main className="px-5 pt-4">
-      <div className="flex items-center justify-between gap-3">
-        <h1 className="t-display text-[40px]">{en.library.title}</h1>
-        <Chip variant="soft" className="!px-4 !py-2.5 !text-[13px]">
-          {en.library.count(total)}
-        </Chip>
+    <main className="px-5 pb-[calc(24px+env(safe-area-inset-bottom))]">
+      <div className="-mx-5">
+        <ScreenHeader title={en.library.title} size={40} subtitle={en.library.count(total)} onBack={back} />
       </div>
       <label className="mt-4 flex h-[60px] items-center gap-3 rounded-lg border-2 border-ink bg-card px-4">
         <Icon name="search" size={26} className="shrink-0 text-ink2" />

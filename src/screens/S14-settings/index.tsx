@@ -159,6 +159,7 @@ export default function Settings() {
           to="/settings/gym"
         />
         <Row title={s.bodyStats} sub={s.bodyStatsSub} to="/progress/body-stats" />
+        <Row title={en.library.open} sub={en.library.openSub} to="/library" />
       </div>
 
       <SectionLabel>{s.data}</SectionLabel>

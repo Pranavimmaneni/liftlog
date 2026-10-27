@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router';
 import { TabBar } from '@/components/TabBar';
 
-/** Screens with the bottom tab bar (Today, Plan, Library, Progress). Centred column, max 480 px (§2.1). */
+/** Screens with the bottom tab bar (Today, Plan, Progress; FR-NAV-1). Centred column, max 480 px (§2.1). */
 export function TabLayout() {
   return (
     <>

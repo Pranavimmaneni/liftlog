@@ -96,9 +96,15 @@ export default function Plan() {
     <main className="px-5 pt-4">
       <div className="flex items-center justify-between gap-3">
         <h1 className="t-display text-[40px]">{en.plan.title}</h1>
-        <Chip variant="soft" className="!px-4 !py-2.5 !text-[13px]">
-          {splitById(routine.splitId)?.name ?? ''}
-        </Chip>
+        <span className="flex items-center gap-2">
+          <Chip variant="soft" className="!px-4 !py-2.5 !text-[13px]">
+            {splitById(routine.splitId)?.name ?? ''}
+          </Chip>
+          {/* FR-NAV-1: the Library lives here and in Settings instead of a tab. */}
+          <Link to="/library" className="ll-icon-btn" aria-label={en.library.open}>
+            <Icon name="book" />
+          </Link>
+        </span>
       </div>
 
       <section className="ll-card mt-4 px-3.5 py-3" aria-labelledby="plan-week">
@@ -188,6 +194,9 @@ export default function Plan() {
       </p>
       <Link to="/plan/split" className="ll-btn mt-4 w-full" data-variant="secondary">
         {en.plan.changeSplit}
+      </Link>
+      <Link to="/library" className="ll-btn mt-3 w-full" data-variant="ghost">
+        <Icon name="book" /> {en.library.open}
       </Link>
     </main>
   );

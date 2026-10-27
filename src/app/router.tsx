@@ -22,7 +22,6 @@ export const routes: RouteObject[] = [
         children: [
           { index: true, ...page(() => import('@/screens/S05-home')) },
           { path: 'plan', ...page(() => import('@/screens/S15-plan')) },
-          { path: 'library', ...page(() => import('@/screens/S13-library')) },
           { path: 'progress', ...page(() => import('@/screens/S12-progress')) },
           { path: 'progress/review', ...page(() => import('@/screens/S10-review')) },
           { path: 'progress/strength', ...page(() => import('@/screens/S11-strength')) },
@@ -51,6 +50,8 @@ export const routes: RouteObject[] = [
           { path: 'install', ...page(() => import('@/screens/S21-install')) },
           { path: 'scan/stickers', ...page(() => import('@/screens/S22-scan/Stickers')) },
           { path: 'm/:machineId', ...page(() => import('@/screens/S22-scan/MachineLink')) },
+          // FR-NAV-1: the Library is a full screen reached from Plan and Settings, not a tab.
+          { path: 'library', ...page(() => import('@/screens/S13-library')) },
           { path: 'library/new', ...page(() => import('@/screens/S17-custom')) },
           { path: 'library/:exerciseId', ...page(() => import('@/screens/S16-exercise')) },
           { path: 'library/:exerciseId/edit', ...page(() => import('@/screens/S17-custom')) },
