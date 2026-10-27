@@ -174,7 +174,7 @@ describe('M3 screens', () => {
     renderRoute('/dev/poses');
     expect(await screen.findByTestId('pose-count', {}, W)).toHaveTextContent(/\d{3} pictograms · 10 Tier 1/);
     fireEvent.change(screen.getByRole('searchbox', { name: 'Filter poses' }), {
-      target: { value: 'hip-thrust' },
+      target: { value: 'machine-hip-thrust' },
     });
     await waitFor(() => expect(screen.getAllByRole('listitem').length).toBeLessThan(5));
   });

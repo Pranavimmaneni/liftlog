@@ -1,7 +1,9 @@
 /**
  * Contact sheet of every Tier 2 pictogram (FR-ILL-2 review aid, also used for docs/reports/poses).
  *
- *   npx tsx scripts/pose-sheet.ts <out.png> [filter[,filter…]] [--dark] [--arch]   (env OFFSET/LIMIT page the list)
+ *   npx tsx scripts/pose-sheet.ts <out.png> [filter[,filter…] | @ids.txt] [--dark] [--arch]   (env OFFSET/LIMIT page the list)
+ *
+ * `@ids.txt` renders exactly the exercise ids listed in that file (one per line), in that order.
  *
  * Renders straight from src/data/poses.json with the app's renderer and theme tokens, so no dev
  * server is needed.
@@ -18,8 +20,14 @@ const [out = 'poses.png', filter = ''] = args.filter((a) => !a.startsWith('--'))
 const poses = posesJson as unknown as PoseData;
 const defs = tier2Defs(poses);
 const seen = new Set<string>();
-const ids = Object.keys(defs)
-  .filter((id) => filter.split(',').some((q) => id.includes(q) || poses.poses[id]!.a.includes(q)))
+const listed = filter.startsWith('@')
+  ? readFileSync(filter.slice(1), 'utf8')
+      .split('\n')
+      .map((id) => id.trim())
+      .filter((id) => id && defs[id])
+  : null;
+const ids = (listed ?? Object.keys(defs))
+  .filter((id) => listed || filter.split(',').some((q) => id.includes(q) || poses.poses[id]!.a.includes(q)))
   // --arch: one representative per archetype.
   .filter((id) => {
     if (!args.includes('--arch')) return true;

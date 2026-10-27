@@ -39,6 +39,19 @@ describe('Tier 2 pose data (FR-ILL-2)', () => {
     }
   });
 
+  it('FR-ILL-6: every seeded exercise has a pictogram (Tier 1 or Tier 2)', () => {
+    const missing = (exercisesJson as { id: string; poseId?: string }[])
+      .filter((e) => !(e.poseId && TIER1[e.poseId]) && !data.poses[e.id])
+      .map((e) => e.id);
+    expect(missing).toEqual([]);
+  });
+
+  it('FR-ILL-6: the loaded catalogue gives every seeded exercise a drawable pose', async () => {
+    const cat = await loadCatalog();
+    expect(cat.length).toBeGreaterThanOrEqual(600);
+    expect(cat.filter((e) => !poseDef(e.poseId)).map((e) => e.id)).toEqual([]);
+  });
+
   it('every entry names a real archetype, and every archetype is used', () => {
     const used = new Set(Object.values(data.poses).map((p) => p.a));
     for (const [id, p] of Object.entries(data.poses)) expect(data.archetypes[p.a], id).toBeDefined();
@@ -56,7 +69,7 @@ describe('Tier 2 pose data (FR-ILL-2)', () => {
     }
   });
 
-  it('the figure stays inside the 240 × 170 panel through the whole movement', () => {
+  it('FR-ILL-6: every figure (all Tier 2 poses) stays inside the 240 × 170 panel through the whole movement', () => {
     const joints: JointName[] = ['hip', 'neck', 'head', 'shoulder', 'elbow', 'hand', 'knee', 'ankle', 'toe'];
     const bad: string[] = [];
     for (const [id, e] of Object.entries(data.poses)) {
