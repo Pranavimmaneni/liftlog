@@ -1,0 +1,27 @@
+{
+  "v": "2026-10-27.1",
+  "attribution": "U.S. Department of Agriculture, Agricultural Research Service. FoodData Central. fdc.nal.usda.gov",
+  "chunks": [
+    {
+      "file": "foods-generic.json",
+      "source": "generic",
+      "count": 5354,
+      "bytes": 1169074,
+      "gzipBytes": 192019
+    },
+    {
+      "file": "foods-indian.json",
+      "source": "indian",
+      "count": 147,
+      "bytes": 29968,
+      "gzipBytes": 8334
+    },
+    {
+      "file": "foods-branded.json",
+      "source": "branded",
+      "count": 17864,
+      "bytes": 3986007,
+      "gzipBytes": 861083
+    }
+  ]
+}

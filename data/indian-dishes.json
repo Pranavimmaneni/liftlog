@@ -1,0 +1,7095 @@
+{
+  "_note": "FR-FOOD-6: common North and South Indian home dishes as standard recipes. Nutrients per 100 g = sum of the ingredients' USDA nutrients ÷ cooked yield. Yield = total recipe grams × (1 − loss); loss is the water that cooks off (defaults per kind in lossByKind). Recipes are typical home versions, so values are estimates. IFCT 2017 has no open licence we could find, so it isn't used. Ingredients map to USDA SR Legacy ids (sr) or FNDDS ids (fndds); water has no nutrients. Poha (flattened rice) uses raw white rice, which is nutritionally close.",
+  "lossByKind": {
+    "dal": 0.15,
+    "curry": 0.15,
+    "sabzi": 0.2,
+    "rice": 0.05,
+    "bread": 0.12,
+    "breakfast": 0.1,
+    "snack": 0.05,
+    "sweet": 0.15,
+    "drink": 0,
+    "side": 0
+  },
+  "ingredients": {
+    "water": {},
+    "rice": {
+      "sr": 169756
+    },
+    "poha": {
+      "sr": 169756
+    },
+    "toor": {
+      "sr": 172436
+    },
+    "moong": {
+      "sr": 174256
+    },
+    "masoor": {
+      "sr": 172420
+    },
+    "urad": {
+      "sr": 174259
+    },
+    "chana": {
+      "sr": 173756
+    },
+    "rajma": {
+      "sr": 173744
+    },
+    "besan": {
+      "sr": 174288
+    },
+    "atta": {
+      "sr": 168893
+    },
+    "maida": {
+      "sr": 168936
+    },
+    "sooji": {
+      "sr": 168933
+    },
+    "riceflour": {
+      "sr": 169714
+    },
+    "oats": {
+      "sr": 173904
+    },
+    "sabudana": {
+      "sr": 169717
+    },
+    "vermicelli": {
+      "sr": 168927
+    },
+    "puffedrice": {
+      "sr": 173912
+    },
+    "cornstarch": {
+      "sr": 169698
+    },
+    "bread": {
+      "sr": 174924
+    },
+    "ghee": {
+      "sr": 173412
+    },
+    "oil": {
+      "sr": 172336
+    },
+    "butter": {
+      "sr": 173410
+    },
+    "milk": {
+      "sr": 171265
+    },
+    "curd": {
+      "sr": 171284
+    },
+    "cream": {
+      "sr": 170859
+    },
+    "paneer": {
+      "sr": 170845,
+      "_note": "Proxy: SR Legacy 'Cheese, mozzarella, whole milk' (299 kcal, 22 g protein, 22 g fat, 2 g carbs per 100 g) is close to fresh paneer. FNDDS 'Cheese, paneer' (fdc 2705740) lists 22.5 g carbs per 100 g, which is not plausible for paneer (D110)."
+    },
+    "milkpowder": {
+      "sr": 170876
+    },
+    "condensed": {
+      "sr": 171275
+    },
+    "sugar": {
+      "sr": 169655
+    },
+    "jaggery": {
+      "sr": 168833
+    },
+    "potato": {
+      "sr": 170026
+    },
+    "onion": {
+      "sr": 170000
+    },
+    "tomato": {
+      "sr": 170457
+    },
+    "spinach": {
+      "sr": 168462
+    },
+    "mustardgreens": {
+      "sr": 169256
+    },
+    "cauliflower": {
+      "sr": 169986
+    },
+    "cabbage": {
+      "sr": 169975
+    },
+    "peas": {
+      "sr": 170016
+    },
+    "okra": {
+      "sr": 169260
+    },
+    "eggplant": {
+      "sr": 169228
+    },
+    "carrot": {
+      "sr": 170393
+    },
+    "capsicum": {
+      "sr": 170427
+    },
+    "beans": {
+      "sr": 169961
+    },
+    "lauki": {
+      "sr": 169232
+    },
+    "karela": {
+      "sr": 168393
+    },
+    "mushroom": {
+      "sr": 169251
+    },
+    "cucumber": {
+      "sr": 168409
+    },
+    "pumpkin": {
+      "sr": 168448
+    },
+    "coconut": {
+      "sr": 170169
+    },
+    "coconutmilk": {
+      "sr": 170172
+    },
+    "cashew": {
+      "sr": 170162
+    },
+    "peanut": {
+      "sr": 172430
+    },
+    "almond": {
+      "sr": 170567
+    },
+    "raisin": {
+      "sr": 168165
+    },
+    "garlic": {
+      "sr": 169230
+    },
+    "ginger": {
+      "sr": 169231
+    },
+    "chili": {
+      "sr": 170497
+    },
+    "coriander": {
+      "sr": 169997
+    },
+    "lemon": {
+      "sr": 167747
+    },
+    "tamarind": {
+      "sr": 167763
+    },
+    "turmeric": {
+      "sr": 172231
+    },
+    "cumin": {
+      "sr": 170923
+    },
+    "corianderseed": {
+      "sr": 170922
+    },
+    "chilipowder": {
+      "sr": 171319
+    },
+    "mustard": {
+      "sr": 170929
+    },
+    "fenugreekseed": {
+      "sr": 171324
+    },
+    "pepper": {
+      "sr": 170931
+    },
+    "cardamom": {
+      "sr": 170919
+    },
+    "salt": {
+      "sr": 173468
+    },
+    "soysauce": {
+      "sr": 174278
+    },
+    "chicken": {
+      "sr": 171077
+    },
+    "chickenthigh": {
+      "sr": 173627
+    },
+    "mutton": {
+      "sr": 175303
+    },
+    "mince": {
+      "sr": 174370
+    },
+    "fish": {
+      "sr": 175176
+    },
+    "prawn": {
+      "sr": 175179
+    },
+    "egg": {
+      "sr": 171287
+    },
+    "tea": {
+      "sr": 173227
+    },
+    "coffee": {
+      "sr": 171890
+    },
+    "banana": {
+      "sr": 173944
+    },
+    "mango": {
+      "sr": 169910
+    },
+    "lobia": {
+      "sr": 173758
+    }
+  },
+  "dishes": [
+    {
+      "slug": "dal-tadka",
+      "name": "Dal tadka",
+      "aliases": [
+        "toor dal",
+        "arhar dal",
+        "tuvar dal",
+        "yellow dal"
+      ],
+      "kind": "dal",
+      "recipe": [
+        [
+          "toor",
+          100
+        ],
+        [
+          "water",
+          450
+        ],
+        [
+          "ghee",
+          10
+        ],
+        [
+          "onion",
+          50
+        ],
+        [
+          "tomato",
+          60
+        ],
+        [
+          "garlic",
+          5
+        ],
+        [
+          "cumin",
+          2
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "chilipowder",
+          1
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "dal-fry",
+      "name": "Dal fry",
+      "aliases": [
+        "dal fry toor"
+      ],
+      "kind": "dal",
+      "recipe": [
+        [
+          "toor",
+          100
+        ],
+        [
+          "water",
+          400
+        ],
+        [
+          "oil",
+          15
+        ],
+        [
+          "onion",
+          70
+        ],
+        [
+          "tomato",
+          80
+        ],
+        [
+          "garlic",
+          6
+        ],
+        [
+          "ginger",
+          5
+        ],
+        [
+          "chili",
+          5
+        ],
+        [
+          "cumin",
+          2
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "moong-dal",
+      "name": "Moong dal",
+      "aliases": [
+        "yellow moong dal",
+        "mung dal",
+        "pesarapappu"
+      ],
+      "kind": "dal",
+      "recipe": [
+        [
+          "moong",
+          100
+        ],
+        [
+          "water",
+          450
+        ],
+        [
+          "ghee",
+          8
+        ],
+        [
+          "tomato",
+          50
+        ],
+        [
+          "cumin",
+          2
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "masoor-dal",
+      "name": "Masoor dal",
+      "aliases": [
+        "red lentil dal",
+        "lal masoor"
+      ],
+      "kind": "dal",
+      "recipe": [
+        [
+          "masoor",
+          100
+        ],
+        [
+          "water",
+          450
+        ],
+        [
+          "oil",
+          10
+        ],
+        [
+          "onion",
+          50
+        ],
+        [
+          "tomato",
+          60
+        ],
+        [
+          "garlic",
+          5
+        ],
+        [
+          "cumin",
+          2
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "chana-dal",
+      "name": "Chana dal",
+      "aliases": [
+        "bengal gram dal",
+        "chane ki dal"
+      ],
+      "kind": "dal",
+      "recipe": [
+        [
+          "chana",
+          100
+        ],
+        [
+          "water",
+          450
+        ],
+        [
+          "oil",
+          12
+        ],
+        [
+          "onion",
+          50
+        ],
+        [
+          "tomato",
+          60
+        ],
+        [
+          "ginger",
+          5
+        ],
+        [
+          "cumin",
+          2
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "urad-dal",
+      "name": "Urad dal",
+      "aliases": [
+        "dhuli urad",
+        "maa ki dal"
+      ],
+      "kind": "dal",
+      "recipe": [
+        [
+          "urad",
+          100
+        ],
+        [
+          "water",
+          450
+        ],
+        [
+          "ghee",
+          12
+        ],
+        [
+          "onion",
+          40
+        ],
+        [
+          "tomato",
+          40
+        ],
+        [
+          "ginger",
+          5
+        ],
+        [
+          "cumin",
+          2
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "dal-makhani",
+      "name": "Dal makhani",
+      "aliases": [
+        "kaali dal",
+        "maa di dal"
+      ],
+      "kind": "dal",
+      "recipe": [
+        [
+          "urad",
+          90
+        ],
+        [
+          "rajma",
+          20
+        ],
+        [
+          "water",
+          600
+        ],
+        [
+          "butter",
+          25
+        ],
+        [
+          "cream",
+          30
+        ],
+        [
+          "tomato",
+          120
+        ],
+        [
+          "onion",
+          40
+        ],
+        [
+          "garlic",
+          6
+        ],
+        [
+          "ginger",
+          6
+        ],
+        [
+          "chilipowder",
+          2
+        ],
+        [
+          "salt",
+          6
+        ]
+      ],
+      "loss": 0.25
+    },
+    {
+      "slug": "sambar",
+      "name": "Sambar",
+      "aliases": [
+        "sambhar",
+        "sambaar"
+      ],
+      "kind": "dal",
+      "recipe": [
+        [
+          "toor",
+          80
+        ],
+        [
+          "water",
+          650
+        ],
+        [
+          "tamarind",
+          15
+        ],
+        [
+          "pumpkin",
+          60
+        ],
+        [
+          "carrot",
+          40
+        ],
+        [
+          "eggplant",
+          50
+        ],
+        [
+          "onion",
+          50
+        ],
+        [
+          "tomato",
+          60
+        ],
+        [
+          "oil",
+          12
+        ],
+        [
+          "mustard",
+          2
+        ],
+        [
+          "corianderseed",
+          6
+        ],
+        [
+          "chilipowder",
+          3
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "salt",
+          7
+        ]
+      ]
+    },
+    {
+      "slug": "rasam",
+      "name": "Rasam",
+      "aliases": [
+        "saaru",
+        "chaaru",
+        "tomato rasam"
+      ],
+      "kind": "dal",
+      "recipe": [
+        [
+          "toor",
+          25
+        ],
+        [
+          "water",
+          700
+        ],
+        [
+          "tomato",
+          150
+        ],
+        [
+          "tamarind",
+          15
+        ],
+        [
+          "ghee",
+          8
+        ],
+        [
+          "garlic",
+          6
+        ],
+        [
+          "pepper",
+          2
+        ],
+        [
+          "cumin",
+          2
+        ],
+        [
+          "mustard",
+          1
+        ],
+        [
+          "salt",
+          7
+        ]
+      ],
+      "loss": 0.1
+    },
+    {
+      "slug": "panchmel-dal",
+      "name": "Panchmel dal",
+      "aliases": [
+        "panchratna dal",
+        "mixed dal"
+      ],
+      "kind": "dal",
+      "recipe": [
+        [
+          "toor",
+          25
+        ],
+        [
+          "moong",
+          20
+        ],
+        [
+          "masoor",
+          20
+        ],
+        [
+          "urad",
+          20
+        ],
+        [
+          "chana",
+          20
+        ],
+        [
+          "water",
+          480
+        ],
+        [
+          "ghee",
+          12
+        ],
+        [
+          "onion",
+          50
+        ],
+        [
+          "tomato",
+          60
+        ],
+        [
+          "cumin",
+          2
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "dal-palak",
+      "name": "Dal palak",
+      "aliases": [
+        "palak dal",
+        "spinach dal"
+      ],
+      "kind": "dal",
+      "recipe": [
+        [
+          "toor",
+          90
+        ],
+        [
+          "water",
+          420
+        ],
+        [
+          "spinach",
+          120
+        ],
+        [
+          "oil",
+          12
+        ],
+        [
+          "onion",
+          50
+        ],
+        [
+          "tomato",
+          50
+        ],
+        [
+          "garlic",
+          6
+        ],
+        [
+          "cumin",
+          2
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "rajma",
+      "name": "Rajma",
+      "aliases": [
+        "rajma masala",
+        "kidney bean curry"
+      ],
+      "kind": "dal",
+      "recipe": [
+        [
+          "rajma",
+          120
+        ],
+        [
+          "water",
+          520
+        ],
+        [
+          "oil",
+          20
+        ],
+        [
+          "onion",
+          100
+        ],
+        [
+          "tomato",
+          150
+        ],
+        [
+          "ginger",
+          6
+        ],
+        [
+          "garlic",
+          6
+        ],
+        [
+          "corianderseed",
+          3
+        ],
+        [
+          "chilipowder",
+          3
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "salt",
+          6
+        ]
+      ]
+    },
+    {
+      "slug": "chole",
+      "name": "Chole",
+      "aliases": [
+        "chana masala",
+        "chhole",
+        "chickpea curry",
+        "pindi chole"
+      ],
+      "kind": "dal",
+      "recipe": [
+        [
+          "chana",
+          120
+        ],
+        [
+          "water",
+          500
+        ],
+        [
+          "oil",
+          20
+        ],
+        [
+          "onion",
+          100
+        ],
+        [
+          "tomato",
+          150
+        ],
+        [
+          "ginger",
+          6
+        ],
+        [
+          "garlic",
+          6
+        ],
+        [
+          "corianderseed",
+          4
+        ],
+        [
+          "chilipowder",
+          3
+        ],
+        [
+          "salt",
+          6
+        ]
+      ]
+    },
+    {
+      "slug": "kadhi-pakora",
+      "name": "Kadhi pakora",
+      "aliases": [
+        "punjabi kadhi",
+        "kadhi"
+      ],
+      "kind": "dal",
+      "recipe": [
+        [
+          "curd",
+          300
+        ],
+        [
+          "besan",
+          60
+        ],
+        [
+          "water",
+          500
+        ],
+        [
+          "oil",
+          30
+        ],
+        [
+          "onion",
+          50
+        ],
+        [
+          "fenugreekseed",
+          1
+        ],
+        [
+          "turmeric",
+          2
+        ],
+        [
+          "chilipowder",
+          2
+        ],
+        [
+          "salt",
+          7
+        ]
+      ],
+      "loss": 0.2
+    },
+    {
+      "slug": "lobia",
+      "name": "Lobia curry",
+      "aliases": [
+        "black-eyed peas curry",
+        "chawli"
+      ],
+      "kind": "dal",
+      "recipe": [
+        [
+          "lobia",
+          120
+        ],
+        [
+          "water",
+          500
+        ],
+        [
+          "oil",
+          18
+        ],
+        [
+          "onion",
+          90
+        ],
+        [
+          "tomato",
+          130
+        ],
+        [
+          "garlic",
+          6
+        ],
+        [
+          "corianderseed",
+          3
+        ],
+        [
+          "chilipowder",
+          2
+        ],
+        [
+          "salt",
+          6
+        ]
+      ]
+    },
+    {
+      "slug": "sprouted-moong-curry",
+      "name": "Moong usal",
+      "aliases": [
+        "sprouts usal",
+        "mung sprouts curry"
+      ],
+      "kind": "dal",
+      "recipe": [
+        [
+          "moong",
+          100
+        ],
+        [
+          "water",
+          300
+        ],
+        [
+          "oil",
+          12
+        ],
+        [
+          "onion",
+          60
+        ],
+        [
+          "tomato",
+          60
+        ],
+        [
+          "coconut",
+          15
+        ],
+        [
+          "mustard",
+          1
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "steamed-rice",
+      "name": "Steamed rice",
+      "aliases": [
+        "plain rice",
+        "chawal",
+        "boiled rice",
+        "annam",
+        "sadam"
+      ],
+      "kind": "rice",
+      "recipe": [
+        [
+          "rice",
+          100
+        ],
+        [
+          "water",
+          200
+        ]
+      ]
+    },
+    {
+      "slug": "jeera-rice",
+      "name": "Jeera rice",
+      "aliases": [
+        "cumin rice"
+      ],
+      "kind": "rice",
+      "recipe": [
+        [
+          "rice",
+          100
+        ],
+        [
+          "water",
+          190
+        ],
+        [
+          "ghee",
+          8
+        ],
+        [
+          "cumin",
+          3
+        ],
+        [
+          "salt",
+          2
+        ]
+      ]
+    },
+    {
+      "slug": "veg-pulao",
+      "name": "Veg pulao",
+      "aliases": [
+        "vegetable pulav",
+        "pulao"
+      ],
+      "kind": "rice",
+      "recipe": [
+        [
+          "rice",
+          100
+        ],
+        [
+          "water",
+          190
+        ],
+        [
+          "oil",
+          12
+        ],
+        [
+          "peas",
+          30
+        ],
+        [
+          "carrot",
+          30
+        ],
+        [
+          "beans",
+          20
+        ],
+        [
+          "onion",
+          40
+        ],
+        [
+          "cumin",
+          2
+        ],
+        [
+          "salt",
+          3
+        ]
+      ]
+    },
+    {
+      "slug": "veg-biryani",
+      "name": "Veg biryani",
+      "aliases": [
+        "vegetable biryani",
+        "subz biryani"
+      ],
+      "kind": "rice",
+      "recipe": [
+        [
+          "rice",
+          100
+        ],
+        [
+          "water",
+          190
+        ],
+        [
+          "oil",
+          15
+        ],
+        [
+          "ghee",
+          8
+        ],
+        [
+          "curd",
+          30
+        ],
+        [
+          "potato",
+          40
+        ],
+        [
+          "carrot",
+          30
+        ],
+        [
+          "peas",
+          30
+        ],
+        [
+          "beans",
+          20
+        ],
+        [
+          "onion",
+          60
+        ],
+        [
+          "ginger",
+          4
+        ],
+        [
+          "garlic",
+          4
+        ],
+        [
+          "chilipowder",
+          2
+        ],
+        [
+          "salt",
+          4
+        ]
+      ]
+    },
+    {
+      "slug": "chicken-biryani",
+      "name": "Chicken biryani",
+      "aliases": [
+        "murgh biryani",
+        "hyderabadi chicken biryani"
+      ],
+      "kind": "rice",
+      "recipe": [
+        [
+          "rice",
+          100
+        ],
+        [
+          "water",
+          180
+        ],
+        [
+          "chickenthigh",
+          150
+        ],
+        [
+          "curd",
+          40
+        ],
+        [
+          "oil",
+          18
+        ],
+        [
+          "ghee",
+          10
+        ],
+        [
+          "onion",
+          80
+        ],
+        [
+          "ginger",
+          5
+        ],
+        [
+          "garlic",
+          5
+        ],
+        [
+          "chilipowder",
+          3
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "salt",
+          5
+        ]
+      ],
+      "serve": [
+        [
+          "1 plate",
+          300
+        ],
+        [
+          "1 katori",
+          150
+        ]
+      ]
+    },
+    {
+      "slug": "mutton-biryani",
+      "name": "Mutton biryani",
+      "aliases": [
+        "gosht biryani",
+        "lamb biryani",
+        "goat biryani"
+      ],
+      "kind": "rice",
+      "recipe": [
+        [
+          "rice",
+          100
+        ],
+        [
+          "water",
+          180
+        ],
+        [
+          "mutton",
+          150
+        ],
+        [
+          "curd",
+          40
+        ],
+        [
+          "oil",
+          15
+        ],
+        [
+          "ghee",
+          15
+        ],
+        [
+          "onion",
+          80
+        ],
+        [
+          "ginger",
+          5
+        ],
+        [
+          "garlic",
+          5
+        ],
+        [
+          "chilipowder",
+          3
+        ],
+        [
+          "salt",
+          5
+        ]
+      ],
+      "serve": [
+        [
+          "1 plate",
+          300
+        ],
+        [
+          "1 katori",
+          150
+        ]
+      ]
+    },
+    {
+      "slug": "egg-biryani",
+      "name": "Egg biryani",
+      "aliases": [
+        "anda biryani"
+      ],
+      "kind": "rice",
+      "recipe": [
+        [
+          "rice",
+          100
+        ],
+        [
+          "water",
+          190
+        ],
+        [
+          "egg",
+          100
+        ],
+        [
+          "curd",
+          30
+        ],
+        [
+          "oil",
+          15
+        ],
+        [
+          "ghee",
+          8
+        ],
+        [
+          "onion",
+          70
+        ],
+        [
+          "tomato",
+          40
+        ],
+        [
+          "chilipowder",
+          3
+        ],
+        [
+          "salt",
+          5
+        ]
+      ],
+      "serve": [
+        [
+          "1 plate",
+          300
+        ],
+        [
+          "1 katori",
+          150
+        ]
+      ]
+    },
+    {
+      "slug": "lemon-rice",
+      "name": "Lemon rice",
+      "aliases": [
+        "chitranna",
+        "nimmakaya pulihora"
+      ],
+      "kind": "rice",
+      "recipe": [
+        [
+          "rice",
+          100
+        ],
+        [
+          "water",
+          190
+        ],
+        [
+          "oil",
+          15
+        ],
+        [
+          "peanut",
+          15
+        ],
+        [
+          "lemon",
+          15
+        ],
+        [
+          "chana",
+          5
+        ],
+        [
+          "urad",
+          5
+        ],
+        [
+          "mustard",
+          2
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "chili",
+          4
+        ],
+        [
+          "salt",
+          4
+        ]
+      ]
+    },
+    {
+      "slug": "curd-rice",
+      "name": "Curd rice",
+      "aliases": [
+        "thayir sadam",
+        "dahi chawal",
+        "mosaranna",
+        "daddojanam"
+      ],
+      "kind": "rice",
+      "recipe": [
+        [
+          "rice",
+          80
+        ],
+        [
+          "water",
+          200
+        ],
+        [
+          "curd",
+          200
+        ],
+        [
+          "milk",
+          50
+        ],
+        [
+          "oil",
+          5
+        ],
+        [
+          "mustard",
+          1
+        ],
+        [
+          "ginger",
+          3
+        ],
+        [
+          "salt",
+          4
+        ]
+      ],
+      "loss": 0.1
+    },
+    {
+      "slug": "tamarind-rice",
+      "name": "Tamarind rice",
+      "aliases": [
+        "puliyogare",
+        "puliyodarai",
+        "pulihora"
+      ],
+      "kind": "rice",
+      "recipe": [
+        [
+          "rice",
+          100
+        ],
+        [
+          "water",
+          190
+        ],
+        [
+          "tamarind",
+          30
+        ],
+        [
+          "oil",
+          20
+        ],
+        [
+          "peanut",
+          15
+        ],
+        [
+          "jaggery",
+          8
+        ],
+        [
+          "chana",
+          5
+        ],
+        [
+          "urad",
+          5
+        ],
+        [
+          "mustard",
+          2
+        ],
+        [
+          "chilipowder",
+          2
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "khichdi",
+      "name": "Khichdi",
+      "aliases": [
+        "moong dal khichdi",
+        "khichri",
+        "kitchari"
+      ],
+      "kind": "rice",
+      "recipe": [
+        [
+          "rice",
+          70
+        ],
+        [
+          "moong",
+          50
+        ],
+        [
+          "water",
+          500
+        ],
+        [
+          "ghee",
+          12
+        ],
+        [
+          "cumin",
+          2
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "salt",
+          5
+        ]
+      ],
+      "loss": 0.1
+    },
+    {
+      "slug": "coconut-rice",
+      "name": "Coconut rice",
+      "aliases": [
+        "thengai sadam",
+        "kobbari annam"
+      ],
+      "kind": "rice",
+      "recipe": [
+        [
+          "rice",
+          100
+        ],
+        [
+          "water",
+          190
+        ],
+        [
+          "coconut",
+          50
+        ],
+        [
+          "oil",
+          12
+        ],
+        [
+          "cashew",
+          8
+        ],
+        [
+          "urad",
+          5
+        ],
+        [
+          "mustard",
+          2
+        ],
+        [
+          "chili",
+          4
+        ],
+        [
+          "salt",
+          4
+        ]
+      ]
+    },
+    {
+      "slug": "tomato-rice",
+      "name": "Tomato rice",
+      "aliases": [
+        "thakkali sadam",
+        "tomato bath"
+      ],
+      "kind": "rice",
+      "recipe": [
+        [
+          "rice",
+          100
+        ],
+        [
+          "water",
+          180
+        ],
+        [
+          "tomato",
+          150
+        ],
+        [
+          "onion",
+          50
+        ],
+        [
+          "oil",
+          15
+        ],
+        [
+          "mustard",
+          2
+        ],
+        [
+          "chilipowder",
+          2
+        ],
+        [
+          "salt",
+          4
+        ]
+      ]
+    },
+    {
+      "slug": "bisi-bele-bath",
+      "name": "Bisi bele bath",
+      "aliases": [
+        "bisibelebath",
+        "sambar rice"
+      ],
+      "kind": "rice",
+      "recipe": [
+        [
+          "rice",
+          70
+        ],
+        [
+          "toor",
+          50
+        ],
+        [
+          "water",
+          650
+        ],
+        [
+          "tamarind",
+          15
+        ],
+        [
+          "carrot",
+          40
+        ],
+        [
+          "beans",
+          30
+        ],
+        [
+          "peas",
+          30
+        ],
+        [
+          "ghee",
+          15
+        ],
+        [
+          "cashew",
+          8
+        ],
+        [
+          "corianderseed",
+          5
+        ],
+        [
+          "chilipowder",
+          3
+        ],
+        [
+          "salt",
+          6
+        ]
+      ],
+      "loss": 0.15
+    },
+    {
+      "slug": "roti",
+      "name": "Roti",
+      "aliases": [
+        "chapati",
+        "chapathi",
+        "phulka",
+        "fulka",
+        "rotli"
+      ],
+      "kind": "bread",
+      "recipe": [
+        [
+          "atta",
+          100
+        ],
+        [
+          "water",
+          60
+        ],
+        [
+          "salt",
+          1
+        ]
+      ],
+      "serve": [
+        [
+          "1 roti",
+          40
+        ]
+      ],
+      "loss": 0.2
+    },
+    {
+      "slug": "ghee-roti",
+      "name": "Roti with ghee",
+      "aliases": [
+        "chapati with ghee",
+        "chopadeli rotli"
+      ],
+      "kind": "bread",
+      "recipe": [
+        [
+          "atta",
+          100
+        ],
+        [
+          "water",
+          60
+        ],
+        [
+          "ghee",
+          10
+        ],
+        [
+          "salt",
+          1
+        ]
+      ],
+      "serve": [
+        [
+          "1 roti",
+          42
+        ]
+      ],
+      "loss": 0.2
+    },
+    {
+      "slug": "plain-paratha",
+      "name": "Plain paratha",
+      "aliases": [
+        "parantha",
+        "lachha paratha",
+        "tawa paratha"
+      ],
+      "kind": "bread",
+      "recipe": [
+        [
+          "atta",
+          100
+        ],
+        [
+          "water",
+          55
+        ],
+        [
+          "ghee",
+          18
+        ],
+        [
+          "salt",
+          1
+        ]
+      ],
+      "serve": [
+        [
+          "1 paratha",
+          70
+        ]
+      ]
+    },
+    {
+      "slug": "aloo-paratha",
+      "name": "Aloo paratha",
+      "aliases": [
+        "potato paratha",
+        "alu parantha"
+      ],
+      "kind": "bread",
+      "recipe": [
+        [
+          "atta",
+          100
+        ],
+        [
+          "water",
+          55
+        ],
+        [
+          "potato",
+          120
+        ],
+        [
+          "onion",
+          20
+        ],
+        [
+          "chili",
+          4
+        ],
+        [
+          "ghee",
+          20
+        ],
+        [
+          "salt",
+          3
+        ]
+      ],
+      "serve": [
+        [
+          "1 paratha",
+          120
+        ]
+      ]
+    },
+    {
+      "slug": "gobi-paratha",
+      "name": "Gobi paratha",
+      "aliases": [
+        "cauliflower paratha"
+      ],
+      "kind": "bread",
+      "recipe": [
+        [
+          "atta",
+          100
+        ],
+        [
+          "water",
+          50
+        ],
+        [
+          "cauliflower",
+          120
+        ],
+        [
+          "chili",
+          4
+        ],
+        [
+          "ghee",
+          20
+        ],
+        [
+          "salt",
+          3
+        ]
+      ],
+      "serve": [
+        [
+          "1 paratha",
+          110
+        ]
+      ]
+    },
+    {
+      "slug": "paneer-paratha",
+      "name": "Paneer paratha",
+      "aliases": [
+        "paneer parantha"
+      ],
+      "kind": "bread",
+      "recipe": [
+        [
+          "atta",
+          100
+        ],
+        [
+          "water",
+          55
+        ],
+        [
+          "paneer",
+          90
+        ],
+        [
+          "onion",
+          20
+        ],
+        [
+          "chili",
+          4
+        ],
+        [
+          "ghee",
+          20
+        ],
+        [
+          "salt",
+          3
+        ]
+      ],
+      "serve": [
+        [
+          "1 paratha",
+          120
+        ]
+      ]
+    },
+    {
+      "slug": "methi-thepla",
+      "name": "Methi thepla",
+      "aliases": [
+        "thepla",
+        "methi na thepla"
+      ],
+      "kind": "bread",
+      "recipe": [
+        [
+          "atta",
+          100
+        ],
+        [
+          "besan",
+          15
+        ],
+        [
+          "curd",
+          30
+        ],
+        [
+          "spinach",
+          30
+        ],
+        [
+          "oil",
+          15
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "chilipowder",
+          1
+        ],
+        [
+          "salt",
+          2
+        ],
+        [
+          "water",
+          25
+        ]
+      ],
+      "serve": [
+        [
+          "1 thepla",
+          45
+        ]
+      ]
+    },
+    {
+      "slug": "naan",
+      "name": "Naan",
+      "aliases": [
+        "plain naan",
+        "tandoori naan"
+      ],
+      "kind": "bread",
+      "recipe": [
+        [
+          "maida",
+          100
+        ],
+        [
+          "curd",
+          25
+        ],
+        [
+          "milk",
+          25
+        ],
+        [
+          "water",
+          20
+        ],
+        [
+          "oil",
+          5
+        ],
+        [
+          "sugar",
+          3
+        ],
+        [
+          "salt",
+          2
+        ]
+      ],
+      "serve": [
+        [
+          "1 naan",
+          90
+        ]
+      ]
+    },
+    {
+      "slug": "butter-naan",
+      "name": "Butter naan",
+      "aliases": [
+        "makhani naan"
+      ],
+      "kind": "bread",
+      "recipe": [
+        [
+          "maida",
+          100
+        ],
+        [
+          "curd",
+          25
+        ],
+        [
+          "milk",
+          25
+        ],
+        [
+          "water",
+          20
+        ],
+        [
+          "butter",
+          12
+        ],
+        [
+          "sugar",
+          3
+        ],
+        [
+          "salt",
+          2
+        ]
+      ],
+      "serve": [
+        [
+          "1 naan",
+          95
+        ]
+      ]
+    },
+    {
+      "slug": "garlic-naan",
+      "name": "Garlic naan",
+      "aliases": [
+        "lasooni naan"
+      ],
+      "kind": "bread",
+      "recipe": [
+        [
+          "maida",
+          100
+        ],
+        [
+          "curd",
+          25
+        ],
+        [
+          "milk",
+          25
+        ],
+        [
+          "water",
+          20
+        ],
+        [
+          "butter",
+          12
+        ],
+        [
+          "garlic",
+          8
+        ],
+        [
+          "coriander",
+          3
+        ],
+        [
+          "salt",
+          2
+        ]
+      ],
+      "serve": [
+        [
+          "1 naan",
+          95
+        ]
+      ]
+    },
+    {
+      "slug": "puri",
+      "name": "Puri",
+      "aliases": [
+        "poori"
+      ],
+      "kind": "bread",
+      "recipe": [
+        [
+          "atta",
+          100
+        ],
+        [
+          "water",
+          50
+        ],
+        [
+          "oil",
+          22
+        ],
+        [
+          "salt",
+          1
+        ]
+      ],
+      "serve": [
+        [
+          "1 puri",
+          25
+        ]
+      ],
+      "loss": 0.15
+    },
+    {
+      "slug": "bhatura",
+      "name": "Bhatura",
+      "aliases": [
+        "bhature",
+        "chole bhature bread"
+      ],
+      "kind": "bread",
+      "recipe": [
+        [
+          "maida",
+          100
+        ],
+        [
+          "curd",
+          30
+        ],
+        [
+          "water",
+          25
+        ],
+        [
+          "oil",
+          25
+        ],
+        [
+          "sugar",
+          2
+        ],
+        [
+          "salt",
+          1
+        ]
+      ],
+      "serve": [
+        [
+          "1 bhatura",
+          70
+        ]
+      ]
+    },
+    {
+      "slug": "missi-roti",
+      "name": "Missi roti",
+      "aliases": [
+        "besan roti"
+      ],
+      "kind": "bread",
+      "recipe": [
+        [
+          "atta",
+          60
+        ],
+        [
+          "besan",
+          40
+        ],
+        [
+          "onion",
+          15
+        ],
+        [
+          "ghee",
+          8
+        ],
+        [
+          "water",
+          55
+        ],
+        [
+          "salt",
+          2
+        ]
+      ],
+      "serve": [
+        [
+          "1 roti",
+          50
+        ]
+      ]
+    },
+    {
+      "slug": "tandoori-roti",
+      "name": "Tandoori roti",
+      "aliases": [
+        "tandoori rotti"
+      ],
+      "kind": "bread",
+      "recipe": [
+        [
+          "atta",
+          100
+        ],
+        [
+          "water",
+          60
+        ],
+        [
+          "salt",
+          1
+        ]
+      ],
+      "serve": [
+        [
+          "1 roti",
+          55
+        ]
+      ],
+      "loss": 0.15
+    },
+    {
+      "slug": "poha",
+      "name": "Poha",
+      "aliases": [
+        "kanda poha",
+        "aval",
+        "avalakki",
+        "chivda poha",
+        "pohe"
+      ],
+      "kind": "breakfast",
+      "recipe": [
+        [
+          "poha",
+          100
+        ],
+        [
+          "water",
+          80
+        ],
+        [
+          "oil",
+          12
+        ],
+        [
+          "onion",
+          50
+        ],
+        [
+          "potato",
+          40
+        ],
+        [
+          "peanut",
+          15
+        ],
+        [
+          "mustard",
+          1
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "chili",
+          4
+        ],
+        [
+          "lemon",
+          8
+        ],
+        [
+          "sugar",
+          3
+        ],
+        [
+          "salt",
+          3
+        ]
+      ],
+      "serve": [
+        [
+          "1 plate",
+          200
+        ],
+        [
+          "1 katori",
+          120
+        ]
+      ]
+    },
+    {
+      "slug": "upma",
+      "name": "Upma",
+      "aliases": [
+        "rava upma",
+        "uppittu",
+        "sooji upma"
+      ],
+      "kind": "breakfast",
+      "recipe": [
+        [
+          "sooji",
+          100
+        ],
+        [
+          "water",
+          280
+        ],
+        [
+          "oil",
+          15
+        ],
+        [
+          "onion",
+          40
+        ],
+        [
+          "carrot",
+          20
+        ],
+        [
+          "peas",
+          20
+        ],
+        [
+          "urad",
+          4
+        ],
+        [
+          "mustard",
+          1
+        ],
+        [
+          "chili",
+          4
+        ],
+        [
+          "salt",
+          4
+        ]
+      ],
+      "serve": [
+        [
+          "1 plate",
+          220
+        ],
+        [
+          "1 katori",
+          150
+        ]
+      ]
+    },
+    {
+      "slug": "idli",
+      "name": "Idli",
+      "aliases": [
+        "idly",
+        "iddli"
+      ],
+      "kind": "breakfast",
+      "recipe": [
+        [
+          "rice",
+          100
+        ],
+        [
+          "urad",
+          35
+        ],
+        [
+          "water",
+          210
+        ],
+        [
+          "salt",
+          2
+        ]
+      ],
+      "serve": [
+        [
+          "1 idli",
+          40
+        ],
+        [
+          "2 idli",
+          80
+        ]
+      ],
+      "loss": 0.05
+    },
+    {
+      "slug": "plain-dosa",
+      "name": "Plain dosa",
+      "aliases": [
+        "sada dosa",
+        "dosai",
+        "dose"
+      ],
+      "kind": "breakfast",
+      "recipe": [
+        [
+          "rice",
+          100
+        ],
+        [
+          "urad",
+          30
+        ],
+        [
+          "water",
+          130
+        ],
+        [
+          "oil",
+          12
+        ],
+        [
+          "salt",
+          2
+        ]
+      ],
+      "serve": [
+        [
+          "1 dosa",
+          90
+        ]
+      ],
+      "loss": 0.2
+    },
+    {
+      "slug": "masala-dosa",
+      "name": "Masala dosa",
+      "aliases": [
+        "masale dose",
+        "potato dosa"
+      ],
+      "kind": "breakfast",
+      "recipe": [
+        [
+          "rice",
+          100
+        ],
+        [
+          "urad",
+          30
+        ],
+        [
+          "water",
+          130
+        ],
+        [
+          "oil",
+          20
+        ],
+        [
+          "potato",
+          200
+        ],
+        [
+          "onion",
+          50
+        ],
+        [
+          "mustard",
+          1
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "salt",
+          4
+        ]
+      ],
+      "serve": [
+        [
+          "1 masala dosa",
+          170
+        ]
+      ],
+      "loss": 0.15
+    },
+    {
+      "slug": "rava-dosa",
+      "name": "Rava dosa",
+      "aliases": [
+        "sooji dosa",
+        "rava dose"
+      ],
+      "kind": "breakfast",
+      "recipe": [
+        [
+          "sooji",
+          50
+        ],
+        [
+          "riceflour",
+          50
+        ],
+        [
+          "maida",
+          15
+        ],
+        [
+          "water",
+          250
+        ],
+        [
+          "oil",
+          18
+        ],
+        [
+          "onion",
+          20
+        ],
+        [
+          "cumin",
+          2
+        ],
+        [
+          "salt",
+          3
+        ]
+      ],
+      "serve": [
+        [
+          "1 dosa",
+          90
+        ]
+      ],
+      "loss": 0.3
+    },
+    {
+      "slug": "uttapam",
+      "name": "Uttapam",
+      "aliases": [
+        "oothappam",
+        "onion uttapam"
+      ],
+      "kind": "breakfast",
+      "recipe": [
+        [
+          "rice",
+          100
+        ],
+        [
+          "urad",
+          30
+        ],
+        [
+          "water",
+          130
+        ],
+        [
+          "onion",
+          50
+        ],
+        [
+          "tomato",
+          30
+        ],
+        [
+          "oil",
+          12
+        ],
+        [
+          "salt",
+          3
+        ]
+      ],
+      "serve": [
+        [
+          "1 uttapam",
+          130
+        ]
+      ],
+      "loss": 0.15
+    },
+    {
+      "slug": "medu-vada",
+      "name": "Medu vada",
+      "aliases": [
+        "uddina vada",
+        "ulundu vadai",
+        "vada"
+      ],
+      "kind": "breakfast",
+      "recipe": [
+        [
+          "urad",
+          100
+        ],
+        [
+          "water",
+          40
+        ],
+        [
+          "oil",
+          35
+        ],
+        [
+          "onion",
+          15
+        ],
+        [
+          "chili",
+          4
+        ],
+        [
+          "salt",
+          2
+        ]
+      ],
+      "serve": [
+        [
+          "1 vada",
+          45
+        ]
+      ],
+      "loss": 0.05
+    },
+    {
+      "slug": "ven-pongal",
+      "name": "Ven pongal",
+      "aliases": [
+        "khara pongal",
+        "pongal"
+      ],
+      "kind": "breakfast",
+      "recipe": [
+        [
+          "rice",
+          80
+        ],
+        [
+          "moong",
+          40
+        ],
+        [
+          "water",
+          450
+        ],
+        [
+          "ghee",
+          20
+        ],
+        [
+          "cashew",
+          8
+        ],
+        [
+          "pepper",
+          2
+        ],
+        [
+          "cumin",
+          2
+        ],
+        [
+          "ginger",
+          4
+        ],
+        [
+          "salt",
+          5
+        ]
+      ],
+      "serve": [
+        [
+          "1 plate",
+          220
+        ],
+        [
+          "1 katori",
+          150
+        ]
+      ],
+      "loss": 0.15
+    },
+    {
+      "slug": "besan-chilla",
+      "name": "Besan chilla",
+      "aliases": [
+        "besan cheela",
+        "pudla",
+        "chickpea pancake"
+      ],
+      "kind": "breakfast",
+      "recipe": [
+        [
+          "besan",
+          100
+        ],
+        [
+          "water",
+          140
+        ],
+        [
+          "onion",
+          40
+        ],
+        [
+          "tomato",
+          30
+        ],
+        [
+          "oil",
+          15
+        ],
+        [
+          "chili",
+          4
+        ],
+        [
+          "salt",
+          3
+        ]
+      ],
+      "serve": [
+        [
+          "1 chilla",
+          70
+        ]
+      ]
+    },
+    {
+      "slug": "moong-chilla",
+      "name": "Moong dal chilla",
+      "aliases": [
+        "moong cheela",
+        "pesarattu"
+      ],
+      "kind": "breakfast",
+      "recipe": [
+        [
+          "moong",
+          100
+        ],
+        [
+          "water",
+          120
+        ],
+        [
+          "onion",
+          30
+        ],
+        [
+          "ginger",
+          5
+        ],
+        [
+          "chili",
+          4
+        ],
+        [
+          "oil",
+          15
+        ],
+        [
+          "salt",
+          3
+        ]
+      ],
+      "serve": [
+        [
+          "1 chilla",
+          70
+        ]
+      ]
+    },
+    {
+      "slug": "sabudana-khichdi",
+      "name": "Sabudana khichdi",
+      "aliases": [
+        "sago khichdi",
+        "sabudana khichri"
+      ],
+      "kind": "breakfast",
+      "recipe": [
+        [
+          "sabudana",
+          100
+        ],
+        [
+          "water",
+          60
+        ],
+        [
+          "potato",
+          80
+        ],
+        [
+          "peanut",
+          40
+        ],
+        [
+          "ghee",
+          15
+        ],
+        [
+          "cumin",
+          2
+        ],
+        [
+          "chili",
+          4
+        ],
+        [
+          "lemon",
+          5
+        ],
+        [
+          "sugar",
+          3
+        ],
+        [
+          "salt",
+          3
+        ]
+      ],
+      "serve": [
+        [
+          "1 plate",
+          200
+        ],
+        [
+          "1 katori",
+          130
+        ]
+      ],
+      "loss": 0.05
+    },
+    {
+      "slug": "semiya-upma",
+      "name": "Vermicelli upma",
+      "aliases": [
+        "semiya upma",
+        "sevai upma"
+      ],
+      "kind": "breakfast",
+      "recipe": [
+        [
+          "vermicelli",
+          100
+        ],
+        [
+          "water",
+          200
+        ],
+        [
+          "oil",
+          12
+        ],
+        [
+          "onion",
+          40
+        ],
+        [
+          "carrot",
+          20
+        ],
+        [
+          "peas",
+          20
+        ],
+        [
+          "mustard",
+          1
+        ],
+        [
+          "chili",
+          4
+        ],
+        [
+          "salt",
+          4
+        ]
+      ],
+      "serve": [
+        [
+          "1 plate",
+          200
+        ],
+        [
+          "1 katori",
+          140
+        ]
+      ]
+    },
+    {
+      "slug": "aloo-gobi",
+      "name": "Aloo gobi",
+      "aliases": [
+        "alu gobi",
+        "potato cauliflower sabzi"
+      ],
+      "kind": "sabzi",
+      "recipe": [
+        [
+          "potato",
+          200
+        ],
+        [
+          "cauliflower",
+          250
+        ],
+        [
+          "onion",
+          60
+        ],
+        [
+          "tomato",
+          60
+        ],
+        [
+          "oil",
+          25
+        ],
+        [
+          "ginger",
+          5
+        ],
+        [
+          "cumin",
+          2
+        ],
+        [
+          "turmeric",
+          2
+        ],
+        [
+          "corianderseed",
+          3
+        ],
+        [
+          "chilipowder",
+          2
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "aloo-matar",
+      "name": "Aloo matar",
+      "aliases": [
+        "alu mutter",
+        "potato peas curry"
+      ],
+      "kind": "sabzi",
+      "recipe": [
+        [
+          "potato",
+          200
+        ],
+        [
+          "peas",
+          150
+        ],
+        [
+          "onion",
+          60
+        ],
+        [
+          "tomato",
+          100
+        ],
+        [
+          "oil",
+          20
+        ],
+        [
+          "water",
+          150
+        ],
+        [
+          "ginger",
+          5
+        ],
+        [
+          "cumin",
+          2
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "chilipowder",
+          2
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "jeera-aloo",
+      "name": "Jeera aloo",
+      "aliases": [
+        "cumin potatoes",
+        "aloo jeera"
+      ],
+      "kind": "sabzi",
+      "recipe": [
+        [
+          "potato",
+          400
+        ],
+        [
+          "oil",
+          20
+        ],
+        [
+          "cumin",
+          4
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "chilipowder",
+          2
+        ],
+        [
+          "coriander",
+          5
+        ],
+        [
+          "salt",
+          5
+        ]
+      ],
+      "loss": 0.1
+    },
+    {
+      "slug": "bhindi-masala",
+      "name": "Bhindi masala",
+      "aliases": [
+        "bhindi fry",
+        "okra sabzi",
+        "vendakkai poriyal",
+        "bendakaya fry"
+      ],
+      "kind": "sabzi",
+      "recipe": [
+        [
+          "okra",
+          300
+        ],
+        [
+          "onion",
+          80
+        ],
+        [
+          "tomato",
+          50
+        ],
+        [
+          "oil",
+          25
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "corianderseed",
+          3
+        ],
+        [
+          "chilipowder",
+          2
+        ],
+        [
+          "salt",
+          4
+        ]
+      ]
+    },
+    {
+      "slug": "baingan-bharta",
+      "name": "Baingan bharta",
+      "aliases": [
+        "baingan ka bharta",
+        "brinjal bharta",
+        "vangyache bharit"
+      ],
+      "kind": "sabzi",
+      "recipe": [
+        [
+          "eggplant",
+          400
+        ],
+        [
+          "onion",
+          80
+        ],
+        [
+          "tomato",
+          100
+        ],
+        [
+          "oil",
+          20
+        ],
+        [
+          "garlic",
+          6
+        ],
+        [
+          "chili",
+          5
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "palak-sabzi",
+      "name": "Palak sabzi",
+      "aliases": [
+        "spinach sabzi",
+        "palak bhaji",
+        "keerai poriyal"
+      ],
+      "kind": "sabzi",
+      "recipe": [
+        [
+          "spinach",
+          400
+        ],
+        [
+          "onion",
+          50
+        ],
+        [
+          "oil",
+          15
+        ],
+        [
+          "garlic",
+          6
+        ],
+        [
+          "cumin",
+          2
+        ],
+        [
+          "salt",
+          4
+        ]
+      ],
+      "loss": 0.35
+    },
+    {
+      "slug": "sarson-ka-saag",
+      "name": "Sarson ka saag",
+      "aliases": [
+        "saag",
+        "mustard greens"
+      ],
+      "kind": "sabzi",
+      "recipe": [
+        [
+          "mustardgreens",
+          350
+        ],
+        [
+          "spinach",
+          150
+        ],
+        [
+          "besan",
+          15
+        ],
+        [
+          "ghee",
+          25
+        ],
+        [
+          "onion",
+          50
+        ],
+        [
+          "garlic",
+          6
+        ],
+        [
+          "ginger",
+          6
+        ],
+        [
+          "chili",
+          5
+        ],
+        [
+          "salt",
+          5
+        ]
+      ],
+      "loss": 0.35
+    },
+    {
+      "slug": "mixed-veg",
+      "name": "Mixed vegetable curry",
+      "aliases": [
+        "mix veg",
+        "mixed veg sabzi"
+      ],
+      "kind": "sabzi",
+      "recipe": [
+        [
+          "potato",
+          100
+        ],
+        [
+          "carrot",
+          80
+        ],
+        [
+          "beans",
+          80
+        ],
+        [
+          "peas",
+          80
+        ],
+        [
+          "cauliflower",
+          100
+        ],
+        [
+          "onion",
+          60
+        ],
+        [
+          "tomato",
+          100
+        ],
+        [
+          "oil",
+          25
+        ],
+        [
+          "water",
+          100
+        ],
+        [
+          "corianderseed",
+          3
+        ],
+        [
+          "chilipowder",
+          2
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "cabbage-sabzi",
+      "name": "Cabbage sabzi",
+      "aliases": [
+        "patta gobi sabzi",
+        "cabbage poriyal",
+        "kobi"
+      ],
+      "kind": "sabzi",
+      "recipe": [
+        [
+          "cabbage",
+          400
+        ],
+        [
+          "peas",
+          50
+        ],
+        [
+          "oil",
+          15
+        ],
+        [
+          "mustard",
+          2
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "chili",
+          4
+        ],
+        [
+          "salt",
+          4
+        ]
+      ]
+    },
+    {
+      "slug": "beans-poriyal",
+      "name": "Beans poriyal",
+      "aliases": [
+        "beans thoran",
+        "french beans sabzi",
+        "beans palya"
+      ],
+      "kind": "sabzi",
+      "recipe": [
+        [
+          "beans",
+          350
+        ],
+        [
+          "coconut",
+          40
+        ],
+        [
+          "oil",
+          15
+        ],
+        [
+          "mustard",
+          2
+        ],
+        [
+          "urad",
+          4
+        ],
+        [
+          "chili",
+          4
+        ],
+        [
+          "salt",
+          4
+        ]
+      ]
+    },
+    {
+      "slug": "gajar-matar",
+      "name": "Gajar matar",
+      "aliases": [
+        "carrot peas sabzi"
+      ],
+      "kind": "sabzi",
+      "recipe": [
+        [
+          "carrot",
+          250
+        ],
+        [
+          "peas",
+          150
+        ],
+        [
+          "oil",
+          15
+        ],
+        [
+          "cumin",
+          2
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "chilipowder",
+          1
+        ],
+        [
+          "salt",
+          4
+        ]
+      ]
+    },
+    {
+      "slug": "lauki-sabzi",
+      "name": "Lauki sabzi",
+      "aliases": [
+        "doodhi sabzi",
+        "bottle gourd curry",
+        "ghiya"
+      ],
+      "kind": "sabzi",
+      "recipe": [
+        [
+          "lauki",
+          450
+        ],
+        [
+          "tomato",
+          60
+        ],
+        [
+          "oil",
+          15
+        ],
+        [
+          "cumin",
+          2
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "salt",
+          4
+        ]
+      ],
+      "loss": 0.25
+    },
+    {
+      "slug": "karela-sabzi",
+      "name": "Karela sabzi",
+      "aliases": [
+        "bitter gourd fry",
+        "karela fry",
+        "pavakkai poriyal"
+      ],
+      "kind": "sabzi",
+      "recipe": [
+        [
+          "karela",
+          300
+        ],
+        [
+          "onion",
+          80
+        ],
+        [
+          "oil",
+          25
+        ],
+        [
+          "jaggery",
+          8
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "chilipowder",
+          2
+        ],
+        [
+          "salt",
+          4
+        ]
+      ],
+      "loss": 0.25
+    },
+    {
+      "slug": "mushroom-masala",
+      "name": "Mushroom masala",
+      "aliases": [
+        "mushroom curry",
+        "khumb masala"
+      ],
+      "kind": "sabzi",
+      "recipe": [
+        [
+          "mushroom",
+          300
+        ],
+        [
+          "onion",
+          80
+        ],
+        [
+          "tomato",
+          100
+        ],
+        [
+          "oil",
+          20
+        ],
+        [
+          "cream",
+          15
+        ],
+        [
+          "ginger",
+          5
+        ],
+        [
+          "garlic",
+          5
+        ],
+        [
+          "chilipowder",
+          2
+        ],
+        [
+          "salt",
+          4
+        ]
+      ],
+      "loss": 0.2
+    },
+    {
+      "slug": "dum-aloo",
+      "name": "Dum aloo",
+      "aliases": [
+        "kashmiri dum aloo",
+        "alu dum"
+      ],
+      "kind": "curry",
+      "recipe": [
+        [
+          "potato",
+          350
+        ],
+        [
+          "curd",
+          100
+        ],
+        [
+          "onion",
+          50
+        ],
+        [
+          "tomato",
+          60
+        ],
+        [
+          "oil",
+          30
+        ],
+        [
+          "water",
+          100
+        ],
+        [
+          "chilipowder",
+          3
+        ],
+        [
+          "ginger",
+          5
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "malai-kofta",
+      "name": "Malai kofta",
+      "aliases": [
+        "kofta curry"
+      ],
+      "kind": "curry",
+      "recipe": [
+        [
+          "paneer",
+          100
+        ],
+        [
+          "potato",
+          100
+        ],
+        [
+          "maida",
+          15
+        ],
+        [
+          "oil",
+          40
+        ],
+        [
+          "cream",
+          60
+        ],
+        [
+          "cashew",
+          25
+        ],
+        [
+          "onion",
+          80
+        ],
+        [
+          "tomato",
+          150
+        ],
+        [
+          "water",
+          120
+        ],
+        [
+          "chilipowder",
+          2
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "navratan-korma",
+      "name": "Navratan korma",
+      "aliases": [
+        "navrattan korma",
+        "veg korma"
+      ],
+      "kind": "curry",
+      "recipe": [
+        [
+          "paneer",
+          60
+        ],
+        [
+          "potato",
+          80
+        ],
+        [
+          "carrot",
+          60
+        ],
+        [
+          "beans",
+          60
+        ],
+        [
+          "peas",
+          60
+        ],
+        [
+          "cream",
+          60
+        ],
+        [
+          "cashew",
+          25
+        ],
+        [
+          "raisin",
+          10
+        ],
+        [
+          "ghee",
+          20
+        ],
+        [
+          "onion",
+          60
+        ],
+        [
+          "water",
+          100
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "veg-kurma",
+      "name": "Vegetable kurma",
+      "aliases": [
+        "veg kurma",
+        "kurma"
+      ],
+      "kind": "curry",
+      "recipe": [
+        [
+          "potato",
+          80
+        ],
+        [
+          "carrot",
+          60
+        ],
+        [
+          "beans",
+          60
+        ],
+        [
+          "peas",
+          60
+        ],
+        [
+          "coconut",
+          60
+        ],
+        [
+          "cashew",
+          10
+        ],
+        [
+          "onion",
+          60
+        ],
+        [
+          "tomato",
+          60
+        ],
+        [
+          "oil",
+          20
+        ],
+        [
+          "water",
+          200
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "avial",
+      "name": "Avial",
+      "aliases": [
+        "aviyal"
+      ],
+      "kind": "sabzi",
+      "recipe": [
+        [
+          "carrot",
+          60
+        ],
+        [
+          "beans",
+          60
+        ],
+        [
+          "pumpkin",
+          80
+        ],
+        [
+          "eggplant",
+          60
+        ],
+        [
+          "cucumber",
+          60
+        ],
+        [
+          "coconut",
+          80
+        ],
+        [
+          "curd",
+          60
+        ],
+        [
+          "oil",
+          15
+        ],
+        [
+          "chili",
+          4
+        ],
+        [
+          "salt",
+          4
+        ]
+      ],
+      "loss": 0.1
+    },
+    {
+      "slug": "kaddu-sabzi",
+      "name": "Kaddu sabzi",
+      "aliases": [
+        "pumpkin sabzi",
+        "khatta meetha kaddu",
+        "sitaphal sabzi"
+      ],
+      "kind": "sabzi",
+      "recipe": [
+        [
+          "pumpkin",
+          450
+        ],
+        [
+          "oil",
+          15
+        ],
+        [
+          "jaggery",
+          10
+        ],
+        [
+          "fenugreekseed",
+          1
+        ],
+        [
+          "chilipowder",
+          1
+        ],
+        [
+          "salt",
+          4
+        ]
+      ],
+      "loss": 0.25
+    },
+    {
+      "slug": "aloo-baingan",
+      "name": "Aloo baingan",
+      "aliases": [
+        "brinjal potato curry"
+      ],
+      "kind": "sabzi",
+      "recipe": [
+        [
+          "potato",
+          200
+        ],
+        [
+          "eggplant",
+          250
+        ],
+        [
+          "onion",
+          50
+        ],
+        [
+          "tomato",
+          80
+        ],
+        [
+          "oil",
+          25
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "chilipowder",
+          2
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "gobi-manchurian",
+      "name": "Gobi manchurian",
+      "aliases": [
+        "cauliflower manchurian"
+      ],
+      "kind": "snack",
+      "recipe": [
+        [
+          "cauliflower",
+          300
+        ],
+        [
+          "maida",
+          40
+        ],
+        [
+          "cornstarch",
+          30
+        ],
+        [
+          "oil",
+          45
+        ],
+        [
+          "soysauce",
+          20
+        ],
+        [
+          "capsicum",
+          40
+        ],
+        [
+          "onion",
+          40
+        ],
+        [
+          "garlic",
+          8
+        ],
+        [
+          "sugar",
+          5
+        ],
+        [
+          "salt",
+          3
+        ],
+        [
+          "water",
+          60
+        ]
+      ],
+      "serve": [
+        [
+          "1 plate",
+          200
+        ],
+        [
+          "1 katori",
+          120
+        ]
+      ],
+      "loss": 0.15
+    },
+    {
+      "slug": "veg-jalfrezi",
+      "name": "Veg jalfrezi",
+      "aliases": [
+        "jalfrezi"
+      ],
+      "kind": "sabzi",
+      "recipe": [
+        [
+          "capsicum",
+          120
+        ],
+        [
+          "carrot",
+          80
+        ],
+        [
+          "beans",
+          60
+        ],
+        [
+          "cauliflower",
+          100
+        ],
+        [
+          "onion",
+          80
+        ],
+        [
+          "tomato",
+          100
+        ],
+        [
+          "oil",
+          25
+        ],
+        [
+          "chilipowder",
+          2
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "chana-saag",
+      "name": "Chana saag",
+      "aliases": [
+        "chickpea spinach curry"
+      ],
+      "kind": "curry",
+      "recipe": [
+        [
+          "chana",
+          100
+        ],
+        [
+          "water",
+          300
+        ],
+        [
+          "spinach",
+          200
+        ],
+        [
+          "onion",
+          60
+        ],
+        [
+          "tomato",
+          80
+        ],
+        [
+          "oil",
+          20
+        ],
+        [
+          "garlic",
+          6
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "paneer-butter-masala",
+      "name": "Paneer butter masala",
+      "aliases": [
+        "paneer makhani",
+        "paneer makhanwala",
+        "pbm"
+      ],
+      "kind": "curry",
+      "recipe": [
+        [
+          "paneer",
+          250
+        ],
+        [
+          "butter",
+          30
+        ],
+        [
+          "cream",
+          60
+        ],
+        [
+          "tomato",
+          250
+        ],
+        [
+          "onion",
+          60
+        ],
+        [
+          "cashew",
+          25
+        ],
+        [
+          "sugar",
+          5
+        ],
+        [
+          "ginger",
+          5
+        ],
+        [
+          "garlic",
+          5
+        ],
+        [
+          "chilipowder",
+          3
+        ],
+        [
+          "water",
+          100
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "palak-paneer",
+      "name": "Palak paneer",
+      "aliases": [
+        "saag paneer",
+        "spinach paneer"
+      ],
+      "kind": "curry",
+      "recipe": [
+        [
+          "paneer",
+          200
+        ],
+        [
+          "spinach",
+          400
+        ],
+        [
+          "onion",
+          60
+        ],
+        [
+          "tomato",
+          50
+        ],
+        [
+          "oil",
+          20
+        ],
+        [
+          "cream",
+          20
+        ],
+        [
+          "garlic",
+          6
+        ],
+        [
+          "ginger",
+          5
+        ],
+        [
+          "cumin",
+          2
+        ],
+        [
+          "salt",
+          5
+        ]
+      ],
+      "loss": 0.25
+    },
+    {
+      "slug": "matar-paneer",
+      "name": "Matar paneer",
+      "aliases": [
+        "mutter paneer",
+        "peas paneer"
+      ],
+      "kind": "curry",
+      "recipe": [
+        [
+          "paneer",
+          200
+        ],
+        [
+          "peas",
+          150
+        ],
+        [
+          "onion",
+          80
+        ],
+        [
+          "tomato",
+          150
+        ],
+        [
+          "oil",
+          25
+        ],
+        [
+          "water",
+          150
+        ],
+        [
+          "ginger",
+          5
+        ],
+        [
+          "corianderseed",
+          3
+        ],
+        [
+          "chilipowder",
+          2
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "kadai-paneer",
+      "name": "Kadai paneer",
+      "aliases": [
+        "karahi paneer"
+      ],
+      "kind": "curry",
+      "recipe": [
+        [
+          "paneer",
+          250
+        ],
+        [
+          "capsicum",
+          120
+        ],
+        [
+          "onion",
+          100
+        ],
+        [
+          "tomato",
+          150
+        ],
+        [
+          "oil",
+          25
+        ],
+        [
+          "corianderseed",
+          5
+        ],
+        [
+          "chilipowder",
+          3
+        ],
+        [
+          "ginger",
+          5
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "shahi-paneer",
+      "name": "Shahi paneer",
+      "aliases": [
+        "paneer shahi korma"
+      ],
+      "kind": "curry",
+      "recipe": [
+        [
+          "paneer",
+          250
+        ],
+        [
+          "cream",
+          80
+        ],
+        [
+          "curd",
+          50
+        ],
+        [
+          "cashew",
+          30
+        ],
+        [
+          "onion",
+          60
+        ],
+        [
+          "tomato",
+          100
+        ],
+        [
+          "ghee",
+          20
+        ],
+        [
+          "cardamom",
+          1
+        ],
+        [
+          "water",
+          80
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "paneer-bhurji",
+      "name": "Paneer bhurji",
+      "aliases": [
+        "paneer bhurjee",
+        "scrambled paneer"
+      ],
+      "kind": "sabzi",
+      "recipe": [
+        [
+          "paneer",
+          250
+        ],
+        [
+          "onion",
+          70
+        ],
+        [
+          "tomato",
+          70
+        ],
+        [
+          "capsicum",
+          30
+        ],
+        [
+          "oil",
+          15
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "chili",
+          4
+        ],
+        [
+          "salt",
+          4
+        ]
+      ],
+      "loss": 0.1
+    },
+    {
+      "slug": "paneer-tikka",
+      "name": "Paneer tikka",
+      "aliases": [
+        "tandoori paneer"
+      ],
+      "kind": "snack",
+      "recipe": [
+        [
+          "paneer",
+          250
+        ],
+        [
+          "curd",
+          60
+        ],
+        [
+          "capsicum",
+          50
+        ],
+        [
+          "onion",
+          50
+        ],
+        [
+          "oil",
+          12
+        ],
+        [
+          "chilipowder",
+          3
+        ],
+        [
+          "lemon",
+          8
+        ],
+        [
+          "salt",
+          4
+        ]
+      ],
+      "serve": [
+        [
+          "6 pieces",
+          120
+        ],
+        [
+          "1 piece",
+          20
+        ]
+      ],
+      "loss": 0.15
+    },
+    {
+      "slug": "paneer-tikka-masala",
+      "name": "Paneer tikka masala",
+      "aliases": [
+        "paneer tikka curry"
+      ],
+      "kind": "curry",
+      "recipe": [
+        [
+          "paneer",
+          250
+        ],
+        [
+          "curd",
+          50
+        ],
+        [
+          "butter",
+          20
+        ],
+        [
+          "cream",
+          50
+        ],
+        [
+          "tomato",
+          200
+        ],
+        [
+          "onion",
+          80
+        ],
+        [
+          "capsicum",
+          40
+        ],
+        [
+          "chilipowder",
+          3
+        ],
+        [
+          "water",
+          80
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "chilli-paneer",
+      "name": "Chilli paneer",
+      "aliases": [
+        "chili paneer",
+        "paneer chilli dry"
+      ],
+      "kind": "snack",
+      "recipe": [
+        [
+          "paneer",
+          250
+        ],
+        [
+          "cornstarch",
+          25
+        ],
+        [
+          "maida",
+          15
+        ],
+        [
+          "oil",
+          30
+        ],
+        [
+          "capsicum",
+          80
+        ],
+        [
+          "onion",
+          60
+        ],
+        [
+          "soysauce",
+          15
+        ],
+        [
+          "garlic",
+          8
+        ],
+        [
+          "chili",
+          6
+        ],
+        [
+          "salt",
+          2
+        ],
+        [
+          "water",
+          40
+        ]
+      ],
+      "serve": [
+        [
+          "1 plate",
+          200
+        ],
+        [
+          "1 katori",
+          120
+        ]
+      ],
+      "loss": 0.1
+    },
+    {
+      "slug": "butter-chicken",
+      "name": "Butter chicken",
+      "aliases": [
+        "murgh makhani",
+        "chicken makhani"
+      ],
+      "kind": "curry",
+      "recipe": [
+        [
+          "chickenthigh",
+          400
+        ],
+        [
+          "curd",
+          60
+        ],
+        [
+          "butter",
+          35
+        ],
+        [
+          "cream",
+          70
+        ],
+        [
+          "tomato",
+          250
+        ],
+        [
+          "onion",
+          50
+        ],
+        [
+          "cashew",
+          20
+        ],
+        [
+          "ginger",
+          6
+        ],
+        [
+          "garlic",
+          6
+        ],
+        [
+          "chilipowder",
+          3
+        ],
+        [
+          "sugar",
+          5
+        ],
+        [
+          "salt",
+          6
+        ]
+      ]
+    },
+    {
+      "slug": "chicken-tikka-masala",
+      "name": "Chicken tikka masala",
+      "aliases": [
+        "chicken tikka curry"
+      ],
+      "kind": "curry",
+      "recipe": [
+        [
+          "chicken",
+          400
+        ],
+        [
+          "curd",
+          60
+        ],
+        [
+          "oil",
+          20
+        ],
+        [
+          "butter",
+          15
+        ],
+        [
+          "cream",
+          60
+        ],
+        [
+          "tomato",
+          250
+        ],
+        [
+          "onion",
+          100
+        ],
+        [
+          "ginger",
+          6
+        ],
+        [
+          "garlic",
+          6
+        ],
+        [
+          "chilipowder",
+          3
+        ],
+        [
+          "salt",
+          6
+        ]
+      ]
+    },
+    {
+      "slug": "chicken-curry",
+      "name": "Chicken curry",
+      "aliases": [
+        "home style chicken curry",
+        "murgh curry",
+        "kozhi curry"
+      ],
+      "kind": "curry",
+      "recipe": [
+        [
+          "chickenthigh",
+          500
+        ],
+        [
+          "onion",
+          150
+        ],
+        [
+          "tomato",
+          150
+        ],
+        [
+          "oil",
+          30
+        ],
+        [
+          "water",
+          200
+        ],
+        [
+          "ginger",
+          8
+        ],
+        [
+          "garlic",
+          8
+        ],
+        [
+          "corianderseed",
+          5
+        ],
+        [
+          "chilipowder",
+          4
+        ],
+        [
+          "turmeric",
+          2
+        ],
+        [
+          "salt",
+          7
+        ]
+      ]
+    },
+    {
+      "slug": "chicken-tikka",
+      "name": "Chicken tikka",
+      "aliases": [
+        "chicken tikka kebab",
+        "murgh tikka"
+      ],
+      "kind": "snack",
+      "recipe": [
+        [
+          "chicken",
+          500
+        ],
+        [
+          "curd",
+          80
+        ],
+        [
+          "oil",
+          12
+        ],
+        [
+          "lemon",
+          10
+        ],
+        [
+          "ginger",
+          6
+        ],
+        [
+          "garlic",
+          6
+        ],
+        [
+          "chilipowder",
+          4
+        ],
+        [
+          "salt",
+          5
+        ]
+      ],
+      "serve": [
+        [
+          "6 pieces",
+          150
+        ],
+        [
+          "1 piece",
+          25
+        ]
+      ],
+      "loss": 0.25
+    },
+    {
+      "slug": "tandoori-chicken",
+      "name": "Tandoori chicken",
+      "aliases": [
+        "tandoori murgh"
+      ],
+      "kind": "snack",
+      "recipe": [
+        [
+          "chickenthigh",
+          500
+        ],
+        [
+          "curd",
+          80
+        ],
+        [
+          "oil",
+          10
+        ],
+        [
+          "lemon",
+          10
+        ],
+        [
+          "ginger",
+          6
+        ],
+        [
+          "garlic",
+          6
+        ],
+        [
+          "chilipowder",
+          5
+        ],
+        [
+          "salt",
+          5
+        ]
+      ],
+      "serve": [
+        [
+          "1 leg piece",
+          150
+        ],
+        [
+          "2 pieces",
+          250
+        ]
+      ],
+      "loss": 0.25
+    },
+    {
+      "slug": "chicken-korma",
+      "name": "Chicken korma",
+      "aliases": [
+        "murgh korma"
+      ],
+      "kind": "curry",
+      "recipe": [
+        [
+          "chickenthigh",
+          450
+        ],
+        [
+          "curd",
+          100
+        ],
+        [
+          "onion",
+          120
+        ],
+        [
+          "cashew",
+          30
+        ],
+        [
+          "ghee",
+          25
+        ],
+        [
+          "cream",
+          40
+        ],
+        [
+          "water",
+          120
+        ],
+        [
+          "cardamom",
+          1
+        ],
+        [
+          "salt",
+          6
+        ]
+      ]
+    },
+    {
+      "slug": "chilli-chicken",
+      "name": "Chilli chicken",
+      "aliases": [
+        "chili chicken",
+        "chicken chilli dry"
+      ],
+      "kind": "snack",
+      "recipe": [
+        [
+          "chicken",
+          400
+        ],
+        [
+          "cornstarch",
+          30
+        ],
+        [
+          "maida",
+          20
+        ],
+        [
+          "egg",
+          30
+        ],
+        [
+          "oil",
+          40
+        ],
+        [
+          "capsicum",
+          80
+        ],
+        [
+          "onion",
+          60
+        ],
+        [
+          "soysauce",
+          20
+        ],
+        [
+          "garlic",
+          8
+        ],
+        [
+          "chili",
+          6
+        ],
+        [
+          "salt",
+          2
+        ]
+      ],
+      "serve": [
+        [
+          "1 plate",
+          200
+        ],
+        [
+          "1 katori",
+          120
+        ]
+      ],
+      "loss": 0.15
+    },
+    {
+      "slug": "chicken-65",
+      "name": "Chicken 65",
+      "aliases": [
+        "chicken sixty five"
+      ],
+      "kind": "snack",
+      "recipe": [
+        [
+          "chicken",
+          400
+        ],
+        [
+          "curd",
+          40
+        ],
+        [
+          "cornstarch",
+          25
+        ],
+        [
+          "riceflour",
+          15
+        ],
+        [
+          "oil",
+          45
+        ],
+        [
+          "chilipowder",
+          4
+        ],
+        [
+          "ginger",
+          5
+        ],
+        [
+          "garlic",
+          5
+        ],
+        [
+          "salt",
+          5
+        ]
+      ],
+      "serve": [
+        [
+          "1 plate",
+          180
+        ],
+        [
+          "6 pieces",
+          120
+        ]
+      ],
+      "loss": 0.15
+    },
+    {
+      "slug": "mutton-curry",
+      "name": "Mutton curry",
+      "aliases": [
+        "rogan josh",
+        "gosht curry",
+        "lamb curry",
+        "goat curry"
+      ],
+      "kind": "curry",
+      "recipe": [
+        [
+          "mutton",
+          500
+        ],
+        [
+          "onion",
+          150
+        ],
+        [
+          "tomato",
+          120
+        ],
+        [
+          "curd",
+          80
+        ],
+        [
+          "oil",
+          30
+        ],
+        [
+          "water",
+          300
+        ],
+        [
+          "ginger",
+          8
+        ],
+        [
+          "garlic",
+          8
+        ],
+        [
+          "chilipowder",
+          4
+        ],
+        [
+          "salt",
+          7
+        ]
+      ],
+      "loss": 0.25
+    },
+    {
+      "slug": "keema",
+      "name": "Keema",
+      "aliases": [
+        "mutton keema",
+        "kheema",
+        "minced meat curry"
+      ],
+      "kind": "curry",
+      "recipe": [
+        [
+          "mince",
+          400
+        ],
+        [
+          "onion",
+          120
+        ],
+        [
+          "tomato",
+          120
+        ],
+        [
+          "oil",
+          15
+        ],
+        [
+          "ginger",
+          6
+        ],
+        [
+          "garlic",
+          6
+        ],
+        [
+          "chilipowder",
+          3
+        ],
+        [
+          "salt",
+          6
+        ]
+      ],
+      "loss": 0.2
+    },
+    {
+      "slug": "keema-matar",
+      "name": "Keema matar",
+      "aliases": [
+        "kheema mutter"
+      ],
+      "kind": "curry",
+      "recipe": [
+        [
+          "mince",
+          350
+        ],
+        [
+          "peas",
+          150
+        ],
+        [
+          "onion",
+          120
+        ],
+        [
+          "tomato",
+          120
+        ],
+        [
+          "oil",
+          15
+        ],
+        [
+          "ginger",
+          6
+        ],
+        [
+          "garlic",
+          6
+        ],
+        [
+          "chilipowder",
+          3
+        ],
+        [
+          "salt",
+          6
+        ]
+      ],
+      "loss": 0.2
+    },
+    {
+      "slug": "egg-curry",
+      "name": "Egg curry",
+      "aliases": [
+        "anda curry",
+        "mutta curry",
+        "egg masala"
+      ],
+      "kind": "curry",
+      "recipe": [
+        [
+          "egg",
+          300
+        ],
+        [
+          "onion",
+          120
+        ],
+        [
+          "tomato",
+          150
+        ],
+        [
+          "oil",
+          25
+        ],
+        [
+          "water",
+          150
+        ],
+        [
+          "ginger",
+          5
+        ],
+        [
+          "garlic",
+          5
+        ],
+        [
+          "chilipowder",
+          3
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "salt",
+          5
+        ]
+      ]
+    },
+    {
+      "slug": "egg-bhurji",
+      "name": "Egg bhurji",
+      "aliases": [
+        "anda bhurji",
+        "masala scrambled eggs",
+        "egg podimas"
+      ],
+      "kind": "sabzi",
+      "recipe": [
+        [
+          "egg",
+          250
+        ],
+        [
+          "onion",
+          50
+        ],
+        [
+          "tomato",
+          50
+        ],
+        [
+          "oil",
+          12
+        ],
+        [
+          "chili",
+          4
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "salt",
+          3
+        ]
+      ],
+      "serve": [
+        [
+          "1 katori",
+          120
+        ],
+        [
+          "2 eggs worth",
+          110
+        ]
+      ],
+      "loss": 0.1
+    },
+    {
+      "slug": "masala-omelette",
+      "name": "Masala omelette",
+      "aliases": [
+        "indian omelette",
+        "anda omelette"
+      ],
+      "kind": "breakfast",
+      "recipe": [
+        [
+          "egg",
+          100
+        ],
+        [
+          "onion",
+          20
+        ],
+        [
+          "tomato",
+          15
+        ],
+        [
+          "chili",
+          3
+        ],
+        [
+          "coriander",
+          2
+        ],
+        [
+          "oil",
+          8
+        ],
+        [
+          "salt",
+          1
+        ]
+      ],
+      "serve": [
+        [
+          "1 omelette (2 eggs)",
+          135
+        ]
+      ],
+      "loss": 0.05
+    },
+    {
+      "slug": "fish-curry",
+      "name": "Fish curry",
+      "aliases": [
+        "machli curry",
+        "meen kuzhambu",
+        "macher jhol"
+      ],
+      "kind": "curry",
+      "recipe": [
+        [
+          "fish",
+          400
+        ],
+        [
+          "onion",
+          100
+        ],
+        [
+          "tomato",
+          120
+        ],
+        [
+          "tamarind",
+          10
+        ],
+        [
+          "oil",
+          25
+        ],
+        [
+          "water",
+          250
+        ],
+        [
+          "chilipowder",
+          4
+        ],
+        [
+          "turmeric",
+          2
+        ],
+        [
+          "salt",
+          6
+        ]
+      ]
+    },
+    {
+      "slug": "goan-fish-curry",
+      "name": "Goan fish curry",
+      "aliases": [
+        "coconut fish curry",
+        "meen moilee"
+      ],
+      "kind": "curry",
+      "recipe": [
+        [
+          "fish",
+          400
+        ],
+        [
+          "coconutmilk",
+          250
+        ],
+        [
+          "onion",
+          80
+        ],
+        [
+          "tomato",
+          80
+        ],
+        [
+          "tamarind",
+          10
+        ],
+        [
+          "oil",
+          15
+        ],
+        [
+          "chilipowder",
+          4
+        ],
+        [
+          "salt",
+          6
+        ]
+      ]
+    },
+    {
+      "slug": "fish-fry",
+      "name": "Fish fry",
+      "aliases": [
+        "tawa fish fry",
+        "meen varuval",
+        "masala fried fish"
+      ],
+      "kind": "snack",
+      "recipe": [
+        [
+          "fish",
+          400
+        ],
+        [
+          "riceflour",
+          20
+        ],
+        [
+          "oil",
+          35
+        ],
+        [
+          "lemon",
+          10
+        ],
+        [
+          "chilipowder",
+          4
+        ],
+        [
+          "turmeric",
+          2
+        ],
+        [
+          "salt",
+          5
+        ]
+      ],
+      "serve": [
+        [
+          "1 piece",
+          90
+        ],
+        [
+          "2 pieces",
+          180
+        ]
+      ],
+      "loss": 0.2
+    },
+    {
+      "slug": "prawn-curry",
+      "name": "Prawn curry",
+      "aliases": [
+        "shrimp curry",
+        "jhinga curry",
+        "chemmeen curry"
+      ],
+      "kind": "curry",
+      "recipe": [
+        [
+          "prawn",
+          400
+        ],
+        [
+          "coconutmilk",
+          150
+        ],
+        [
+          "onion",
+          100
+        ],
+        [
+          "tomato",
+          120
+        ],
+        [
+          "oil",
+          20
+        ],
+        [
+          "chilipowder",
+          4
+        ],
+        [
+          "turmeric",
+          1
+        ],
+        [
+          "salt",
+          6
+        ]
+      ]
+    },
+    {
+      "slug": "dahi",
+      "name": "Dahi",
+      "aliases": [
+        "curd",
+        "homemade yogurt",
+        "thayir",
+        "perugu",
+        "mosaru"
+      ],
+      "kind": "side",
+      "recipe": [
+        [
+          "curd",
+          100
+        ]
+      ]
+    },
+    {
+      "slug": "cucumber-raita",
+      "name": "Cucumber raita",
+      "aliases": [
+        "kheera raita",
+        "raita",
+        "pachadi"
+      ],
+      "kind": "side",
+      "recipe": [
+        [
+          "curd",
+          200
+        ],
+        [
+          "cucumber",
+          80
+        ],
+        [
+          "cumin",
+          1
+        ],
+        [
+          "salt",
+          2
+        ]
+      ]
+    },
+    {
+      "slug": "boondi-raita",
+      "name": "Boondi raita",
+      "aliases": [
+        "bundi raita"
+      ],
+      "kind": "side",
+      "recipe": [
+        [
+          "curd",
+          200
+        ],
+        [
+          "besan",
+          15
+        ],
+        [
+          "oil",
+          8
+        ],
+        [
+          "cumin",
+          1
+        ],
+        [
+          "salt",
+          2
+        ]
+      ]
+    },
+    {
+      "slug": "sweet-lassi",
+      "name": "Sweet lassi",
+      "aliases": [
+        "lassi",
+        "meethi lassi"
+      ],
+      "kind": "drink",
+      "recipe": [
+        [
+          "curd",
+          200
+        ],
+        [
+          "milk",
+          50
+        ],
+        [
+          "sugar",
+          25
+        ],
+        [
+          "water",
+          25
+        ]
+      ]
+    },
+    {
+      "slug": "salted-lassi",
+      "name": "Salted lassi",
+      "aliases": [
+        "namkeen lassi"
+      ],
+      "kind": "drink",
+      "recipe": [
+        [
+          "curd",
+          200
+        ],
+        [
+          "water",
+          100
+        ],
+        [
+          "cumin",
+          1
+        ],
+        [
+          "salt",
+          2
+        ]
+      ]
+    },
+    {
+      "slug": "mango-lassi",
+      "name": "Mango lassi",
+      "aliases": [
+        "aam lassi"
+      ],
+      "kind": "drink",
+      "recipe": [
+        [
+          "curd",
+          150
+        ],
+        [
+          "milk",
+          50
+        ],
+        [
+          "mango",
+          100
+        ],
+        [
+          "sugar",
+          15
+        ]
+      ]
+    },
+    {
+      "slug": "chaas",
+      "name": "Chaas",
+      "aliases": [
+        "buttermilk",
+        "majjige",
+        "moru",
+        "mattha"
+      ],
+      "kind": "drink",
+      "recipe": [
+        [
+          "curd",
+          100
+        ],
+        [
+          "water",
+          200
+        ],
+        [
+          "cumin",
+          1
+        ],
+        [
+          "coriander",
+          2
+        ],
+        [
+          "salt",
+          2
+        ]
+      ]
+    },
+    {
+      "slug": "masala-chai",
+      "name": "Masala chai",
+      "aliases": [
+        "chai",
+        "tea with milk",
+        "cutting chai",
+        "doodh chai"
+      ],
+      "kind": "drink",
+      "recipe": [
+        [
+          "tea",
+          150
+        ],
+        [
+          "milk",
+          80
+        ],
+        [
+          "sugar",
+          10
+        ],
+        [
+          "ginger",
+          3
+        ],
+        [
+          "cardamom",
+          0.5
+        ]
+      ],
+      "serve": [
+        [
+          "1 cup",
+          150
+        ],
+        [
+          "1 glass",
+          250
+        ]
+      ],
+      "loss": 0.2
+    },
+    {
+      "slug": "filter-coffee",
+      "name": "Filter coffee",
+      "aliases": [
+        "south indian coffee",
+        "kaapi",
+        "madras coffee"
+      ],
+      "kind": "drink",
+      "recipe": [
+        [
+          "coffee",
+          50
+        ],
+        [
+          "milk",
+          100
+        ],
+        [
+          "sugar",
+          10
+        ]
+      ],
+      "serve": [
+        [
+          "1 cup",
+          150
+        ]
+      ]
+    },
+    {
+      "slug": "badam-milk",
+      "name": "Badam milk",
+      "aliases": [
+        "almond milk drink",
+        "badam doodh"
+      ],
+      "kind": "drink",
+      "recipe": [
+        [
+          "milk",
+          250
+        ],
+        [
+          "almond",
+          15
+        ],
+        [
+          "sugar",
+          15
+        ],
+        [
+          "cardamom",
+          0.5
+        ]
+      ]
+    },
+    {
+      "slug": "haldi-doodh",
+      "name": "Haldi doodh",
+      "aliases": [
+        "turmeric milk",
+        "golden milk"
+      ],
+      "kind": "drink",
+      "recipe": [
+        [
+          "milk",
+          250
+        ],
+        [
+          "turmeric",
+          2
+        ],
+        [
+          "jaggery",
+          8
+        ],
+        [
+          "pepper",
+          0.3
+        ]
+      ]
+    },
+    {
+      "slug": "samosa",
+      "name": "Samosa",
+      "aliases": [
+        "aloo samosa",
+        "singhara"
+      ],
+      "kind": "snack",
+      "recipe": [
+        [
+          "maida",
+          100
+        ],
+        [
+          "oil",
+          60
+        ],
+        [
+          "potato",
+          220
+        ],
+        [
+          "peas",
+          30
+        ],
+        [
+          "water",
+          35
+        ],
+        [
+          "cumin",
+          2
+        ],
+        [
+          "chili",
+          4
+        ],
+        [
+          "salt",
+          4
+        ]
+      ],
+      "serve": [
+        [
+          "1 samosa",
+          70
+        ]
+      ],
+      "loss": 0.12
+    },
+    {
+      "slug": "onion-pakora",
+      "name": "Onion pakora",
+      "aliases": [
+        "kanda bhaji",
+        "onion bhaji",
+        "pyaz pakoda",
+        "pakoda"
+      ],
+      "kind": "snack",
+      "recipe": [
+        [
+          "besan",
+          100
+        ],
+        [
+          "onion",
+          200
+        ],
+        [
+          "oil",
+          60
+        ],
+        [
+          "water",
+          40
+        ],
+        [
+          "chili",
+          4
+        ],
+        [
+          "salt",
+          4
+        ]
+      ],
+      "serve": [
+        [
+          "4 pieces",
+          80
+        ],
+        [
+          "1 piece",
+          20
+        ]
+      ],
+      "loss": 0.15
+    },
+    {
+      "slug": "aloo-tikki",
+      "name": "Aloo tikki",
+      "aliases": [
+        "alu tikki",
+        "potato patty"
+      ],
+      "kind": "snack",
+      "recipe": [
+        [
+          "potato",
+          400
+        ],
+        [
+          "peas",
+          40
+        ],
+        [
+          "bread",
+          30
+        ],
+        [
+          "oil",
+          35
+        ],
+        [
+          "chili",
+          4
+        ],
+        [
+          "salt",
+          4
+        ]
+      ],
+      "serve": [
+        [
+          "1 tikki",
+          60
+        ],
+        [
+          "2 tikki",
+          120
+        ]
+      ],
+      "loss": 0.1
+    },
+    {
+      "slug": "pav-bhaji",
+      "name": "Pav bhaji",
+      "aliases": [
+        "bhaji pav"
+      ],
+      "kind": "snack",
+      "recipe": [
+        [
+          "potato",
+          250
+        ],
+        [
+          "cauliflower",
+          100
+        ],
+        [
+          "peas",
+          80
+        ],
+        [
+          "capsicum",
+          60
+        ],
+        [
+          "tomato",
+          200
+        ],
+        [
+          "onion",
+          100
+        ],
+        [
+          "butter",
+          40
+        ],
+        [
+          "chilipowder",
+          4
+        ],
+        [
+          "salt",
+          6
+        ],
+        [
+          "water",
+          150
+        ],
+        [
+          "bread",
+          240
+        ]
+      ],
+      "serve": [
+        [
+          "1 plate (bhaji + 2 pav)",
+          300
+        ]
+      ],
+      "loss": 0.2
+    },
+    {
+      "slug": "vada-pav",
+      "name": "Vada pav",
+      "aliases": [
+        "wada pav",
+        "batata vada pav"
+      ],
+      "kind": "snack",
+      "recipe": [
+        [
+          "bread",
+          60
+        ],
+        [
+          "potato",
+          90
+        ],
+        [
+          "besan",
+          20
+        ],
+        [
+          "oil",
+          15
+        ],
+        [
+          "garlic",
+          3
+        ],
+        [
+          "chili",
+          3
+        ],
+        [
+          "salt",
+          2
+        ]
+      ],
+      "serve": [
+        [
+          "1 vada pav",
+          170
+        ]
+      ],
+      "loss": 0.05
+    },
+    {
+      "slug": "dhokla",
+      "name": "Dhokla",
+      "aliases": [
+        "khaman",
+        "khaman dhokla"
+      ],
+      "kind": "snack",
+      "recipe": [
+        [
+          "besan",
+          100
+        ],
+        [
+          "curd",
+          50
+        ],
+        [
+          "water",
+          100
+        ],
+        [
+          "oil",
+          12
+        ],
+        [
+          "sugar",
+          10
+        ],
+        [
+          "lemon",
+          8
+        ],
+        [
+          "mustard",
+          1
+        ],
+        [
+          "salt",
+          3
+        ]
+      ],
+      "serve": [
+        [
+          "2 pieces",
+          60
+        ],
+        [
+          "1 piece",
+          30
+        ]
+      ],
+      "loss": 0.1
+    },
+    {
+      "slug": "kachori",
+      "name": "Kachori",
+      "aliases": [
+        "moong dal kachori",
+        "khasta kachori"
+      ],
+      "kind": "snack",
+      "recipe": [
+        [
+          "maida",
+          100
+        ],
+        [
+          "moong",
+          40
+        ],
+        [
+          "oil",
+          50
+        ],
+        [
+          "water",
+          40
+        ],
+        [
+          "chilipowder",
+          2
+        ],
+        [
+          "salt",
+          3
+        ]
+      ],
+      "serve": [
+        [
+          "1 kachori",
+          50
+        ]
+      ],
+      "loss": 0.1
+    },
+    {
+      "slug": "bhel-puri",
+      "name": "Bhel puri",
+      "aliases": [
+        "bhel",
+        "jhal muri"
+      ],
+      "kind": "snack",
+      "recipe": [
+        [
+          "puffedrice",
+          60
+        ],
+        [
+          "besan",
+          15
+        ],
+        [
+          "oil",
+          8
+        ],
+        [
+          "potato",
+          50
+        ],
+        [
+          "onion",
+          40
+        ],
+        [
+          "tomato",
+          30
+        ],
+        [
+          "tamarind",
+          10
+        ],
+        [
+          "jaggery",
+          10
+        ],
+        [
+          "peanut",
+          10
+        ],
+        [
+          "coriander",
+          4
+        ],
+        [
+          "lemon",
+          5
+        ],
+        [
+          "salt",
+          2
+        ]
+      ],
+      "serve": [
+        [
+          "1 plate",
+          150
+        ]
+      ]
+    },
+    {
+      "slug": "pani-puri",
+      "name": "Pani puri",
+      "aliases": [
+        "golgappa",
+        "puchka",
+        "gol gappe"
+      ],
+      "kind": "snack",
+      "recipe": [
+        [
+          "sooji",
+          40
+        ],
+        [
+          "maida",
+          10
+        ],
+        [
+          "oil",
+          20
+        ],
+        [
+          "potato",
+          60
+        ],
+        [
+          "chana",
+          15
+        ],
+        [
+          "tamarind",
+          10
+        ],
+        [
+          "jaggery",
+          8
+        ],
+        [
+          "water",
+          200
+        ],
+        [
+          "salt",
+          3
+        ]
+      ],
+      "serve": [
+        [
+          "6 puris with pani",
+          180
+        ]
+      ]
+    },
+    {
+      "slug": "chana-chaat",
+      "name": "Chana chaat",
+      "aliases": [
+        "chole chaat",
+        "chickpea chaat"
+      ],
+      "kind": "snack",
+      "recipe": [
+        [
+          "chana",
+          80
+        ],
+        [
+          "water",
+          160
+        ],
+        [
+          "onion",
+          40
+        ],
+        [
+          "tomato",
+          40
+        ],
+        [
+          "cucumber",
+          30
+        ],
+        [
+          "lemon",
+          10
+        ],
+        [
+          "chilipowder",
+          1
+        ],
+        [
+          "salt",
+          3
+        ]
+      ],
+      "serve": [
+        [
+          "1 katori",
+          150
+        ]
+      ]
+    },
+    {
+      "slug": "sprouts-salad",
+      "name": "Sprouts salad",
+      "aliases": [
+        "moong sprouts salad",
+        "kosambari"
+      ],
+      "kind": "snack",
+      "recipe": [
+        [
+          "moong",
+          60
+        ],
+        [
+          "water",
+          90
+        ],
+        [
+          "onion",
+          30
+        ],
+        [
+          "tomato",
+          30
+        ],
+        [
+          "cucumber",
+          40
+        ],
+        [
+          "lemon",
+          10
+        ],
+        [
+          "salt",
+          2
+        ]
+      ],
+      "serve": [
+        [
+          "1 katori",
+          150
+        ]
+      ]
+    },
+    {
+      "slug": "batata-vada",
+      "name": "Batata vada",
+      "aliases": [
+        "aloo bonda",
+        "bonda"
+      ],
+      "kind": "snack",
+      "recipe": [
+        [
+          "potato",
+          250
+        ],
+        [
+          "besan",
+          70
+        ],
+        [
+          "oil",
+          50
+        ],
+        [
+          "water",
+          50
+        ],
+        [
+          "garlic",
+          5
+        ],
+        [
+          "chili",
+          4
+        ],
+        [
+          "mustard",
+          1
+        ],
+        [
+          "salt",
+          4
+        ]
+      ],
+      "serve": [
+        [
+          "1 vada",
+          60
+        ]
+      ],
+      "loss": 0.1
+    },
+    {
+      "slug": "namkeen-mixture",
+      "name": "Namkeen mixture",
+      "aliases": [
+        "chivda",
+        "bombay mix",
+        "mixture"
+      ],
+      "kind": "snack",
+      "recipe": [
+        [
+          "besan",
+          60
+        ],
+        [
+          "poha",
+          40
+        ],
+        [
+          "peanut",
+          30
+        ],
+        [
+          "oil",
+          45
+        ],
+        [
+          "sugar",
+          3
+        ],
+        [
+          "salt",
+          3
+        ]
+      ],
+      "serve": [
+        [
+          "1 small katori",
+          30
+        ],
+        [
+          "1 handful",
+          25
+        ]
+      ],
+      "loss": 0.1
+    },
+    {
+      "slug": "sabudana-vada",
+      "name": "Sabudana vada",
+      "aliases": [
+        "sago vada"
+      ],
+      "kind": "snack",
+      "recipe": [
+        [
+          "sabudana",
+          100
+        ],
+        [
+          "potato",
+          150
+        ],
+        [
+          "peanut",
+          40
+        ],
+        [
+          "oil",
+          40
+        ],
+        [
+          "chili",
+          4
+        ],
+        [
+          "salt",
+          3
+        ],
+        [
+          "water",
+          40
+        ]
+      ],
+      "serve": [
+        [
+          "1 vada",
+          50
+        ]
+      ],
+      "loss": 0.1
+    },
+    {
+      "slug": "gulab-jamun",
+      "name": "Gulab jamun",
+      "aliases": [
+        "gulabjamun",
+        "kala jamun"
+      ],
+      "kind": "sweet",
+      "recipe": [
+        [
+          "milkpowder",
+          100
+        ],
+        [
+          "maida",
+          20
+        ],
+        [
+          "ghee",
+          10
+        ],
+        [
+          "milk",
+          40
+        ],
+        [
+          "oil",
+          25
+        ],
+        [
+          "sugar",
+          110
+        ],
+        [
+          "water",
+          110
+        ],
+        [
+          "cardamom",
+          1
+        ]
+      ],
+      "serve": [
+        [
+          "1 piece",
+          40
+        ],
+        [
+          "2 pieces",
+          80
+        ]
+      ],
+      "loss": 0.25
+    },
+    {
+      "slug": "rasgulla",
+      "name": "Rasgulla",
+      "aliases": [
+        "rosogolla",
+        "roshogolla"
+      ],
+      "kind": "sweet",
+      "recipe": [
+        [
+          "paneer",
+          200
+        ],
+        [
+          "sugar",
+          250
+        ],
+        [
+          "water",
+          500
+        ]
+      ],
+      "serve": [
+        [
+          "1 piece",
+          45
+        ],
+        [
+          "2 pieces",
+          90
+        ]
+      ],
+      "loss": 0.55
+    },
+    {
+      "slug": "kheer",
+      "name": "Kheer",
+      "aliases": [
+        "rice kheer",
+        "payasam",
+        "paal payasam",
+        "chawal ki kheer"
+      ],
+      "kind": "sweet",
+      "recipe": [
+        [
+          "milk",
+          1000
+        ],
+        [
+          "rice",
+          50
+        ],
+        [
+          "sugar",
+          80
+        ],
+        [
+          "almond",
+          10
+        ],
+        [
+          "cardamom",
+          1
+        ]
+      ],
+      "loss": 0.4
+    },
+    {
+      "slug": "gajar-halwa",
+      "name": "Gajar halwa",
+      "aliases": [
+        "gajar ka halwa",
+        "carrot halwa"
+      ],
+      "kind": "sweet",
+      "recipe": [
+        [
+          "carrot",
+          500
+        ],
+        [
+          "milk",
+          500
+        ],
+        [
+          "sugar",
+          100
+        ],
+        [
+          "ghee",
+          40
+        ],
+        [
+          "cashew",
+          15
+        ],
+        [
+          "cardamom",
+          1
+        ]
+      ],
+      "loss": 0.5
+    },
+    {
+      "slug": "sooji-halwa",
+      "name": "Sooji halwa",
+      "aliases": [
+        "sheera",
+        "rava kesari",
+        "suji halwa"
+      ],
+      "kind": "sweet",
+      "recipe": [
+        [
+          "sooji",
+          100
+        ],
+        [
+          "ghee",
+          60
+        ],
+        [
+          "sugar",
+          100
+        ],
+        [
+          "water",
+          300
+        ],
+        [
+          "cashew",
+          10
+        ],
+        [
+          "raisin",
+          10
+        ]
+      ],
+      "loss": 0.25
+    },
+    {
+      "slug": "besan-laddoo",
+      "name": "Besan laddoo",
+      "aliases": [
+        "besan ladoo",
+        "besan ke laddu"
+      ],
+      "kind": "sweet",
+      "recipe": [
+        [
+          "besan",
+          100
+        ],
+        [
+          "ghee",
+          60
+        ],
+        [
+          "sugar",
+          80
+        ],
+        [
+          "cardamom",
+          1
+        ]
+      ],
+      "serve": [
+        [
+          "1 laddoo",
+          35
+        ]
+      ],
+      "loss": 0.03
+    },
+    {
+      "slug": "jalebi",
+      "name": "Jalebi",
+      "aliases": [
+        "jilebi",
+        "jilapi"
+      ],
+      "kind": "sweet",
+      "recipe": [
+        [
+          "maida",
+          100
+        ],
+        [
+          "curd",
+          20
+        ],
+        [
+          "water",
+          80
+        ],
+        [
+          "oil",
+          40
+        ],
+        [
+          "sugar",
+          150
+        ],
+        [
+          "water",
+          75
+        ]
+      ],
+      "serve": [
+        [
+          "2 pieces",
+          50
+        ],
+        [
+          "1 piece",
+          25
+        ]
+      ],
+      "loss": 0.35
+    },
+    {
+      "slug": "milk-barfi",
+      "name": "Milk barfi",
+      "aliases": [
+        "barfi",
+        "burfi",
+        "khoya barfi"
+      ],
+      "kind": "sweet",
+      "recipe": [
+        [
+          "milkpowder",
+          150
+        ],
+        [
+          "milk",
+          100
+        ],
+        [
+          "ghee",
+          30
+        ],
+        [
+          "sugar",
+          90
+        ]
+      ],
+      "serve": [
+        [
+          "1 piece",
+          30
+        ]
+      ],
+      "loss": 0.25
+    },
+    {
+      "slug": "kaju-katli",
+      "name": "Kaju katli",
+      "aliases": [
+        "kaju barfi",
+        "cashew fudge"
+      ],
+      "kind": "sweet",
+      "recipe": [
+        [
+          "cashew",
+          200
+        ],
+        [
+          "sugar",
+          120
+        ],
+        [
+          "water",
+          60
+        ],
+        [
+          "ghee",
+          5
+        ]
+      ],
+      "serve": [
+        [
+          "1 piece",
+          15
+        ],
+        [
+          "2 pieces",
+          30
+        ]
+      ],
+      "loss": 0.15
+    },
+    {
+      "slug": "rasmalai",
+      "name": "Rasmalai",
+      "aliases": [
+        "ras malai"
+      ],
+      "kind": "sweet",
+      "recipe": [
+        [
+          "paneer",
+          150
+        ],
+        [
+          "milk",
+          700
+        ],
+        [
+          "sugar",
+          120
+        ],
+        [
+          "almond",
+          10
+        ],
+        [
+          "cardamom",
+          1
+        ]
+      ],
+      "serve": [
+        [
+          "1 piece with milk",
+          80
+        ],
+        [
+          "2 pieces with milk",
+          160
+        ]
+      ],
+      "loss": 0.4
+    },
+    {
+      "slug": "semiya-payasam",
+      "name": "Semiya payasam",
+      "aliases": [
+        "vermicelli kheer",
+        "seviyan",
+        "sheer khurma"
+      ],
+      "kind": "sweet",
+      "recipe": [
+        [
+          "milk",
+          800
+        ],
+        [
+          "vermicelli",
+          60
+        ],
+        [
+          "sugar",
+          80
+        ],
+        [
+          "ghee",
+          10
+        ],
+        [
+          "cashew",
+          10
+        ],
+        [
+          "raisin",
+          10
+        ]
+      ],
+      "loss": 0.3
+    },
+    {
+      "slug": "shrikhand",
+      "name": "Shrikhand",
+      "aliases": [
+        "amrakhand",
+        "matho"
+      ],
+      "kind": "sweet",
+      "recipe": [
+        [
+          "curd",
+          500
+        ],
+        [
+          "sugar",
+          100
+        ],
+        [
+          "cardamom",
+          1
+        ],
+        [
+          "almond",
+          10
+        ]
+      ],
+      "loss": 0.45
+    },
+    {
+      "slug": "kulfi",
+      "name": "Kulfi",
+      "aliases": [
+        "malai kulfi",
+        "matka kulfi"
+      ],
+      "kind": "sweet",
+      "recipe": [
+        [
+          "milk",
+          1000
+        ],
+        [
+          "condensed",
+          100
+        ],
+        [
+          "sugar",
+          30
+        ],
+        [
+          "almond",
+          15
+        ],
+        [
+          "cardamom",
+          1
+        ]
+      ],
+      "serve": [
+        [
+          "1 kulfi",
+          70
+        ]
+      ],
+      "loss": 0.55
+    },
+    {
+      "slug": "paneer",
+      "name": "Paneer",
+      "aliases": [
+        "paneer cheese",
+        "indian cottage cheese",
+        "fresh paneer"
+      ],
+      "kind": "side",
+      "recipe": [
+        [
+          "paneer",
+          100
+        ]
+      ],
+      "serve": [
+        [
+          "100 g",
+          100
+        ],
+        [
+          "1 cube (20 g)",
+          20
+        ],
+        [
+          "1 katori, cubes (120 g)",
+          120
+        ]
+      ],
+      "loss": 0
+    }
+  ]
+}
