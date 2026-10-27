@@ -69,3 +69,12 @@ URL: https://liftlog-jade.vercel.app · components page: https://liftlog-jade.ve
 | 3 | Start a workout, log one set, Cancel workout: the sheet says "1 logged set"; the workout isn't in History | ✅ screen test + unit test (sets, queue, PRs). 📱 Once |
 | 4 | During a workout, Add from list → search for something your gym lacks: it shows under "Not in your gym". Search nonsense → Create custom exercise → save → it opens in the workout | ✅ screen tests. 📱 With your real gym settings |
 | 5 | The tab bar shows Today, Plan, Progress; the Library opens from Plan (book icon or button) and Settings | ✅ e2e + screen test |
+
+## M8 (1.1.2)
+| # | Check | Automated? |
+|---|---|---|
+| 1 | In the Library, search "tricep press", "tricep press machine", "skull crusher", "pec deck", "chest fly machine" and "RDL". The correct exercise is first | ✅ unit tests for each name (search engine on the real library). 📱 Type them on the phone keyboard |
+| 2 | Scroll the Library. Every row has a movement picture, not only a muscle map | ✅ unit tests: every seeded exercise has a pose, and every pose stays in the panel. 📱 Look at the list in Paper and Iron |
+| 3 | Open Kettlebell Swing, Power Clean, Bayesian Curl, Side Plank and Inverted Row. Turn on the animation. Each picture shows the movement | Partly ✅: contact sheets in `docs/reports/poses/m8-*.jpg`, `/dev/poses` checked. 📱 Your judgement of the pictures |
+| 4 | Open `/dev/poses`. It says 605 pictograms. Scroll and tap "More" until the end | ✅ screen test (120, then 240 after "More") and e2e. 📱 Scroll speed on each phone |
+| 5 | During a workout, Add from list → "kb swing" → add Kettlebell Swing and log a set | ✅ the add sheet and logging are covered by e2e for other exercises. 📱 Once with a new exercise |

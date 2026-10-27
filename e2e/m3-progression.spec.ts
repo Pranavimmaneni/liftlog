@@ -144,8 +144,10 @@ test.describe('M3 progression', () => {
   test('M3 phone check: /dev/poses shows every pictogram (FR-ILL-2)', async ({ page }) => {
     await page.goto('/dev/poses');
     await expect(page.getByTestId('pose-count')).toContainText(/\d{3} pictograms/);
-    const n = await page.locator('[data-pose]').count();
-    expect(n).toBeGreaterThanOrEqual(130);
+    // FR-ILL-6: 600+ poses, paged 120 at a time (D96).
+    await expect(page.locator('[data-pose]')).toHaveCount(120);
+    await page.getByRole('button', { name: 'More' }).click();
+    await expect(page.locator('[data-pose]')).toHaveCount(240);
     await page.getByRole('searchbox', { name: 'Filter poses' }).fill('squat');
     await expect(page.locator('[data-pose]').first()).toBeVisible();
   });
