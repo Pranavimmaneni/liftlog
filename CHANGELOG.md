@@ -1,6 +1,9 @@
 # Changelog
 
-## Unreleased (M10, branch m10-food-data)
+## Unreleased (M10–M11, branch m10-food-data)
+- Food section next to LiftLog: a LiftLog | Food switch (the only change on LiftLog screens), and Food tabs Diary, Review and Fasting.
+- Diary with calories left, macros, a protein quest and meals; search 23,365 foods (with Indian dishes), scan barcodes, pick portions in katori, cups or grams; edit, delete and copy meals.
+- Your own foods, recipes and quick add; targets from your weigh-ins, height, activity and goal; weekly and monthly food review with food + training feedback; fasting timer.
 - Food library: 23,365 foods (USDA generic and branded, plus 147 Indian dishes), stored on the phone and searchable offline.
 - Data model version 2 for food (diary, own foods, recipes, fasts); training data is unchanged.
 - Food engines: calorie, macro and micro targets; reviews; combined food and training feedback; fasting timer; food quests. Screens come in M11.
