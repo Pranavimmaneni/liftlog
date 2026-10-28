@@ -110,5 +110,13 @@
       "Add 1 rep to 3 exercises",
       "Complete all 4 sessions"
     ]
+  },
+  "food": {
+    "_note": "PRD-1.2 FR-GAME-1: food quests reward hitting targets (in range), never eating more. XP is derived from the diary and adds to the one shared level.",
+    "proteinQuest": 40,
+    "preLiftCarbsQuest": 20,
+    "fibreQuest": 20,
+    "weeklyQuest": 75,
+    "weeklyQuestDays": 5
   }
 }

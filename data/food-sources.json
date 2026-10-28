@@ -1,0 +1,160 @@
+{
+  "_note": "FR-FOOD-1: pinned USDA FoodData Central sources for scripts/seed-foods.ts, plus the branded filter. All USDA FDC data is public domain (CC0 1.0). Downloads go to the git-ignored .cache/usda/ (scripts/foods/fetch.ts) and are checked against sha256.",
+  "version": "2026-10-27.1",
+  "licence": "CC0 1.0 (public domain)",
+  "attribution": "U.S. Department of Agriculture, Agricultural Research Service. FoodData Central. fdc.nal.usda.gov",
+  "sources": [
+    {
+      "id": "fndds",
+      "dataset": "Food and Nutrient Database for Dietary Studies (FNDDS) 2021-2023, JSON",
+      "release": "2024-10-31",
+      "url": "https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_survey_food_json_2024-10-31.zip",
+      "file": "FoodData_Central_survey_food_json_2024-10-31.zip",
+      "sha256": "dfb06ae7ddc397ccd570b91c14b75438ab2ba39f64f22d321f61d4a52a77f3eb"
+    },
+    {
+      "id": "sr",
+      "dataset": "SR Legacy, JSON (recipe ingredients for Indian dishes only; not shipped as foods)",
+      "release": "2018-04",
+      "url": "https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_sr_legacy_food_json_2018-04.zip",
+      "file": "FoodData_Central_sr_legacy_food_json_2018-04.zip",
+      "sha256": "0fe8ae486a2c8eb42cb96413f058deb51863a46c8fb8eeb4b1fb45006dd338ef"
+    },
+    {
+      "id": "branded",
+      "dataset": "Branded Foods, CSV",
+      "release": "2026-04-30",
+      "url": "https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_branded_food_csv_2026-04-30.zip",
+      "file": "FoodData_Central_branded_food_csv_2026-04-30.zip",
+      "sha256": "26050a5d03197469813754743a21ee0fad4ccf22b6aac2a995846a987719fc49"
+    }
+  ],
+  "branded": {
+    "_note": "FR-FOOD-1 branded filter. A product is kept when its brand_owner or brand_name matches a group (first match wins, case-insensitive regex), it is sold in the United States, not discontinued, available on or after minAvailableDate, has a household serving and a serving size in g or ml (ml counted as g, about right for most drinks), and has kcal, protein, carbs and fat. One row per GTIN: the latest available_date wins (then the highest fdc_id). Then each group keeps at most `cap` rows, at most `perCategoryCap` per branded_food_category, newest first.",
+    "minAvailableDate": "2020-01-01",
+    "markets": [
+      "United States"
+    ],
+    "servingUnits": {
+      "g": [
+        "g",
+        "GRM",
+        "GM"
+      ],
+      "ml": [
+        "ml",
+        "MLT"
+      ]
+    },
+    "genericServingText": "^(amount per serving|serving|per serving|portion|1 serving|none|n/a|-)$",
+    "skipCategories": "baby|infant|pet food|alcohol|wine|beer|spirits|liquor|vitamin|supplement|^water$",
+    "perCategoryCap": 120,
+    "groups": [
+      {
+        "id": "costco",
+        "label": "Costco (Kirkland Signature)",
+        "owner": "costco",
+        "brand": "kirkland",
+        "cap": 1500
+      },
+      {
+        "id": "sams-club",
+        "label": "Sam's Club (Member's Mark)",
+        "owner": "sam's club|^member's mark$",
+        "brand": "member'?s mark",
+        "cap": 1500
+      },
+      {
+        "id": "walmart",
+        "label": "Walmart (Great Value, Marketside)",
+        "brand": "^great value$|^marketside$",
+        "cap": 3000,
+        "perCategoryCap": 150
+      },
+      {
+        "id": "target",
+        "label": "Target (Good & Gather, Market Pantry, Favorite Day)",
+        "owner": "^good ?& ?gather$|^market pantry$",
+        "brand": "good ?& ?gather|^market pantry$|^favorite day$",
+        "cap": 2500
+      },
+      {
+        "id": "kroger",
+        "label": "Kroger (Kroger, Simple Truth, Private Selection)",
+        "brand": "^kroger$|^simple truth|^private selection$",
+        "cap": 2500
+      },
+      {
+        "id": "whole-foods",
+        "label": "Whole Foods (365)",
+        "owner": "^whole foods market$",
+        "brand": "^365|^whole foods market$",
+        "cap": 2000
+      },
+      {
+        "id": "trader-joes",
+        "label": "Trader Joe's",
+        "owner": "trader joe",
+        "brand": "trader joe",
+        "cap": 800
+      },
+      {
+        "id": "aldi",
+        "label": "Aldi brands",
+        "brand": "^(millville|clancy'?s|friendly farms|happy farms|simply nature|l'oven fresh|fit & active|elevation|southern grove|baker'?s corner|savoritz|specially selected|never any!?)$",
+        "cap": 1000
+      },
+      {
+        "id": "indian",
+        "label": "Indian grocery brands",
+        "owner": "^deep foods|^house of spices|^shan food|^v patel & sons|^zaika flavours|haldiram|^raja foods",
+        "brand": "haldiram|^deep$|^laxmi$|^swad$|^mtr$|^gits$|^amul$|^mdh$|^shan$|^everest$|^britannia$|^parle|^bikaji$|^24 mantra|^daawat$|^india gate$",
+        "cap": 800
+      },
+      {
+        "id": "general-mills",
+        "label": "General Mills (Cheerios, Nature Valley, Yoplait, Fiber One, Annie's …)",
+        "owner": "general mills",
+        "cap": 1500
+      },
+      {
+        "id": "kellogg",
+        "label": "Kellogg's (Special K, Eggo, Morningstar Farms …)",
+        "owner": "kellogg",
+        "cap": 1200
+      },
+      {
+        "id": "kraft-heinz",
+        "label": "Kraft Heinz",
+        "owner": "kraft",
+        "cap": 1000
+      },
+      {
+        "id": "tyson",
+        "label": "Tyson (Tyson, Jimmy Dean, Hillshire Farm)",
+        "owner": "^tyson",
+        "cap": 800
+      },
+      {
+        "id": "quaker",
+        "label": "Quaker / PepsiCo oats and drinks",
+        "owner": "quaker oats|^pepsico",
+        "cap": 600
+      },
+      {
+        "id": "dairy-protein",
+        "label": "Dairy and protein brands (Chobani, Dannon, Oikos, Fairlife, Quest, Premier Protein, Clif)",
+        "owner": "^chobani|danone|dannon|fair oaks farms|^quest nutrition|^quest$|premier nutrition|^clif bar and company",
+        "brand": "^fairlife|^oikos|^premier protein",
+        "cap": 2000
+      },
+      {
+        "id": "staples",
+        "label": "Pantry staples (Barilla, Ben's Original)",
+        "owner": "^barilla|^uncle ben|^mars food",
+        "brand": "^barilla|^uncle ben'?s|^ben'?s original",
+        "cap": 600
+      }
+    ]
+  }
+}

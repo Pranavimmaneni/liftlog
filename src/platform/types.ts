@@ -55,6 +55,8 @@ export interface Platform {
   share(file: ShareFile): Promise<ShareResult>;
   /** FR-PLT-5: returns a QR detector (native BarcodeDetector or the lazy WASM polyfill). */
   qrDetector(): Promise<QrDetector>;
+  /** PRD-1.2 FR-FOOD-4: an EAN/UPC detector for food packs, from the same two sources. */
+  productCodeDetector(): Promise<QrDetector>;
   /** FR-PLT-5: rear camera stream for the scan screen. */
   openCamera(): Promise<MediaStream>;
   /** FR-PLT-7 */

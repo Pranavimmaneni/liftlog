@@ -81,6 +81,16 @@ const PATHS = {
     </>
   ),
   flame: <path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-3 2-4 2-7 1 1 2 2 3 1-1-2 0-3 0-4z" />,
+  // PRD-1.2 Food section (mockups F01–F07)
+  bowl: <path d="M3 12h18a9 9 0 0 1-18 0zM8 8c0-1.2.8-1.8.8-3M12 8c0-1.2.8-1.8.8-3M16 8c0-1.2.8-1.8.8-3" />,
+  barcode: <path d="M3 7V4h3M18 4h3v3M21 17v3h-3M6 20H3v-3M7 8v8M10 8v8M13 8v8M17 8v8" />,
+  sliders: (
+    <>
+      <path d="M4 7h9M17 7h3M4 17h3M11 17h9" />
+      <circle cx="15" cy="7" r="2" />
+      <circle cx="9" cy="17" r="2" />
+    </>
+  ),
 } as const;
 
 export type IconName = keyof typeof PATHS;

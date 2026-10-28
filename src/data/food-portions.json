@@ -1,0 +1,34 @@
+{
+  "_note": "FR-FOOD-7: household and Indian portion units in grams, shared by the food library and the diary. A liquid in ml counts as the same number of grams (close for milk, juices, dal and curries). Foods can override a unit with their own gram weight (a samosa, a dosa).",
+  "units": {
+    "katori": { "label": "1 katori", "grams": 150, "note": "standard steel bowl of dal, sabzi or curry" },
+    "small-katori": { "label": "1 small katori", "grams": 100, "note": "curd, raita, sweets like kheer or halwa" },
+    "bowl": { "label": "1 bowl", "grams": 250, "note": "a large serving bowl" },
+    "plate": { "label": "1 plate", "grams": 250, "note": "a plate of rice, biryani, poha or upma" },
+    "cup": { "label": "1 cup", "grams": 240, "note": "US cup (240 ml)" },
+    "chai-cup": { "label": "1 cup", "grams": 150, "note": "a cup of chai or coffee (150 ml)" },
+    "glass": { "label": "1 glass", "grams": 250, "note": "lassi, buttermilk, milk (250 ml)" },
+    "tbsp": { "label": "1 tbsp", "grams": 15, "note": "tablespoon" },
+    "tsp": { "label": "1 tsp", "grams": 5, "note": "teaspoon" },
+    "roti": { "label": "1 roti", "grams": 40, "note": "roti / chapati / phulka" },
+    "paratha": { "label": "1 paratha", "grams": 80, "note": "plain or stuffed paratha" },
+    "naan": { "label": "1 naan", "grams": 90 },
+    "puri": { "label": "1 puri", "grams": 25 },
+    "idli": { "label": "1 idli", "grams": 40 },
+    "dosa": { "label": "1 dosa", "grams": 90, "note": "plain dosa; masala dosa overrides" },
+    "piece": { "label": "1 piece", "grams": 30, "note": "default when a food has no own piece weight" },
+    "100g": { "label": "100 g", "grams": 100 }
+  },
+  "defaultsByKind": {
+    "dal": ["katori", "small-katori"],
+    "curry": ["katori", "small-katori"],
+    "sabzi": ["katori", "small-katori"],
+    "rice": ["katori", "plate"],
+    "side": ["small-katori", "katori"],
+    "sweet": ["small-katori"],
+    "drink": ["glass"],
+    "breakfast": ["plate"],
+    "bread": ["piece"],
+    "snack": ["piece"]
+  }
+}

@@ -78,3 +78,21 @@ URL: https://liftlog-jade.vercel.app · components page: https://liftlog-jade.ve
 | 3 | Open Kettlebell Swing, Power Clean, Bayesian Curl, Side Plank and Inverted Row. Turn on the animation. Each picture shows the movement | Partly ✅: contact sheets in `docs/reports/poses/m8-*.jpg`, `/dev/poses` checked. 📱 Your judgement of the pictures |
 | 4 | Open `/dev/poses`. It says 605 pictograms. Scroll and tap "More" until the end | ✅ screen test (120, then 240 after "More") and e2e. 📱 Scroll speed on each phone |
 | 5 | During a workout, Add from list → "kb swing" → add Kettlebell Swing and log a set | ✅ the add sheet and logging are covered by e2e for other exercises. 📱 Once with a new exercise |
+## M10 (food data; needs a preview deploy of `m10-food-data`)
+| # | Check | Automated? |
+|---|---|---|
+| 1 | Open `/dev/food`, tap "Import library now": the count reaches about 23,000 foods | ✅ e2e on all 4 projects. 📱 Time it on the iPhone and the Pixel |
+| 2 | Search "paneer", "dal tadka", "kirkland", "great value oats": results show at once; the timing line says under 150 ms | ✅ unit speed test (30,000 rows) + e2e. 📱 The real timing on both phones |
+| 3 | Airplane mode, reopen `/dev/food`, search again: results still show | ✅ e2e on Chromium. 📱 Once on the iPhone |
+| 4 | The sample targets show kcal 2950, P 140, C 440, F 70 (same as the F05 mockup) | ✅ unit + e2e |
+
+## M11 (Food screens; preview of `m10-food-data`)
+| # | Check | Automated? |
+|---|---|---|
+| 1 | LiftLog Home shows only one new thing: the `LiftLog \| Food` switch. Tap Food, close the app, open it again: it opens in Food | ✅ e2e + screen test. 📱 Reopen from the home-screen icon on both phones |
+| 2 | Log a real day in under 2 minutes: search (try "dal tadka", "paneer", "great value"), pick a portion, add; open a meal, change a portion, delete one | ✅ e2e (Indian chunk) + screen tests. 📱 Time it with the full library |
+| 3 | Scan the barcode of a packaged food: a library product opens its portion sheet; an unknown one offers "Create food" with the number filled in | Partly ✅: lookup logic unit-tested. 📱 Real camera on both phones (the iPhone uses the WASM decoder) |
+| 4 | Targets: after a weigh-in and your height, activity and goal, the number and reason make sense; Reset undoes macro edits | ✅ screen tests (sample profile = 2,950 kcal). 📱 Your own numbers |
+| 5 | Start a 16:8 fast, lock the phone, come back later: the time is right; end it; the week strip shows it | ✅ e2e + screen tests. 📱 Real elapsed time |
+| 6 | After a week of logging, Review shows days on target, a "Needs work" or "Going well" with a fix that does something | ✅ screen test with a seeded week. 📱 Your real week |
+| 7 | Every Food screen reads well in Paper and Iron at your phone's width | ✅ axe on the touched screens, 4 projects |

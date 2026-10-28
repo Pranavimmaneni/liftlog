@@ -10,6 +10,7 @@ import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 
 const BUDGET_KB = 250;
+const PRECACHE_BUDGET_MB = 5;
 const LAZY = [/^exercises-/, /^poses-/, /zxing|barcode|qr-polyfill/i, /^Chart-/];
 const dist = 'dist';
 const html = readFileSync(join(dist, 'index.html'), 'utf8');
@@ -40,4 +41,27 @@ if (total > BUDGET_KB * 1024) {
   console.error(`FAIL: initial JS ${(total / 1024).toFixed(1)} KB > ${BUDGET_KB} KB`);
   process.exit(1);
 }
+// NFR-SIZE-1 / PRD-1.2 FR-FOOD-2: the food library is fetched once into IndexedDB, never precached.
+const sw = readFileSync(join(dist, 'sw.js'), 'utf8');
+if (/foods-[a-z]+-[\w-]+\.json/.test(sw)) {
+  console.error('FAIL: the food library is in the precache');
+  process.exit(1);
+}
+const precached = [...sw.matchAll(/"?url"?:"\/?([^"]+)"/g)].map((m) => m[1]!);
+const precacheBytes = precached.reduce((n, f) => {
+  try {
+    return n + readFileSync(join(dist, f)).length;
+  } catch {
+    return n;
+  }
+}, 0);
+console.log(
+  `Precache: ${precached.length} files, ${(precacheBytes / 1024 / 1024).toFixed(2)} MB (budget ${PRECACHE_BUDGET_MB} MB)`,
+);
+if (precacheBytes > PRECACHE_BUDGET_MB * 1024 * 1024) {
+  console.error('FAIL: precache over budget');
+  process.exit(1);
+}
+const foodFiles = readdirSync(join(dist, 'assets')).filter((f) => /^foods-/.test(f));
+console.log(`Food library files (not precached): ${foodFiles.join(', ') || 'none'}`);
 console.log('OK');

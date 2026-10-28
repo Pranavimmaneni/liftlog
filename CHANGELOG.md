@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.0 (2026-10-27)
+- Food section next to LiftLog: a LiftLog | Food switch (the only change on LiftLog screens), and Food tabs Diary, Review and Fasting.
+- Diary with calories left, macros, a protein quest and meals; search 23,365 foods (with Indian dishes), scan barcodes, pick portions in katori, cups or grams; edit, delete and copy meals.
+- Your own foods, recipes and quick add; targets from your weigh-ins, height, activity and goal; weekly and monthly food review with food + training feedback; fasting timer.
+- Food library: 23,365 foods (USDA generic and branded, plus 147 Indian dishes), downloaded once and searchable offline.
+- Data model version 2 for food (diary, own foods, recipes, fasts); training data is unchanged.
+- Still to come in 1.2.x (M12): food XP in your level, the adaptive calorie suggestion, saved meals.
+
 ## 1.1.3 (2026-10-27)
 - 11 cable exercises (cable triceps extensions, cable chest presses, cable hip adduction, cable preacher curl) now use the cable tower with 2.5 kg steps, instead of a stack machine. Logged sets, PRs and history stay the same.
 

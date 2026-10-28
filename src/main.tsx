@@ -21,6 +21,9 @@ async function start() {
     try {
       const step = (await db.meta.get('onboardingStep'))?.value as string | undefined;
       if (step !== 'done') history.replaceState(null, '', `/onboarding/${step ?? 'about'}`);
+      // PRD-1.2 FR-NAV-2: reopen in the section used last.
+      else if (location.pathname === '/' && (await db.settings.get('lastSection'))?.value === 'food')
+        history.replaceState(null, '', '/food');
     } catch {
       // Storage unavailable: the gate and the storage banner take it from here.
     }
@@ -30,5 +33,8 @@ async function start() {
       <RouterProvider router={createAppRouter()} />
     </StrictMode>,
   );
+  // PRD-1.2 NFR-OFF-3: fetch the food library once in the background so Food works offline later.
+  // Skipped under automation, where a 30,000-row import would slow every e2e run (D101).
+  if (!isNative && !navigator.webdriver) void import('./db/food-lib').then((m) => m.scheduleLibraryImport());
 }
 void start();

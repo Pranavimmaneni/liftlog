@@ -1,0 +1,123 @@
+{
+  "_note": "Food section constants (PRD-1.2 FR-TGT-*, FR-COACH-*, FR-FAST-1, FR-GAME-1). Tunable numbers live here, never in code (NFR-MAINT-2).",
+  "sources": {
+    "bmr": "Mifflin MD, St Jeor ST et al. A new predictive equation for resting energy expenditure in healthy individuals. Am J Clin Nutr 1990;51:241-7.",
+    "activity": "Conventional activity multipliers (1.2 / 1.375 / 1.55 / 1.725); LiftLog adds a per-session training term (DECISIONS).",
+    "protein": "Jäger R et al. ISSN position stand: protein and exercise. JISSN 2017;14:20 (1.4-2.0 g/kg/day; higher in an energy deficit).",
+    "fibre": "National Academies DRI: Adequate Intake of 14 g fibre per 1,000 kcal."
+  },
+  "energy": {
+    "mifflin": {
+      "perKg": 10,
+      "perCm": 6.25,
+      "perYear": -5,
+      "male": 5,
+      "female": -161,
+      "unspecified": -161
+    },
+    "activity": {
+      "desk": 1.2,
+      "light": 1.375,
+      "active": 1.55,
+      "very": 1.725
+    },
+    "perWeeklySession": 0.04,
+    "maxFactor": 1.9,
+    "defaults": {
+      "heightCm": 170,
+      "age": 30,
+      "activity": "light"
+    }
+  },
+  "phase": {
+    "kcalPerKg": 7700,
+    "rates": {
+      "lose": [
+        0.25,
+        0.5,
+        0.75
+      ],
+      "maintain": [
+        0
+      ],
+      "gain": [
+        0.1,
+        0.25,
+        0.5
+      ]
+    },
+    "defaultRate": {
+      "lose": 0.5,
+      "maintain": 0,
+      "gain": 0.25
+    },
+    "maxDeficitFraction": 0.25,
+    "floorKcal": {
+      "male": 1500,
+      "female": 1200,
+      "unspecified": 1200
+    },
+    "roundTo": 50
+  },
+  "macros": {
+    "proteinPerKg": {
+      "build_muscle": 1.8,
+      "get_stronger": 1.8,
+      "recomp": 2.0,
+      "general_fitness": 1.4
+    },
+    "proteinPerKgWhenLosing": 2.2,
+    "fatPerKg": 0.9,
+    "fatMinFraction": 0.2,
+    "fibrePer1000Kcal": 14,
+    "trainingDayCarbShiftG": 60,
+    "kcalPerG": {
+      "protein": 4,
+      "carbs": 4,
+      "fat": 9
+    }
+  },
+  "onTarget": {
+    "kcalTolerance": 0.1,
+    "proteinMinFraction": 0.9
+  },
+  "adaptive": {
+    "minDays": 21,
+    "minLoggedDays": 14,
+    "minChangeKcal": 100,
+    "trendAlpha": 0.1,
+    "roundTo": 50
+  },
+  "trainingLink": {
+    "sessionsForUsualTime": 6,
+    "minSessionsForUsualTime": 3,
+    "volumeWeeks": 1
+  },
+  "coach": {
+    "proteinShortFraction": 0.9,
+    "proteinShortTrainingDays": 2,
+    "preWorkoutHours": 3,
+    "preWorkoutCarbsG": 30,
+    "preWorkoutGoodSessions": 1.0,
+    "flatWeightWeeks": 3,
+    "flatWeightKgPerWeek": 0.05,
+    "fastLossFractionPerWeek": 0.01,
+    "lowMicroFraction": 0.7,
+    "volumeUpFraction": 0.05,
+    "suggestFoods": 2,
+    "raiseKcal": 200
+  },
+  "fasting": {
+    "presets": [
+      12,
+      14,
+      16,
+      18
+    ],
+    "defaultHours": 16,
+    "minHoursToCount": 12
+  },
+  "streak": {
+    "minMeals": 2
+  }
+}

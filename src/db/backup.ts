@@ -1,15 +1,17 @@
 import { z } from 'zod';
-import { db, SCHEMA_VERSION, TABLES } from './schema';
+import { db, SCHEMA_VERSION, USER_TABLES } from './schema';
 
 /**
  * FR-DATA-1/3, NFR-REL-2, NFR-SEC-2: full backup of every table to `liftlog-YYYY-MM-DD.liftlog.json`.
  * Blobs (machine photos) are stored as base64 data. Import validates with zod before touching the DB.
+ * Schema v2 (PRD-1.2 FR-SHR-2): the Food tables are included; the food library (`foodLib`) is not,
+ * because it is rebuilt from the bundled chunks.
  */
 
 export const BACKUP_APP = 'liftlog';
 export const MAX_BACKUP_BYTES = 50 * 1024 * 1024;
 
-type TableName = (typeof TABLES)[number];
+type TableName = (typeof USER_TABLES)[number];
 
 interface EncodedBlob {
   __blob: true;
@@ -83,15 +85,15 @@ export async function buildBackup(now = new Date()): Promise<BackupFile> {
   const tables: BackupFile['tables'] = {};
   await db.transaction(
     'r',
-    TABLES.map((t) => db.table(t)),
+    USER_TABLES.map((t) => db.table(t)),
     async () => {
-      for (const t of TABLES) {
+      for (const t of USER_TABLES) {
         const rows = (await db.table(t).toArray()) as Record<string, unknown>[];
         tables[t] = rows;
       }
     },
   );
-  for (const t of TABLES) {
+  for (const t of USER_TABLES) {
     tables[t] = await Promise.all((tables[t] ?? []).map(encodeRow));
   }
   return { app: BACKUP_APP, schemaVersion: SCHEMA_VERSION, exportedAt: now.toISOString(), tables };
@@ -134,10 +136,44 @@ const sessionSchema = z
 
 const bodyweightSchema = z.object({ date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), kg: num }).passthrough();
 
+const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
+const nutrients = z.record(z.string(), num.nullable());
+const portion = z.object({ label: str, grams: num }).passthrough();
+
+const diarySchema = z
+  .object({
+    id: str,
+    date,
+    meal: z.enum(['breakfast', 'lunch', 'snacks', 'dinner']),
+    loggedAt: num,
+    foodId: str,
+    name: str,
+    portion,
+    servings: num,
+    grams: num,
+    per100g: nutrients,
+  })
+  .passthrough();
+
+const foodSchema = z
+  .object({
+    id: str,
+    name: str,
+    per100g: nutrients,
+    portions: z.array(portion),
+    isRecipe: z.union([z.literal(0), z.literal(1)]),
+  })
+  .passthrough();
+
+const fastSchema = z.object({ id: str, startedAt: num, planHours: num }).passthrough();
+
 const TABLE_SCHEMAS: Partial<Record<TableName, z.ZodType>> = {
   sets: setSchema,
   sessions: sessionSchema,
   bodyweights: bodyweightSchema,
+  diary: diarySchema,
+  foods: foodSchema,
+  fasts: fastSchema,
 };
 
 export const backupSchema = z.object({
@@ -161,11 +197,21 @@ export type ParseResult =
 
 /**
  * Migrates older backup files forward, one schema version at a time (FR-DATA-3).
- * v1 is the first version, so there is nothing to migrate yet; add `case 1:` when v2 lands.
+ * v1 → v2 (NFR-REL-6): v2 only added the Food tables, so a v1 file gets empty ones and every v1 row
+ * stays byte-equal.
  */
 export function migrateBackup(b: BackupFile): BackupFile {
-  const out = b;
-  // for (let v = b.schemaVersion; v < SCHEMA_VERSION; v++) { switch (v) { case 1: … } }
+  let out: BackupFile = { ...b, tables: { ...b.tables } };
+  for (let v = b.schemaVersion; v < SCHEMA_VERSION; v++) {
+    switch (v) {
+      case 1:
+        out = {
+          ...out,
+          tables: { foods: [], diary: [], savedMeals: [], fasts: [], ...out.tables },
+        };
+        break;
+    }
+  }
   return { ...out, schemaVersion: SCHEMA_VERSION };
 }
 
@@ -182,7 +228,7 @@ export function parseBackup(text: string, byteSize = text.length): ParseResult {
   const b = parsed.data as BackupFile;
   if (b.schemaVersion > SCHEMA_VERSION) return { ok: false, error: 'newer-version' };
   for (const [t, rows] of Object.entries(b.tables)) {
-    if (!(TABLES as string[]).includes(t)) return { ok: false, error: 'unknown-table' };
+    if (!(USER_TABLES as string[]).includes(t)) return { ok: false, error: 'unknown-table' };
     const schema = TABLE_SCHEMAS[t as TableName];
     if (schema) {
       for (const r of rows ?? [])
@@ -212,22 +258,22 @@ export function parseBackup(text: string, byteSize = text.length): ParseResult {
  */
 export async function restoreBackup(backup: BackupFile, mode: 'replace' | 'merge'): Promise<void> {
   const decoded: Partial<Record<TableName, Record<string, unknown>[]>> = {};
-  for (const t of TABLES) decoded[t] = (backup.tables[t] ?? []).map(decodeRow);
+  for (const t of USER_TABLES) decoded[t] = (backup.tables[t] ?? []).map(decodeRow);
 
   await db.transaction(
     'rw',
-    TABLES.map((t) => db.table(t)),
+    USER_TABLES.map((t) => db.table(t)),
     async () => {
       if (mode === 'replace') {
-        for (const t of TABLES) await db.table(t).clear();
-        for (const t of TABLES) {
+        for (const t of USER_TABLES) await db.table(t).clear();
+        for (const t of USER_TABLES) {
           const rows = decoded[t] ?? [];
           if (rows.length) await db.table(t).bulkAdd(rows);
         }
         await db.meta.put({ key: 'schemaVersion', value: SCHEMA_VERSION });
         return;
       }
-      for (const t of TABLES) {
+      for (const t of USER_TABLES) {
         const rows = decoded[t] ?? [];
         if (!rows.length || t === 'errors') continue;
         const table = db.table(t);

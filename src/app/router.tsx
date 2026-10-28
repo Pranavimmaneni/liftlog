@@ -2,6 +2,7 @@ import { createBrowserRouter, createHashRouter, type RouteObject } from 'react-r
 import { isNative } from '@/platform';
 import { App } from './App';
 import { FullLayout, TabLayout } from './layouts';
+import { FoodTabLayout } from '@/screens/food/FoodLayout';
 import { RouteError } from './RouteError';
 
 type Loader = () => Promise<{ default: React.ComponentType }>;
@@ -25,6 +26,16 @@ export const routes: RouteObject[] = [
           { path: 'progress', ...page(() => import('@/screens/S12-progress')) },
           { path: 'progress/review', ...page(() => import('@/screens/S10-review')) },
           { path: 'progress/strength', ...page(() => import('@/screens/S11-strength')) },
+        ],
+      },
+      {
+        // PRD-1.2 FR-NAV-2: the Food section, with its own tab bar (Diary · Review · Fasting).
+        element: <FoodTabLayout />,
+        errorElement: <RouteError />,
+        children: [
+          { path: 'food', ...page(() => import('@/screens/food/Diary')) },
+          { path: 'food/review', ...page(() => import('@/screens/food/Review')) },
+          { path: 'food/fasting', ...page(() => import('@/screens/food/Fasting')) },
         ],
       },
       {
@@ -55,6 +66,11 @@ export const routes: RouteObject[] = [
           { path: 'library/new', ...page(() => import('@/screens/S17-custom')) },
           { path: 'library/:exerciseId', ...page(() => import('@/screens/S16-exercise')) },
           { path: 'library/:exerciseId/edit', ...page(() => import('@/screens/S17-custom')) },
+          { path: 'food/add', ...page(() => import('@/screens/food/AddFood')) },
+          { path: 'food/new', ...page(() => import('@/screens/food/NewFood')) },
+          { path: 'food/scan', ...page(() => import('@/screens/food/Scan')) },
+          { path: 'food/targets', ...page(() => import('@/screens/food/Targets')) },
+          { path: 'food/meal/:date/:meal', ...page(() => import('@/screens/food/Meal')) },
           { path: 'settings', ...page(() => import('@/screens/S14-settings')) },
           { path: 'settings/profile', ...page(() => import('@/screens/S14-settings/Profile')) },
           { path: 'settings/gym', ...page(() => import('@/screens/S14-settings/Gym')) },
@@ -62,6 +78,7 @@ export const routes: RouteObject[] = [
           { path: 'dev/components', ...page(() => import('@/screens/dev/DevComponents')) },
           { path: 'dev/fixture', ...page(() => import('@/screens/dev/DevFixture')) },
           { path: 'dev/poses', ...page(() => import('@/screens/dev/DevPoses')) },
+          { path: 'dev/food', ...page(() => import('@/screens/dev/DevFood')) },
           { path: '*', ...page(() => import('@/screens/NotFound')) },
         ],
       },

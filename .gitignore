@@ -15,4 +15,6 @@ android/local.properties
 android/app/release.keystore
 
 .vercel
+
+# USDA downloads for npm run seed:foods (FR-FOOD-1)
 .cache/
