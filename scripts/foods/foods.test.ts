@@ -2,10 +2,12 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { decodeRow, emptyNutrients, NUTRIENTS, type Nutrients } from '../../src/engine/food-types';
-import { serializeChunk, toChunk } from '../seed-foods';
+import { catalogueFile, serializeChunk, shard, toChunk } from '../seed-foods';
 import {
   applyCaps,
   brandedPortion,
+  brandOf,
+  CATALOGUE,
   dedupeByGtin,
   matchGroup,
   toRecord,
@@ -150,13 +152,10 @@ describe('food library seed (FR-FOOD-1)', () => {
       toRecord((k) => (k === 'available_date' ? '2018-01-01' : get(k)), sources.branded, drops),
     ).toBeNull();
     expect(toRecord((k) => (k === 'serving_size_unit' ? 'IU' : get(k)), sources.branded, drops)).toBeNull();
-    expect(
-      toRecord(
-        (k) => (k === 'brand_owner' ? 'Acme' : k === 'brand_name' ? 'ACME' : get(k)),
-        sources.branded,
-        drops,
-      ),
-    ).toBeNull();
+    const acme = (k: string) => (k === 'brand_owner' ? 'Acme' : k === 'brand_name' ? 'ACME' : get(k));
+    // FR-FOOD-8: any other brand goes to the catalogue; without a catalogue it is left out.
+    expect(toRecord(acme, sources.branded, drops)).toMatchObject({ group: CATALOGUE });
+    expect(toRecord(acme, { ...sources.branded, catalogue: undefined }, drops)).toBeNull();
     expect(matchGroup('Wal-Mart Stores, Inc.', 'GREAT VALUE', sources.branded.groups)?.id).toBe('walmart');
     expect(matchGroup('Sam’s Club West', "MEMBER'S MARK", sources.branded.groups)?.id).toBe('sams-club');
   });
@@ -170,6 +169,27 @@ describe('food library seed (FR-FOOD-1)', () => {
       groups: [{ id: 'costco', label: 'Costco', cap: 10 }],
     });
     expect(kept.map((r) => r.fdcId)).toEqual([4, 3]);
+  });
+
+  it('FR-FOOD-8: rows over a cap overflow into the catalogue instead of being dropped', () => {
+    const rows = Array.from({ length: 5 }, (_, i) =>
+      rec({ fdcId: i, gtin: `${i}`.padStart(14, '0'), available: `2024-01-0${i + 1}` }),
+    );
+    const { kept, overflow } = applyCaps(rows, {
+      perCategoryCap: 10,
+      groups: [{ id: 'costco', label: 'Costco', cap: 3 }],
+    });
+    expect(kept.map((r) => r.fdcId)).toEqual([4, 3, 2]);
+    expect(overflow.map((r) => r.fdcId)).toEqual([1, 0]);
+  });
+
+  it('FR-FOOD-8: placeholder brand names fall back to the owner', () => {
+    const junk = new RegExp(sources.branded.catalogue!.junkBrand, 'i');
+    expect(brandOf('NOT A BRANDED ITEM', 'ACME FOODS', junk)).toBe('Acme Foods');
+    expect(brandOf('N/A', '', junk)).toBeUndefined();
+    expect(brandOf('GREAT VALUE', 'Walmart Inc.', junk)).toBe('Great Value');
+    expect(shard([1, 2, 3, 4, 5], 2)).toEqual([[1, 2], [3, 4], [5]]);
+    expect(catalogueFile(3)).toBe('catalogue-03.json');
   });
 
   it('reads quoted CSV fields, "" escapes and newlines inside quotes, across chunks', () => {

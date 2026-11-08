@@ -6,6 +6,7 @@ import type {
   ErrorRow,
   FastRow,
   FoodLibRow,
+  FoodSearchRow,
   ExerciseRow,
   GoalChangeRow,
   GoalRow,
@@ -22,7 +23,7 @@ import type {
   SettingRow,
 } from './types';
 
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 3;
 export const DB_NAME = 'liftlog';
 
 /** PRD §7 schema v1. `*primary` / `*aliases` are multi-entry indexes over arrays. */
@@ -58,6 +59,16 @@ export const STORES_V2 = {
   fasts: 'id, startedAt',
 } as const;
 
+/**
+ * Schema v3 (FR-FOOD-8, D122): the full branded catalogue. `foodLib` keeps its keys but stores
+ * compact rows, and `foodSearch` holds each imported chunk's search columns. Both are rebuildable
+ * library data, never backed up. The upgrade empties `foodLib` so the new library imports again.
+ */
+export const STORES_V3 = {
+  ...STORES_V2,
+  foodSearch: 'file',
+} as const;
+
 export type LiftLogDB = Dexie & {
   meta: EntityTable<MetaRow, 'key'>;
   profile: EntityTable<ProfileRow, 'id'>;
@@ -75,15 +86,21 @@ export type LiftLogDB = Dexie & {
   settings: EntityTable<SettingRow, 'key'>;
   errors: EntityTable<ErrorRow, 'id'>;
   foodLib: EntityTable<FoodLibRow, 'id'>;
+  foodSearch: EntityTable<FoodSearchRow, 'file'>;
   foods: EntityTable<CustomFoodRow, 'id'>;
   diary: EntityTable<DiaryRow, 'id'>;
   savedMeals: EntityTable<SavedMealRow, 'id'>;
   fasts: EntityTable<FastRow, 'id'>;
 };
 
-export const TABLES = Object.keys(STORES_V2) as (keyof typeof STORES_V2)[];
+export const TABLES = Object.keys(STORES_V3) as (keyof typeof STORES_V3)[];
+/** Rebuildable library data (D109): never backed up, restored or reset with demo data. */
+export const LIBRARY_TABLES = ['foodLib', 'foodSearch'] as const;
 /** The user's own data: everything except the rebuildable food library (backup, restore, demo data). */
-export const USER_TABLES = TABLES.filter((t) => t !== 'foodLib');
+export const USER_TABLES = TABLES.filter(
+  (t): t is Exclude<(typeof TABLES)[number], (typeof LIBRARY_TABLES)[number]> =>
+    !(LIBRARY_TABLES as readonly string[]).includes(t),
+);
 
 /**
  * Opens (or creates) the database. Every future schema change adds
@@ -96,6 +113,14 @@ export function createDB(name = DB_NAME): LiftLogDB {
   db.version(2)
     .stores(STORES_V2)
     .upgrade((tx) => tx.table('meta').put({ key: 'schemaVersion', value: 2 }));
+  // v3 changes only library rows (rebuildable): empty them so the new library imports again.
+  db.version(3)
+    .stores(STORES_V3)
+    .upgrade(async (tx) => {
+      await tx.table('foodLib').clear();
+      await tx.table('meta').delete('foodLibVersion');
+      await tx.table('meta').put({ key: 'schemaVersion', value: 3 });
+    });
   db.on('populate', (tx) => {
     void tx.table('meta').bulkAdd([
       { key: 'schemaVersion', value: SCHEMA_VERSION },

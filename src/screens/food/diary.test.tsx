@@ -6,6 +6,7 @@ import { db } from '@/db/schema';
 import { saveProfile, saveWeighIn } from '@/db/repo';
 import { getRawSetting } from '@/db/settings';
 import { logFood } from '@/db/food';
+import { putLibraryFoods } from '@/db/food-lib';
 import { emptyNutrients, type FoodItem, type Nutrients } from '@/engine/food-types';
 import { dateKey } from '@/engine/week';
 import { defaultPhase, targetsFor, weightOn } from './hooks';
@@ -150,8 +151,7 @@ describe('Food screens (FR-NAV-2, FR-DIARY-1/2, FR-FOOD-3)', () => {
 
   it('FR-FOOD-3 / FR-DIARY-2: search, pick a portion, add: the entry is saved at once', async () => {
     await sampleProfile();
-    await db.foodLib.bulkPut([BHURJI, RICE]);
-    await db.meta.put({ key: 'foodLibVersion', value: 'test' });
+    await putLibraryFoods([BHURJI, RICE]);
     renderRoute(`/food/add?meal=dinner&date=${TODAY}`);
     expect(await screen.findByRole('heading', { name: 'Add to dinner' }, W)).toBeInTheDocument();
     fireEvent.change(screen.getByRole('searchbox', { name: 'Search foods' }), {
@@ -176,7 +176,7 @@ describe('Food screens (FR-NAV-2, FR-DIARY-1/2, FR-FOOD-3)', () => {
 
   it('FR-DIARY-2: a meal lists its items; edit changes the portion, delete removes it', async () => {
     await sampleProfile();
-    await db.foodLib.bulkPut([BHURJI]);
+    await putLibraryFoods([BHURJI]);
     await logFood({ date: TODAY, meal: 'dinner', food: BHURJI, portion: BHURJI.portions[0]!, servings: 1 });
     renderRoute(`/food/meal/${TODAY}/dinner`);
     fireEvent.click(await screen.findByRole('button', { name: 'Edit Paneer bhurji' }, W));

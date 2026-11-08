@@ -15,7 +15,8 @@ import type {
   Side,
   Units,
 } from '@/engine/types';
-import type { FoodItem, Nutrients, Portion } from '@/engine/food-types';
+import type { FoodItem, FoodRow, FoodSource, Nutrients, Portion } from '@/engine/food-types';
+import type { SearchColumns } from '@/engine/food-search';
 
 export interface MetaRow {
   key: 'schemaVersion' | 'installedAt' | 'lastBackupAt' | 'onboardingStep' | 'onboardingDraft' | string;
@@ -222,10 +223,26 @@ export type MealSlot = 'breakfast' | 'lunch' | 'snacks' | 'dinner';
 export const MEAL_SLOTS: MealSlot[] = ['breakfast', 'lunch', 'snacks', 'dinner'];
 
 /**
- * An imported library food (FR-FOOD-1/2). Search runs on an in-memory index, so library rows carry
- * no word index: indexing ~140,000 words made the one-time import several times slower (D113).
+ * An imported library food (FR-FOOD-1/2/8), schema v3: the compact chunk row as is (nutrients in
+ * `NUTRIENTS` order), so ~425,000 rows import fast and take about half the space of full objects
+ * (D122). `decodeLibRow` turns it into a FoodItem. Search runs on an in-memory index built from
+ * `foodSearch`, so library rows carry no word index (D113).
  */
-export type FoodLibRow = FoodItem;
+export interface FoodLibRow {
+  id: string;
+  gtin?: string;
+  s: Exclude<FoodSource, 'custom'>;
+  r: FoodRow;
+}
+
+/**
+ * FR-FOOD-8, schema v3: the search fields of one imported library chunk (columns, see
+ * engine/food-search), written once per chunk so the index builds without reading every food.
+ */
+export interface FoodSearchRow extends SearchColumns {
+  /** `<library version>/<chunk file>` (or a name for foods put directly, as in tests). */
+  file: string;
+}
 
 /** FR-FOOD-5: the user's own food, recipe (ingredients + yield) or quick add. Deleting keeps history. */
 export interface CustomFoodRow extends FoodItem {

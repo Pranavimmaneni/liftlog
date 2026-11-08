@@ -47,6 +47,11 @@ if (/foods-[a-z]+-[\w-]+\.json/.test(sw)) {
   console.error('FAIL: the food library is in the precache');
   process.exit(1);
 }
+// FR-FOOD-8: the ~80 MB catalogue (public/food/) is served, never precached.
+if (/food\/\d{4}-\d{2}-\d{2}[^"]*catalogue/.test(sw)) {
+  console.error('FAIL: the food catalogue is in the precache');
+  process.exit(1);
+}
 const precached = [...sw.matchAll(/"?url"?:"\/?([^"]+)"/g)].map((m) => m[1]!);
 const precacheBytes = precached.reduce((n, f) => {
   try {

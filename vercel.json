@@ -6,7 +6,7 @@
   "installCommand": "npm ci",
   "rewrites": [
     {
-      "source": "/((?!assets/|icons/|zxing/|sw.js|workbox-|manifest.webmanifest|theme-boot.js).*)",
+      "source": "/((?!assets/|food/|icons/|zxing/|sw.js|workbox-|manifest.webmanifest|theme-boot.js).*)",
       "destination": "/index.html"
     }
   ],
@@ -17,6 +17,19 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/food/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
         }
       ]
     },

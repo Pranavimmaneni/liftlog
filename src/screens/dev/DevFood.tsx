@@ -5,8 +5,8 @@ import { Button } from '@/components/Button';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { en } from '@/copy/en';
 import { db } from '@/db/schema';
-import { importLibrary, LIBRARY_MANIFEST, searchableFoods } from '@/db/food-lib';
-import { buildFoodIndex, searchFoods, type FoodIndex } from '@/engine/food-search';
+import { importLibrary, LIBRARY_MANIFEST, libraryFoods, librarySearchParts } from '@/db/food-lib';
+import { buildFoodIndexAsync, searchFoods, type FoodIndex } from '@/engine/food-search';
 import { energyTarget } from '@/engine/energy';
 import { macroTargets } from '@/engine/macros';
 import { microTargets } from '@/engine/micros';
@@ -32,33 +32,47 @@ const SAMPLE = {
 export default function DevFood() {
   const stored = useLiveQuery(async () => ({
     rows: await db.foodLib.count(),
+    parts: await db.foodSearch.count(),
     v: ((await db.meta.get('foodLibVersion'))?.value as string | undefined) ?? '–',
   }));
   const [progress, setProgress] = useState<[number, number] | null>(null);
-  const [index, setIndex] = useState<FoodIndex<FoodItem> | null>(null);
+  const [index, setIndex] = useState<FoodIndex | null>(null);
   // `?subset=indian` imports one small chunk: Playwright's WebKit on Windows writes IndexedDB too
-  // slowly for the full library (D58, D113). The version gets a suffix so a later full import runs.
+  // slowly for the full library (D58, D113). `?subset=core` imports the core chunks without the
+  // ~400,000-row catalogue (FR-FOOD-8, e2e). The version gets a suffix so a later full import runs.
   const [params] = useSearchParams();
   const subset = params.get('subset');
   const manifest =
     LIBRARY_MANIFEST && subset
       ? {
           v: `${LIBRARY_MANIFEST.v}+${subset}`,
-          chunks: LIBRARY_MANIFEST.chunks.filter((c) => c.source === subset),
+          chunks: LIBRARY_MANIFEST.chunks.filter((c) => subset === 'core' || c.source === subset),
         }
       : LIBRARY_MANIFEST;
   const [q, setQ] = useState('');
 
   useEffect(() => {
-    if (!stored?.rows) return;
-    void searchableFoods().then((foods) => setIndex(buildFoodIndex(foods)));
-  }, [stored?.rows]);
+    if (!stored?.parts) return;
+    let alive = true;
+    void librarySearchParts()
+      .then((parts) => buildFoodIndexAsync(parts, () => new Promise((r) => setTimeout(r, 0))))
+      .then((ix) => alive && setIndex(ix));
+    return () => {
+      alive = false;
+    };
+  }, [stored?.parts]);
 
-  const result = useMemo(() => {
-    if (!index || !q.trim()) return null;
+  const [result, setResult] = useState<{ hits: FoodItem[]; ms: number } | null>(null);
+  useEffect(() => {
+    if (!index || !q.trim()) return setResult(null);
+    let alive = true;
     const t0 = performance.now();
-    const hits = searchFoods(index, q, { limit: 30 });
-    return { hits, ms: performance.now() - t0 };
+    const ids = searchFoods(index, q, { limit: 30 }).map((h) => h.id);
+    const ms = performance.now() - t0;
+    void libraryFoods(ids).then((hits) => alive && setResult({ hits, ms }));
+    return () => {
+      alive = false;
+    };
   }, [index, q]);
 
   const targets = useMemo(() => {
@@ -119,7 +133,7 @@ export default function DevFood() {
               {en.dev.foodTook(result.ms, result.hits.length)}
             </p>
             <ul className="mt-2 divide-y divide-rule border-y border-rule" data-testid="food-results">
-              {result.hits.map(({ food }) => {
+              {result.hits.map((food) => {
                 const p = food.portions[0]!;
                 const kcal = scale(food.per100g, p.grams).kcal;
                 return (

@@ -849,7 +849,10 @@ export const en = {
     units: { g: 'g', mg: 'mg', ug: 'µg', kcal: 'kcal', grams: 'grams' },
     library: {
       downloading: 'The food library is still downloading. Your own and recent foods are searchable now.',
-      offline: 'Connect once to download the food library (about 1 MB).',
+      offline:
+        'Connect once to download the food library (about 1 MB, then about 20 MB more for every brand).',
+      catalogue: (pct: number) =>
+        `Adding every brand in the background (${pct}%). Store brands and common foods are searchable now.`,
     },
     diary: {
       today: 'Today',

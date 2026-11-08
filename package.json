@@ -2,6 +2,7 @@
   "name": "liftlog",
   "private": true,
   "version": "1.2.0",
+  "homepage": "https://liftlog-jade.vercel.app",
   "type": "module",
   "description": "Offline-first workout tracker. Paper & Iron.",
   "scripts": {
@@ -18,7 +19,7 @@
     "test:watch": "vitest",
     "e2e": "playwright test",
     "seed": "tsx scripts/seed.ts",
-    "seed:foods": "tsx scripts/seed-foods.ts",
+    "seed:foods": "node --max-old-space-size=8192 --import tsx scripts/seed-foods.ts",
     "copy-data": "tsx scripts/copy-data.ts",
     "budget": "tsx scripts/check-budget.ts",
     "smoke:native": "tsx scripts/smoke-native.ts",

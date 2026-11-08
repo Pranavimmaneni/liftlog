@@ -10,7 +10,7 @@ import { emptyNutrients, type FoodItem, type NutrientKey, type Nutrients } from 
 import { recipePer100g } from '@/engine/nutrition';
 import { searchFoods } from '@/engine/food-search';
 import { Choices, Cta, FoodHeader, Label, TextLink, TextTabs } from './ui';
-import { useFoodSearch, useToday } from './hooks';
+import { indexesFor, useFoodsById, useFoodSearch, useToday } from './hooks';
 
 type Tab = 'food' | 'recipe' | 'quick';
 const MORE: NutrientKey[] = ['sodium', 'potassium', 'calcium', 'iron', 'magnesium', 'vitD', 'b12'];
@@ -460,12 +460,16 @@ function IngredientPicker({
 }) {
   const nf = en.food.newFood;
   const today = useToday();
-  const { index, boost } = useFoodSearch(today);
+  const { libIndex, ownIndex, boost, own } = useFoodSearch(today);
   const [q, setQ] = useState('');
-  const hits = useMemo(
-    () => (index && q.trim() ? searchFoods(index, q, { limit: 30, boost }) : []),
-    [index, q, boost],
+  const ids = useMemo(
+    () =>
+      q.trim()
+        ? searchFoods(indexesFor({ libIndex, ownIndex }, q), q, { limit: 30, boost }).map((h) => h.id)
+        : [],
+    [libIndex, ownIndex, q, boost],
   );
+  const hits = useFoodsById(ids, own);
   return (
     <Sheet open={open} onClose={onClose} title={nf.recipe.pick}>
       <label className="flex h-[52px] items-center gap-2.5 rounded-full border border-rule bg-card px-4">
@@ -480,7 +484,7 @@ function IngredientPicker({
         />
       </label>
       <ul className="mt-2">
-        {hits.map(({ food }) => (
+        {hits.map((food) => (
           <li key={food.id} className="border-b border-rule">
             <button
               type="button"

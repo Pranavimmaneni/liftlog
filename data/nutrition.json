@@ -119,5 +119,11 @@
   },
   "streak": {
     "minMeals": 2
+  },
+  "search": {
+    "_note": "FR-FOOD-3 / FR-FOOD-8 (D121): typo matching for a query word is skipped once that word already prefix-matches fuzzyBelow or more foods (the typo hits would rank below them anyway). The library (~410,000 foods) is searched from minLibraryChars letters; own foods from the first. The index is built in slices of buildSlice foods so the screen stays responsive.",
+    "fuzzyBelow": 50,
+    "minLibraryChars": 2,
+    "buildSlice": 20000
   }
 }

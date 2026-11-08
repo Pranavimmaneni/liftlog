@@ -210,6 +210,7 @@ export function migrateBackup(b: BackupFile): BackupFile {
           tables: { foods: [], diary: [], savedMeals: [], fasts: [], ...out.tables },
         };
         break;
+      // v2 → v3 (FR-FOOD-8) changed only the rebuildable food library, which backups never hold.
     }
   }
   return { ...out, schemaVersion: SCHEMA_VERSION };

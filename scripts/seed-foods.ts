@@ -3,10 +3,13 @@
  * FoodData Central downloads (data/food-sources.json) and writes FOOD-SEED-REPORT.md.
  * Deterministic: same inputs → byte-equal outputs (sorted rows, no timestamps).
  *
- *   npm run seed:foods        (downloads into .cache/usda/ on first run, ~470 MB)
+ *   npm run seed:foods        (downloads into .cache/usda/ on first run, ~470 MB; ~12 min)
+ *
+ * The full branded catalogue (FR-FOOD-8, D120) goes to public/food/<version>/catalogue-NN.json:
+ * served as is by the site, outside the precache and the APK.
  */
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import {
@@ -39,6 +42,15 @@ export function serializeChunk(chunk: FoodChunk): string {
   const rows = chunk.foods.map((r) => JSON.stringify(r)).join(',\n');
   return `${head.slice(0, -1)},"foods":[\n${rows}\n]}\n`;
 }
+
+/** FR-FOOD-8: the catalogue cut into fixed-size shards, in id order (deterministic). */
+export function shard<T>(items: T[], size: number): T[][] {
+  const out: T[][] = [];
+  for (let i = 0; i < items.length; i += size) out.push(items.slice(i, i + size));
+  return out;
+}
+
+export const catalogueFile = (i: number) => `catalogue-${String(i).padStart(2, '0')}.json`;
 
 export function toChunk(v: string, source: FoodChunk['source'], foods: FoodItem[]): FoodChunk {
   return { v, source, nutrients: [...NUTRIENTS], foods: foods.map((f) => encodeRow(f)) };
@@ -86,7 +98,7 @@ async function main() {
   const branded = await buildBranded(join(CACHE, brandedFile), dir, cfg.branded, brandedDrops, (s) =>
     console.log(s),
   );
-  console.log(`branded: ${branded.foods.length}`);
+  console.log(`branded: ${branded.foods.length} core, ${branded.catalogue.length} catalogue`);
 
   const outDir = join(root, 'src', 'data', 'foods');
   mkdirSync(outDir, { recursive: true });
@@ -110,10 +122,30 @@ async function main() {
       };
     }),
   };
-  writeFileSync(join(outDir, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
+  // FR-FOOD-8: the catalogue shards, one folder per library version (old versions removed).
+  const pubRoot = join(root, 'public', 'food');
+  rmSync(pubRoot, { recursive: true, force: true });
+  const catDir = join(pubRoot, cfg.version);
+  mkdirSync(catDir, { recursive: true });
+  const catalogue = {
+    path: `food/${cfg.version}/`,
+    shards: shard(branded.catalogue, cfg.branded.catalogue?.shardSize ?? 25_000).map((foods, i) => {
+      const file = catalogueFile(i);
+      const text = serializeChunk(toChunk(cfg.version, 'branded', foods));
+      writeFileSync(join(catDir, file), text);
+      return {
+        file,
+        source: 'branded',
+        count: foods.length,
+        bytes: Buffer.byteLength(text),
+        gzipBytes: gzipSync(text, { level: 9 }).length,
+      };
+    }),
+  };
+  writeFileSync(join(outDir, 'manifest.json'), `${JSON.stringify({ ...manifest, catalogue }, null, 2)}\n`);
   writeFileSync(
     join(root, 'FOOD-SEED-REPORT.md'),
-    report(cfg, manifest.chunks, {
+    report(cfg, manifest.chunks, catalogue.shards, {
       fnddsTotal: fnddsRaw.length,
       genericDrops: genericDrops.entries(),
       branded,
@@ -123,14 +155,43 @@ async function main() {
       indian: indian.foods,
     }),
   );
-  console.log('seed:foods done', manifest.chunks.map((c) => `${c.file} ${c.count}`).join(', '));
+  console.log(
+    'seed:foods done',
+    manifest.chunks.map((c) => `${c.file} ${c.count}`).join(', '),
+    `+ ${catalogue.shards.length} catalogue shards (${branded.catalogue.length})`,
+  );
 }
+
+/** Store-brand names per retailer, for the report only. */
+const STORE_BRANDS: [string, RegExp][] = [
+  ['Walmart', /^(great value|marketside|sam'?s choice|freshness guaranteed|bettergoods|clear american)$/i],
+  ['Target', /^(good & gather|market pantry|favorite day|archer farms|simply balanced|wondershop)$/i],
+  ['Costco', /^kirkland/i],
+  ["Sam's Club", /^member'?s mark$/i],
+  ['Kroger', /^(kroger|simple truth|simple truth organic|private selection|heritage farm)$/i],
+  ['Whole Foods', /^(365|whole foods market|365 whole foods market|365 everyday value)$/i],
+  [
+    'Albertsons / Safeway',
+    /^(signature select|o organics|open nature|lucerne|signature cafe|signature farms)$/i,
+  ],
+  [
+    'Aldi',
+    /^(millville|clancy'?s|friendly farms|happy farms|simply nature|l'oven fresh|fit & active|southern grove|baker'?s corner|savoritz|specially selected|never any!?)$/i,
+  ],
+  ["Trader Joe's", /trader joe/i],
+  ['Publix', /^(publix|greenwise)$/i],
+  ['H-E-B', /^(h-e-b|hill country fare|central market)$/i],
+  ['Meijer', /^meijer/i],
+  ['Wegmans', /^wegmans/i],
+  ['Lidl', /^lidl$/i],
+];
 
 const kb = (n: number) => `${(n / 1024).toFixed(0)} KB`;
 
 function report(
   cfg: SourcesFile,
   chunks: { file: string; count: number; bytes: number; gzipBytes: number }[],
+  shards: { file: string; count: number; bytes: number; gzipBytes: number }[],
   r: {
     fnddsTotal: number;
     genericDrops: [string, number][];
@@ -141,12 +202,31 @@ function report(
     indian: FoodItem[];
   },
 ): string {
-  const total = chunks.reduce((s, c) => s + c.count, 0);
-  const brands = new Map<string, number>();
-  for (const f of r.branded.foods) brands.set(f.brand ?? '', (brands.get(f.brand ?? '') ?? 0) + 1);
-  const topBrands = [...brands.entries()]
-    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-    .slice(0, 40);
+  const all = [...chunks, ...shards];
+  const total = all.reduce((s, c) => s + c.count, 0);
+  const countBrands = (foods: FoodItem[]) => {
+    const m = new Map<string, number>();
+    for (const f of foods) m.set(f.brand ?? '', (m.get(f.brand ?? '') ?? 0) + 1);
+    return m;
+  };
+  const top = (m: Map<string, number>, n: number) =>
+    [...m.entries()]
+      .filter(([b]) => b)
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .slice(0, n);
+  const topBrands = top(countBrands(r.branded.foods), 40);
+  const everyBranded = [...r.branded.foods, ...r.branded.catalogue];
+  const allBrands = countBrands(everyBranded);
+  const catBytes = shards.reduce((s, c) => s + c.bytes, 0);
+  const catGz = shards.reduce((s, c) => s + c.gzipBytes, 0);
+  const storeRows = STORE_BRANDS.map(([store, re]) => {
+    const hit = [...allBrands.entries()].filter(([b]) => re.test(b)).sort((a, b) => b[1] - a[1]);
+    const n = hit.reduce((s, [, c]) => s + c, 0);
+    return `| ${store} | ${n} | ${hit
+      .slice(0, 6)
+      .map(([b, c]) => `${b} (${c})`)
+      .join(', ')} |`;
+  });
   const known = (foods: FoodItem[], k: keyof Nutrients) => foods.filter((f) => f.per100g[k] !== null).length;
   const lines = [
     '# Food library seed report',
@@ -160,7 +240,8 @@ function report(
     '| Chunk | Foods | Raw | Gzipped |',
     '|---|---|---|---|',
     ...chunks.map((c) => `| ${c.file} | ${c.count} | ${kb(c.bytes)} | ${kb(c.gzipBytes)} |`),
-    `| **All** | **${total}** | **${kb(chunks.reduce((s, c) => s + c.bytes, 0))}** | **${kb(chunks.reduce((s, c) => s + c.gzipBytes, 0))}** |`,
+    `| catalogue (${shards.length} shards in public/food/${cfg.version}/) | ${shards.reduce((s, c) => s + c.count, 0)} | ${kb(catBytes)} | ${kb(catGz)} |`,
+    `| **All** | **${total}** | **${kb(all.reduce((s, c) => s + c.bytes, 0))}** | **${kb(all.reduce((s, c) => s + c.gzipBytes, 0))}** |`,
     '',
     '## Sources',
     '',
@@ -184,7 +265,7 @@ function report(
     '',
     '## Branded foods (USDA Branded Foods)',
     '',
-    `${r.branded.scanned} rows scanned. Filter (data/food-sources.json \`branded\`): brand groups below, sold in the United States, not discontinued, available on or after ${cfg.branded.minAvailableDate}, a household serving and a serving size in g or ml (ml counted as g), one row per GTIN (latest wins), at most ${cfg.branded.perCategoryCap} per category per group unless the group says otherwise, and kcal, protein, carbs and fat present. Label nutrients only: values a label doesn't list stay unknown.`,
+    `${r.branded.scanned} rows scanned. Core filter (data/food-sources.json \`branded\`): brand groups below, sold in the United States, not discontinued, available on or after ${cfg.branded.minAvailableDate}, a household serving and a serving size in g or ml (ml counted as g), one row per GTIN (latest wins), at most ${cfg.branded.perCategoryCap} per category per group unless the group says otherwise, and kcal, protein, carbs and fat present. Label nutrients only: values a label doesn't list stay unknown.`,
     '',
     '| Group | Cap | Unique candidates | After caps | Final |',
     '|---|---|---|---|---|',
@@ -200,6 +281,26 @@ function report(
     '### Top brands kept',
     '',
     topBrands.map(([b, n]) => `${b} (${n})`).join(', '),
+    '',
+    '## Full catalogue (FR-FOOD-8)',
+    '',
+    `Every other product that passes the same filter, any brand, plus the core groups' overflow over their caps: ${r.branded.catalogue.length} products in ${shards.length} shards of ${cfg.branded.catalogue?.shardSize ?? 25_000}. With the core set that is **${everyBranded.length} branded products from ${allBrands.size} brands**. Brand names like "Not a branded item" or "N/A" fall back to the brand owner.`,
+    '',
+    'USDA Branded Foods is built from label data that brand owners and retailers submit (mostly through GS1 US). It is the most complete openly licensed US label database, but not every product on every shelf: a product is missing when its brand owner never submitted it, or only submitted a label older than 2020.',
+    '',
+    '### Store brands',
+    '',
+    '| Store | Products | Biggest brands |',
+    '|---|---|---|',
+    ...storeRows,
+    '',
+    'National brands (Kraft, General Mills, PepsiCo, Coca-Cola …) are sold at every store and are counted under their own names below, not under a store.',
+    '',
+    '### Top 60 brands overall',
+    '',
+    top(allBrands, 60)
+      .map(([b, n]) => `${b} (${n})`)
+      .join(', '),
     '',
     `Known label values: fibre ${known(r.branded.foods, 'fibre')}, sodium ${known(r.branded.foods, 'sodium')}, potassium ${known(r.branded.foods, 'potassium')}, calcium ${known(r.branded.foods, 'calcium')}, iron ${known(r.branded.foods, 'iron')}, vitamin D ${known(r.branded.foods, 'vitD')}, B12 ${known(r.branded.foods, 'b12')} of ${r.branded.foods.length}.`,
     '',

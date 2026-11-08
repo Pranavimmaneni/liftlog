@@ -13,7 +13,7 @@ test('FR-FOOD-2 / NFR-OFF-3: the food library imports once, searches, and works 
   // Playwright's WebKit on Windows writes IndexedDB far slower than a real iPhone (D58), so it
   // imports only the Indian chunk; Chromium imports the whole library (D113).
   const webkit = browserName === 'webkit';
-  await page.goto(webkit ? '/dev/food?subset=indian' : '/dev/food');
+  await page.goto(webkit ? '/dev/food?subset=indian' : '/dev/food?subset=core');
   const status = page.getByTestId('food-lib-status');
   await expect(status).toContainText(' 0 foods stored');
   await expectNoAxeViolations(page);

@@ -3,12 +3,12 @@ import { Link, useSearchParams } from 'react-router';
 import { Icon } from '@/components/Icon';
 import { toast } from '@/components/Toast';
 import { en } from '@/copy/en';
-import { logFood } from '@/db/food';
+import { getFood, logFood } from '@/db/food';
 import { LIBRARY_MANIFEST } from '@/db/food-lib';
 import { MEAL_SLOTS, type MealSlot } from '@/db/types';
-import { searchFoods } from '@/engine/food-search';
+import { listFoods, searchFoods } from '@/engine/food-search';
 import type { FoodItem } from '@/engine/food-types';
-import { useDay, useFoodSearch, useFoodTargets, useToday } from './hooks';
+import { indexesFor, useDay, useFoodsById, useFoodSearch, useFoodTargets, useToday } from './hooks';
 import { PortionSheet } from './PortionSheet';
 import { FoodHeader, TextTabs } from './ui';
 import { foodSub, mealForNow } from './format';
@@ -41,34 +41,34 @@ export default function AddFood() {
 
   const preset = params.get('food');
   useEffect(() => {
-    if (preset && search.byId.has(preset)) setPicked(search.byId.get(preset)!);
-  }, [preset, search.byId]);
+    if (!preset) return;
+    let alive = true;
+    void getFood(preset).then((f) => alive && f && setPicked(f));
+    return () => {
+      alive = false;
+    };
+  }, [preset]);
 
-  const suggested = useMemo(
-    () =>
-      (params.get('suggest') ?? '')
-        .split(',')
-        .map((id) => search.byId.get(id))
-        .filter((f): f is FoodItem => !!f),
-    [params, search.byId],
-  );
+  const suggestIds = useMemo(() => (params.get('suggest') ?? '').split(',').filter(Boolean), [params]);
+  const suggested = useFoodsById(suggestIds, search.own);
 
-  const results = useMemo((): FoodItem[] => {
+  // FR-FOOD-3/8: search gives ids; only the foods on screen are loaded (D121).
+  const { libIndex, ownIndex, boost, recent } = search;
+  const resultIds = useMemo((): string[] => {
     const src = SOURCE[tab];
-    if (q.trim() && search.index) {
-      return searchFoods(search.index, q, { limit: 200, boost: search.boost })
-        .map((h) => h.food)
-        .filter((f) => (tab === 'recent' ? search.recent.includes(f.id) : !src || f.source === src))
-        .slice(0, 50);
+    if (q.trim()) {
+      const rec = new Set(recent);
+      return searchFoods(indexesFor({ libIndex, ownIndex }, q), q, {
+        limit: 50,
+        boost,
+        filter: (id, source) => (tab === 'recent' ? rec.has(id) : !src || source === src),
+      }).map((h) => h.id);
     }
-    if (tab === 'all' || tab === 'recent')
-      return search.recent.map((id) => search.byId.get(id)).filter((f): f is FoodItem => !!f);
-    if (tab === 'brands') return [];
-    return [...search.byId.values()]
-      .filter((f) => f.source === src)
-      .sort((a, b) => a.name.localeCompare(b.name))
-      .slice(0, 100);
-  }, [q, tab, search]);
+    if (tab === 'all' || tab === 'recent') return recent;
+    if (tab === 'brands' || !src) return [];
+    return listFoods(src === 'custom' ? ownIndex : libIndex, src).map((h) => h.id);
+  }, [q, tab, libIndex, ownIndex, boost, recent]);
+  const results = useFoodsById(resultIds, search.own);
 
   const empty = q.trim()
     ? en.food.add.none(q.trim())
@@ -125,11 +125,16 @@ export default function AddFood() {
           </Link>
         </label>
 
-        {LIBRARY_MANIFEST && search.libraryRows === 0 && (
+        {LIBRARY_MANIFEST && !search.libraryReady && (
           <p className="mt-3 text-[13px] text-ink2" role="status">
             {typeof navigator !== 'undefined' && navigator.onLine === false
               ? en.food.library.offline
               : en.food.library.downloading}
+          </p>
+        )}
+        {search.catalogue && (
+          <p className="mt-3 text-[13px] text-ink2" role="status">
+            {en.food.library.catalogue(Math.round((100 * search.catalogue.done) / search.catalogue.total))}
           </p>
         )}
 

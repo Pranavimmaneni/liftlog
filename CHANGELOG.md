@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased: every brand (FR-FOOD-8)
+- Food search now covers about 410,000 foods: every US product in USDA's label database from about 34,000 brands, including store brands from Walmart (Great Value, Marketside), Target (Good & Gather, Market Pantry, Archer Farms), Kroger, Albertsons, Publix, H-E-B, Meijer, Wegmans and more, plus all the national brands. Barcode scanning finds them too.
+- The first 1 MB still arrives quickly; the rest (about 20 MB) downloads in the background in pieces, carries on where it stopped, and waits while your phone is saving data.
+- Search stays fast on the bigger library and uses much less memory. Library search starts at the second letter; your own foods match from the first.
+- The Android app now downloads the food library too.
+- Data model version 3: only the rebuildable food library changes, so it downloads once more. Your diary, foods and training data are unchanged.
+
 ## 1.2.0 (2026-10-27)
 - Food section next to LiftLog: a LiftLog | Food switch (the only change on LiftLog screens), and Food tabs Diary, Review and Fasting.
 - Diary with calories left, macros, a protein quest and meals; search 23,365 foods (with Indian dishes), scan barcodes, pick portions in katori, cups or grams; edit, delete and copy meals.

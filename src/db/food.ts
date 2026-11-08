@@ -1,6 +1,7 @@
 import { db } from './schema';
 import { uid } from './ids';
 import type { CustomFoodRow, DiaryRow, FoodLibRow, MealSlot, SavedMealRow } from './types';
+import { decodeLibRow } from './food-lib';
 import {
   emptyNutrients,
   normalizeGtin,
@@ -23,7 +24,10 @@ export function withTerms<T extends FoodItem>(f: T): T & { terms: string[] } {
 
 /** A food by id: the user's own first, then the library. Deleted own foods still resolve (history). */
 export async function getFood(id: string): Promise<FoodItem | undefined> {
-  return (await db.foods.get(id)) ?? (await db.foodLib.get(id));
+  const own = await db.foods.get(id);
+  if (own) return own;
+  const lib = await db.foodLib.get(id);
+  return lib && decodeLibRow(lib);
 }
 
 /** FR-FOOD-4: a scanned barcode, matched as 14 digits; own foods win. */
@@ -31,7 +35,9 @@ export async function findByGtin(code: string): Promise<FoodItem | undefined> {
   const gtin = normalizeGtin(code);
   if (!gtin) return undefined;
   const own = (await db.foods.where('gtin').equals(gtin).toArray()).find((f) => !f.deletedAt);
-  return own ?? (await db.foodLib.where('gtin').equals(gtin).first());
+  if (own) return own;
+  const lib = await db.foodLib.where('gtin').equals(gtin).first();
+  return lib && decodeLibRow(lib);
 }
 
 // ---------- diary ----------

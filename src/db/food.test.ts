@@ -21,7 +21,16 @@ import {
   updateEntry,
 } from './food';
 import { activeFast, editFast, endFast, fastsSince, startFast } from './fasting';
-import { chunkToRows, importLibrary, type LibraryManifest } from './food-lib';
+import {
+  chunkToRows,
+  decodeLibRow,
+  importLibrary,
+  libraryFoods,
+  importedFiles,
+  librarySearchParts,
+  putLibraryFoods,
+  type LibraryManifest,
+} from './food-lib';
 import {
   emptyNutrients,
   encodeRow,
@@ -214,7 +223,7 @@ describe('own foods and recipes (FR-FOOD-4, FR-FOOD-5)', () => {
   });
 
   it('FR-FOOD-4: a barcode finds own foods first, then the library, as 14 digits', async () => {
-    await db.foodLib.add({ ...PANEER, id: 'b:1', name: 'Library yogurt', gtin: '00012345678905' });
+    await putLibraryFoods([{ ...PANEER, id: 'b:1', name: 'Library yogurt', gtin: '00012345678905' }]);
     expect((await findByGtin('012345678905'))?.id).toBe('b:1');
     const own = await saveCustomFood({
       name: 'My yogurt',
@@ -257,8 +266,14 @@ describe('food library import (FR-FOOD-2, NFR-OFF-3)', () => {
     chunks: [{ file: 'foods-indian.json', source: 'indian', count: 1 }],
   };
 
-  it('FR-FOOD-2: decodes chunks with search terms', () => {
-    expect(chunkToRows(chunk)[0]).toEqual(PANEER);
+  it('FR-FOOD-2: stores chunks as compact rows that decode back to the food', () => {
+    const [row] = chunkToRows(chunk);
+    expect(row).toEqual({ id: PANEER.id, s: 'indian', r: encodeRow(PANEER) });
+    expect(decodeLibRow(row!)).toEqual(PANEER);
+    // A chunk with another nutrient order is stored in NUTRIENTS order.
+    const rev = [...NUTRIENTS].reverse();
+    const other = { ...chunk, nutrients: rev, foods: [encodeRow(PANEER, rev)] };
+    expect(decodeLibRow(chunkToRows(other)[0]!)).toEqual(PANEER);
   });
 
   it('FR-FOOD-2: imports once per version and replaces old rows', async () => {
@@ -268,12 +283,82 @@ describe('food library import (FR-FOOD-2, NFR-OFF-3)', () => {
       return chunk;
     };
     expect(await importLibrary({ manifest: null })).toBe('no-library');
-    await db.foodLib.add({ ...PANEER, id: 'g:old' });
+    await putLibraryFoods([{ ...PANEER, id: 'g:old' }], 'old');
+    await db.meta.delete('foodLibVersion');
     expect(await importLibrary({ manifest, load })).toBe('imported');
     expect(await db.foodLib.toCollection().primaryKeys()).toEqual(['in:paneer-bhurji']);
+    expect(await db.foodSearch.toCollection().primaryKeys()).toEqual(['2026-10-27.1/foods-indian.json']);
+    expect((await db.meta.get('foodLibVersion'))?.value).toBe('2026-10-27.1');
     expect(await importLibrary({ manifest, load })).toBe('up-to-date');
     expect(loads).toBe(1);
     expect(await importLibrary({ manifest: { ...manifest, v: '2026-11-01.1' }, load })).toBe('imported');
     expect(loads).toBe(2);
+    expect((await getFood('in:paneer-bhurji'))?.name).toBe(PANEER.name);
+  });
+
+  it('FR-FOOD-8: the catalogue imports after the core chunks and resumes where it stopped', async () => {
+    const shard = (n: number): FoodChunk => ({
+      ...chunk,
+      source: 'branded',
+      foods: [
+        encodeRow({
+          ...PANEER,
+          id: `b:${n}`,
+          name: `Brand food ${n}`,
+          brand: 'Acme',
+          aliases: [],
+          source: 'branded',
+        }),
+      ],
+    });
+    const full: LibraryManifest = {
+      ...manifest,
+      catalogue: {
+        path: 'food/2026-10-27.1/',
+        shards: [0, 1, 2].map((n) => ({ file: `catalogue-0${n}.json`, source: 'branded', count: 1 })),
+      },
+    };
+    const loaded: string[] = [];
+    let offline = false;
+    const load = async (file: string) => {
+      if (offline && file === 'catalogue-01.json') throw new Error('offline');
+      loaded.push(file);
+      return file.startsWith('catalogue') ? shard(Number(file.slice(10, 12))) : chunk;
+    };
+    offline = true;
+    expect(await importLibrary({ manifest: full, load })).toBe('partial');
+    // The core library is usable; the first shard is in; the failed one waits.
+    expect((await db.meta.get('foodLibVersion'))?.value).toBe('2026-10-27.1');
+    expect([...(await importedFiles('2026-10-27.1')).files].sort()).toEqual([
+      'catalogue-00.json',
+      'foods-indian.json',
+    ]);
+    expect((await librarySearchParts()).flatMap((p) => p.ids).sort()).toEqual(['b:0', 'in:paneer-bhurji']);
+    offline = false;
+    expect(await importLibrary({ manifest: full, load })).toBe('imported');
+    expect(loaded).toEqual([
+      'foods-indian.json',
+      'catalogue-00.json',
+      'catalogue-01.json',
+      'catalogue-02.json',
+    ]);
+    expect(await db.foodLib.count()).toBe(4);
+    expect((await libraryFoods(['b:2', 'nope', 'b:1'])).map((f) => [f.id, f.brand])).toEqual([
+      ['b:2', 'Acme'],
+      ['b:1', 'Acme'],
+    ]);
+    expect(await librarySearchParts()).toContainEqual({
+      ids: ['b:1'],
+      names: ['brand food 1'],
+      extra: ['acme'],
+      source: 'branded',
+    });
+    // Without the catalogue (data saver), the core alone is up to date.
+    expect(await importLibrary({ manifest: full, load, catalogue: false })).toBe('up-to-date');
+    // Demo data and restores wipe `meta`: the library stays, nothing downloads again (D122).
+    await db.meta.clear();
+    expect(await importLibrary({ manifest: full, load })).toBe('up-to-date');
+    expect(loaded).toHaveLength(4);
+    expect((await db.meta.get('foodLibVersion'))?.value).toBe('2026-10-27.1');
   });
 });

@@ -1,5 +1,5 @@
 {
-  "v": "2026-10-27.1",
+  "v": "2026-11-07.1",
   "attribution": "U.S. Department of Agriculture, Agricultural Research Service. FoodData Central. fdc.nal.usda.gov",
   "chunks": [
     {
@@ -19,9 +19,126 @@
     {
       "file": "foods-branded.json",
       "source": "branded",
-      "count": 17864,
-      "bytes": 3986007,
-      "gzipBytes": 861083
+      "count": 17861,
+      "bytes": 3986013,
+      "gzipBytes": 860955
     }
-  ]
+  ],
+  "catalogue": {
+    "path": "food/2026-11-07.1/",
+    "shards": [
+      {
+        "file": "catalogue-00.json",
+        "source": "branded",
+        "count": 25000,
+        "bytes": 5327640,
+        "gzipBytes": 1189081
+      },
+      {
+        "file": "catalogue-01.json",
+        "source": "branded",
+        "count": 25000,
+        "bytes": 5367259,
+        "gzipBytes": 1205796
+      },
+      {
+        "file": "catalogue-02.json",
+        "source": "branded",
+        "count": 25000,
+        "bytes": 5181698,
+        "gzipBytes": 1243251
+      },
+      {
+        "file": "catalogue-03.json",
+        "source": "branded",
+        "count": 25000,
+        "bytes": 5307456,
+        "gzipBytes": 1320726
+      },
+      {
+        "file": "catalogue-04.json",
+        "source": "branded",
+        "count": 25000,
+        "bytes": 5214471,
+        "gzipBytes": 1147176
+      },
+      {
+        "file": "catalogue-05.json",
+        "source": "branded",
+        "count": 25000,
+        "bytes": 5130128,
+        "gzipBytes": 1147016
+      },
+      {
+        "file": "catalogue-06.json",
+        "source": "branded",
+        "count": 25000,
+        "bytes": 5170730,
+        "gzipBytes": 1243972
+      },
+      {
+        "file": "catalogue-07.json",
+        "source": "branded",
+        "count": 25000,
+        "bytes": 5556428,
+        "gzipBytes": 1388182
+      },
+      {
+        "file": "catalogue-08.json",
+        "source": "branded",
+        "count": 25000,
+        "bytes": 5425766,
+        "gzipBytes": 1397951
+      },
+      {
+        "file": "catalogue-09.json",
+        "source": "branded",
+        "count": 25000,
+        "bytes": 5391264,
+        "gzipBytes": 1275120
+      },
+      {
+        "file": "catalogue-10.json",
+        "source": "branded",
+        "count": 25000,
+        "bytes": 5302341,
+        "gzipBytes": 1276567
+      },
+      {
+        "file": "catalogue-11.json",
+        "source": "branded",
+        "count": 25000,
+        "bytes": 5516620,
+        "gzipBytes": 1242121
+      },
+      {
+        "file": "catalogue-12.json",
+        "source": "branded",
+        "count": 25000,
+        "bytes": 5352174,
+        "gzipBytes": 1228560
+      },
+      {
+        "file": "catalogue-13.json",
+        "source": "branded",
+        "count": 25000,
+        "bytes": 5376709,
+        "gzipBytes": 1196453
+      },
+      {
+        "file": "catalogue-14.json",
+        "source": "branded",
+        "count": 25000,
+        "bytes": 5417827,
+        "gzipBytes": 1279691
+      },
+      {
+        "file": "catalogue-15.json",
+        "source": "branded",
+        "count": 11471,
+        "bytes": 2673307,
+        "gzipBytes": 552669
+      }
+    ]
+  }
 }
