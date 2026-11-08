@@ -1,6 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import { emptyNutrients, type Nutrients } from './food-types';
-import { buildFoodIndex, foodTerms, searchFoods, type SearchableFood } from './food-search';
+import {
+  buildFoodIndex,
+  buildFoodIndexAsync,
+  foodTerms,
+  listFoods,
+  searchFoods,
+  toColumns,
+  withinOneEdit,
+  type SearchColumns,
+  type SearchableFood,
+} from './food-search';
+import { editDistance } from './search';
 import { strengthChange, trainingDates, usualTrainingTime, volumeChange } from './training-link';
 import { reviewPeriod, summarizeDay, topSources, type DayEntry, type DayTargets } from './food-review';
 import { coachInsights, preLiftCarbs, suggestFoods, type CoachInput } from './coach';
@@ -25,21 +36,23 @@ function entry(day: number, h: number, p: Partial<Nutrients>, name = 'Meal', mea
   return { foodId: `f:${name}`, name, meal, loggedAt: at(day, h), grams: 100, per100g: n(p) };
 }
 
-describe('food search (FR-FOOD-3, NFR-PERF-5)', () => {
-  const foods: (SearchableFood & { kind: string })[] = [
-    { id: 'in:paneer-bhurji', name: 'Paneer bhurji', aliases: ['scrambled paneer'], kind: 'indian' },
-    { id: 'in:palak-paneer', name: 'Palak paneer', aliases: ['saag paneer'], kind: 'indian' },
-    { id: 'g:1', name: 'Chicken breast, grilled', aliases: [], kind: 'generic' },
+describe('food search (FR-FOOD-3, FR-FOOD-8, NFR-PERF-5)', () => {
+  const foods: SearchableFood[] = [
+    { id: 'in:paneer-bhurji', name: 'Paneer bhurji', aliases: ['scrambled paneer'], source: 'indian' },
+    { id: 'in:palak-paneer', name: 'Palak paneer', aliases: ['saag paneer'], source: 'indian' },
+    { id: 'g:1', name: 'Chicken breast, grilled', aliases: [], source: 'generic' },
     {
       id: 'b:1',
       name: 'Nonfat Greek Yogurt',
       brand: 'Kirkland Signature',
       aliases: ['curd', 'dahi'],
-      kind: 'branded',
+      source: 'branded',
     },
-    { id: 'c:1', name: 'Paneer, homemade', aliases: [], kind: 'custom' },
+    { id: 'c:1', name: 'Paneer, homemade', aliases: [], source: 'custom' },
   ];
   const index = buildFoodIndex(foods);
+  const ids = (q: string, opts?: Parameters<typeof searchFoods>[2]) =>
+    searchFoods(index, q, opts).map((h) => h.id);
 
   it('FR-FOOD-3: terms cover name, brand and aliases, normalised', () => {
     expect(foodTerms(foods[3]!)).toEqual([
@@ -51,29 +64,84 @@ describe('food search (FR-FOOD-3, NFR-PERF-5)', () => {
       'curd',
       'dahi',
     ]);
+    expect(toColumns([foods[3]!], 'branded')).toEqual({
+      ids: ['b:1'],
+      names: ['nonfat greek yogurt'],
+      extra: ['kirkland signature curd dahi'],
+      source: 'branded',
+    });
   });
 
   it('FR-FOOD-3: prefix words, brand words, aliases and one typo all match', () => {
-    expect(searchFoods(index, 'chick bre').map((h) => h.food.id)).toEqual(['g:1']);
-    expect(searchFoods(index, 'kirkland yogurt')[0]!.food.id).toBe('b:1');
-    expect(searchFoods(index, 'dahi')[0]!.food.id).toBe('b:1');
-    expect(searchFoods(index, 'paner bhurji')[0]!.food.id).toBe('in:paneer-bhurji');
-    expect(searchFoods(index, 'pizza')).toEqual([]);
-    expect(searchFoods(index, '  ')).toEqual([]);
+    expect(ids('chick bre')).toEqual(['g:1']);
+    expect(ids('kirkland yogurt')[0]).toBe('b:1');
+    expect(ids('dahi')[0]).toBe('b:1');
+    expect(ids('paner bhurji')[0]).toBe('in:paneer-bhurji');
+    expect(ids('pizza')).toEqual([]);
+    expect(ids('  ')).toEqual([]);
+    expect(searchFoods(index, 'dahi')[0]).toEqual({ id: 'b:1', source: 'branded', score: 65 });
   });
 
   it('FR-FOOD-3: name matches beat alias matches; own foods rank first with a boost', () => {
     // "paneer …" names start with the query (90), "Palak paneer" only has the word (80).
-    expect(searchFoods(index, 'paneer').map((h) => h.food.id)).toEqual([
-      'in:paneer-bhurji',
-      'c:1',
-      'in:palak-paneer',
-    ]);
-    const boosted = searchFoods(index, 'paneer', { boost: (id) => (id.startsWith('c:') ? 30 : 0) });
-    expect(boosted[0]!.food.id).toBe('c:1');
+    expect(ids('paneer')).toEqual(['in:paneer-bhurji', 'c:1', 'in:palak-paneer']);
+    expect(ids('paneer', { boost: (id) => (id.startsWith('c:') ? 30 : 0) })[0]).toBe('c:1');
   });
 
-  it('NFR-PERF-5: a query over 30,000 foods with ~20,000 distinct words takes under 150 ms', () => {
+  it('FR-FOOD-8: tabs filter before the limit; several indexes merge; lists by source A to Z', () => {
+    expect(ids('paneer', { filter: (_id, s) => s === 'custom' })).toEqual(['c:1']);
+    expect(ids('paneer', { limit: 1, filter: (_id, s) => s === 'indian' })).toEqual(['in:paneer-bhurji']);
+    const own = buildFoodIndex(toColumns([{ id: 'c:2', name: 'Paneer', aliases: [] }], 'custom'));
+    expect(searchFoods([index, own, null], 'paneer').map((h) => h.id)[0]).toBe('c:2');
+    expect(listFoods(index, 'indian').map((h) => h.id)).toEqual(['in:palak-paneer', 'in:paneer-bhurji']);
+    expect(listFoods(null, 'indian')).toEqual([]);
+  });
+
+  it('FR-FOOD-8: a typo is not searched for once a word prefix-matches enough foods', () => {
+    const many = Array.from({ length: 60 }, (_, i) => ({ id: `b:${i}`, name: `Chips ${i}`, aliases: [] }));
+    const ix = buildFoodIndex([...many, { id: 'b:x', name: 'Chops', aliases: [] }]);
+    expect(searchFoods(ix, 'chips', { limit: 100 }).map((h) => h.id)).not.toContain('b:x');
+    expect(searchFoods(ix, 'chips', { limit: 100, fuzzyBelow: 100 }).map((h) => h.id)).toContain('b:x');
+    expect(searchFoods(ix, 'chop').map((h) => h.id)[0]).toBe('b:x');
+  });
+
+  it('FR-FOOD-3: withinOneEdit agrees with editDistance <= 1, also on a prefix', () => {
+    let seed = 3;
+    const rnd = () => (seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648;
+    const w = () =>
+      Array.from({ length: 1 + Math.floor(rnd() * 6) }, () => 'abc'[Math.floor(rnd() * 3)]).join('');
+    for (let i = 0; i < 5000; i++) {
+      const a = w();
+      const b = w();
+      expect(withinOneEdit(a, b)).toBe(editDistance(a, b) <= 1);
+      expect(withinOneEdit(a, b, a.length)).toBe(editDistance(a, b.slice(0, a.length)) <= 1);
+    }
+  });
+
+  it('FR-FOOD-8: the top hits equal a full sort, with many ties at the cut', () => {
+    const many = Array.from({ length: 3000 }, (_, i) => ({
+      id: `b:${i}`,
+      name: `${'abc'[i % 3]}${'x'.repeat(i % 7)} ${i % 2 ? 'apple' : 'bean'} ${i}`,
+      aliases: [],
+    }));
+    const ix = buildFoodIndex(many);
+    for (const q of ['a', 'b', 'ap', 'bean']) {
+      const boost = (id: string) => (Number(id.slice(2)) % 50 === 0 ? 10 : 0);
+      expect(searchFoods(ix, q, { limit: 20, boost })).toEqual(
+        searchFoods(ix, q, { limit: 100_000, boost }).slice(0, 20),
+      );
+    }
+  });
+
+  it('FR-FOOD-8: the async build gives the same index as the sync one', async () => {
+    const parts = [toColumns(foods.slice(0, 2), 'indian'), toColumns(foods.slice(2))];
+    const pauses: number[] = [];
+    const ix = await buildFoodIndexAsync(parts, async () => void pauses.push(1), 2);
+    expect(ix).toEqual(buildFoodIndex(parts));
+    expect(pauses.length).toBeGreaterThan(1);
+  });
+
+  it('NFR-PERF-5 / FR-FOOD-8: a query over 425,000 foods with ~60,000 distinct words takes under 150 ms', () => {
     let seed = 7;
     const rnd = () => (seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648;
     const word = () =>
@@ -81,23 +149,27 @@ describe('food search (FR-FOOD-3, NFR-PERF-5)', () => {
         { length: 4 + Math.floor(rnd() * 5) },
         () => 'abcdefghijklmnoprstuvwy'[Math.floor(rnd() * 23)],
       ).join('');
-    const vocab = Array.from({ length: 20_000 }, word);
-    const big = Array.from({ length: 30_000 }, (_, i) => ({
-      id: `g:${i}`,
-      name: Array.from(
-        { length: 3 + Math.floor(rnd() * 3) },
-        () => vocab[Math.floor(rnd() * vocab.length)],
-      ).join(' '),
-      aliases: [],
-    }));
-    big.push({ id: 'g:target', name: 'Chicken tikka masala', aliases: [] });
-    const idx = buildFoodIndex(big);
+    const vocab = Array.from({ length: 60_000 }, word);
+    // Real names share common words: draw from a small head of the vocabulary most of the time.
+    const pick = () => vocab[Math.floor(rnd() < 0.6 ? rnd() * 2_000 : rnd() * vocab.length)]!;
+    const n = 425_000;
+    const cols: SearchColumns = { ids: [], names: [], extra: [], source: 'branded' };
+    for (let i = 0; i < n; i++) {
+      cols.ids.push(`b:${i}`);
+      cols.names.push(Array.from({ length: 3 + Math.floor(rnd() * 4) }, pick).join(' '));
+      cols.extra.push(`${pick()} ${pick()}`);
+    }
+    const target = toColumns([{ id: 'g:target', name: 'Chicken tikka masala', aliases: [] }], 'generic');
+    const idx = buildFoodIndex([cols, target]);
     const queries = [
       'chicken tik',
       'chiken tikka',
       'masala',
+      'c',
       vocab[5]!.slice(0, 3),
       `${vocab[9]} ${vocab[11]!.slice(0, 2)}`,
+      `${vocab[1]} ${vocab[2]}`,
+      `${vocab[40_000]!.slice(0, 5)}x`,
     ];
     let worst = 0;
     for (const q of queries) {
@@ -105,9 +177,9 @@ describe('food search (FR-FOOD-3, NFR-PERF-5)', () => {
       searchFoods(idx, q);
       worst = Math.max(worst, performance.now() - t0);
     }
-    expect(searchFoods(idx, 'chiken tikka')[0]!.food.id).toBe('g:target');
+    expect(searchFoods(idx, 'chiken tikka')[0]!.id).toBe('g:target');
     expect(worst).toBeLessThan(150);
-  });
+  }, 60_000);
 });
 
 describe('training link (FR-COACH-3, FR-SHR-1)', () => {

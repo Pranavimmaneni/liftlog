@@ -3,6 +3,7 @@ import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
+import { rmSync } from 'node:fs';
 import { fileURLToPath, URL } from 'node:url';
 import pkg from './package.json' with { type: 'json' };
 
@@ -12,16 +13,38 @@ export const CSP =
   "style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; worker-src 'self'; " +
   "manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'";
 
-/** Adds the CSP meta tag to production builds only (dev needs inline HMR scripts). */
-function cspMeta(): Plugin {
+/**
+ * Adds the CSP meta tag to production builds only (dev needs inline HMR scripts). The APK may also
+ * fetch the food catalogue from LiftLog's own site (FR-FOOD-8, D123).
+ */
+function cspMeta(native: boolean): Plugin {
+  const csp = native ? CSP.replace("connect-src 'self'", `connect-src 'self' ${pkg.homepage}`) : CSP;
   return {
     name: 'liftlog-csp-meta',
     apply: 'build',
     transformIndexHtml(html) {
       return html.replace(
         '<meta charset="UTF-8" />',
-        `<meta charset="UTF-8" />\n    <meta http-equiv="Content-Security-Policy" content="${CSP}" />`,
+        `<meta charset="UTF-8" />\n    <meta http-equiv="Content-Security-Policy" content="${csp}" />`,
       );
+    },
+  };
+}
+
+/**
+ * FR-FOOD-8, NFR-SIZE-1 (D123): the food catalogue (public/food/, ~85 MB) stays out of the APK; the
+ * app downloads it from the site instead.
+ */
+function dropCatalogue(native: boolean): Plugin {
+  let outDir = 'dist';
+  return {
+    name: 'liftlog-native-no-catalogue',
+    apply: 'build',
+    configResolved(c) {
+      outDir = c.build.outDir;
+    },
+    closeBundle() {
+      if (native) rmSync(`${outDir}/food`, { recursive: true, force: true });
     },
   };
 }
@@ -32,12 +55,14 @@ export default defineConfig(({ mode }) => {
     base: native ? './' : '/',
     define: {
       __APP_VERSION__: JSON.stringify(pkg.version),
+      __SITE_URL__: JSON.stringify(pkg.homepage),
     },
     resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
     plugins: [
       react(),
       tailwindcss(),
-      cspMeta(),
+      cspMeta(native),
+      dropCatalogue(native),
       VitePWA({
         disable: native,
         strategies: 'injectManifest',
@@ -49,7 +74,7 @@ export default defineConfig(({ mode }) => {
         injectManifest: {
           globPatterns: ['**/*.{js,css,html,woff2,png,svg,json,wasm,webmanifest}'],
           // PRD-1.2 FR-FOOD-2: the food library downloads once into IndexedDB, outside the precache.
-          globIgnores: ['**/foods-*.json'],
+          globIgnores: ['**/foods-*.json', 'food/**'],
           maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
         },
         manifest: {

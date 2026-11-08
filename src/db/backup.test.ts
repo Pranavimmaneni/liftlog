@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { db, SCHEMA_VERSION, USER_TABLES } from './schema';
+import { putLibraryFoods } from './food-lib';
 import {
   backupFileName,
   base64ToBlob,
@@ -192,16 +193,19 @@ describe('error log (NFR-REL-4)', () => {
       per100g,
     });
     await db.fasts.add({ id: 'f1', startedAt: 1, endedAt: 2, planHours: 16 });
-    await db.foodLib.add({
-      id: 'g:1',
-      name: 'Rice',
-      aliases: [],
-      source: 'generic',
-      per100g,
-      portions: [{ label: '1 cup', grams: 158 }],
-    });
+    await putLibraryFoods([
+      {
+        id: 'g:1',
+        name: 'Rice',
+        aliases: [],
+        source: 'generic',
+        per100g,
+        portions: [{ label: '1 cup', grams: 158 }],
+      },
+    ]);
     const backup = await buildBackup(new Date('2026-10-27T12:00:00Z'));
     expect(backup.tables).not.toHaveProperty('foodLib');
+    expect(backup.tables).not.toHaveProperty('foodSearch');
     const text = JSON.stringify(backup);
     const parsed = parseBackup(text);
     expect(parsed.ok).toBe(true);
