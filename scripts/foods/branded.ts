@@ -1,6 +1,8 @@
 /**
- * FR-FOOD-1, FR-FOOD-4: branded foods from USDA Branded Foods (CSV), filtered to the store and
- * national brands in data/food-sources.json, one row per GTIN, capped per brand and category.
+ * FR-FOOD-1, FR-FOOD-4: branded foods from USDA Branded Foods (CSV), one row per GTIN. The core set
+ * is the store and national brands in data/food-sources.json, capped per brand and category; with
+ * `catalogue` on, every other product that passes the same filter (any brand, and the core groups'
+ * overflow) goes into the full catalogue (FR-FOOD-8, D120).
  * Label nutrients only: what the label doesn't list stays null ("not on label").
  */
 import { normalizeGtin, type FoodItem, type Portion } from '../../src/engine/food-types';
@@ -24,7 +26,18 @@ export interface BrandedConfig {
   skipCategories: string;
   perCategoryCap: number;
   groups: BrandGroup[];
+  /** FR-FOOD-8: keep every other product too, in shards of `shardSize` rows. */
+  catalogue?: CatalogueConfig;
 }
+
+export interface CatalogueConfig {
+  shardSize: number;
+  /** brand_name values that aren't a brand ("Not a branded item", "N/A"): the owner is used instead. */
+  junkBrand: string;
+}
+
+/** Group id of products outside the core brand groups (FR-FOOD-8). */
+export const CATALOGUE = 'catalogue';
 
 /** One branded_food.csv row, reduced to what the filter needs. */
 export interface BrandedRecord {
@@ -64,6 +77,7 @@ export function applyCaps(records: BrandedRecord[], cfg: Pick<BrandedConfig, 'gr
   const byGroup = new Map<string, BrandedRecord[]>();
   for (const r of records) byGroup.set(r.group, [...(byGroup.get(r.group) ?? []), r]);
   const kept: BrandedRecord[] = [];
+  const overflow: BrandedRecord[] = [];
   const stats: { group: string; candidates: number; kept: number }[] = [];
   for (const g of cfg.groups) {
     const rows = (byGroup.get(g.id) ?? []).sort((a, b) =>
@@ -73,16 +87,18 @@ export function applyCaps(records: BrandedRecord[], cfg: Pick<BrandedConfig, 'gr
     const catCap = g.perCategoryCap ?? cfg.perCategoryCap;
     let n = 0;
     for (const r of rows) {
-      if (n >= g.cap) break;
       const c = perCat.get(r.category) ?? 0;
-      if (c >= catCap) continue;
+      if (n >= g.cap || c >= catCap) {
+        overflow.push(r);
+        continue;
+      }
       perCat.set(r.category, c + 1);
       kept.push(r);
       n++;
     }
     stats.push({ group: g.id, candidates: rows.length, kept: n });
   }
-  return { kept, stats };
+  return { kept, overflow, stats };
 }
 
 export function brandedPortion(
@@ -105,7 +121,7 @@ export function toRecord(
 ): BrandedRecord | null {
   const owner = get('brand_owner');
   const brand = get('brand_name');
-  const group = matchGroup(owner, brand, cfg.groups);
+  const group = matchGroup(owner, brand, cfg.groups)?.id ?? (cfg.catalogue ? CATALOGUE : undefined);
   if (!group) return null; // not a kept brand (not counted as a drop)
   const market = get('market_country');
   if (market && !cfg.markets.includes(market)) return (drops.add('not sold in the United States'), null);
@@ -135,7 +151,7 @@ export function toRecord(
     household,
     category,
     available,
-    group: group.id,
+    group,
   };
 }
 
@@ -143,8 +159,19 @@ const NUTRIENT_IDS = new Set([
   1008, 2047, 2048, 1003, 1004, 1005, 1079, 2000, 1258, 1093, 1092, 1087, 1089, 1090, 1114, 1178,
 ]);
 
+/** The brand shown for a product: brand_name, else the owner; placeholder names don't count. */
+export function brandOf(brand: string, owner: string, junk: RegExp | null): string | undefined {
+  for (const s of [brand, owner]) {
+    const t = s.replace(/\s+/g, ' ').trim();
+    if (t && !(junk && junk.test(t))) return tidyName(t);
+  }
+  return undefined;
+}
+
 export interface BrandedResult {
   foods: FoodItem[];
+  /** FR-FOOD-8: everything else that passed the filter (empty without `catalogue`). */
+  catalogue: FoodItem[];
   stats: { group: string; label: string; candidates: number; kept: number; final: number }[];
   scanned: number;
 }
@@ -165,10 +192,11 @@ export async function buildBranded(
   log(`branded: ${scanned} rows scanned, ${candidates.length} candidates`);
   const unique = dedupeByGtin(candidates);
   drops.add('older duplicate of the same GTIN', candidates.length - unique.length);
-  const { kept, stats } = applyCaps(unique, cfg);
-  drops.add('over the brand or category cap', unique.length - kept.length);
-  const byId = new Map(kept.map((r) => [r.fdcId, r]));
-  log(`branded: ${unique.length} unique GTINs, ${kept.length} after caps`);
+  const { kept, overflow, stats } = applyCaps(unique, cfg);
+  const rest = cfg.catalogue ? [...unique.filter((r) => r.group === CATALOGUE), ...overflow] : [];
+  if (!cfg.catalogue) drops.add('over the brand or category cap', overflow.length);
+  const byId = new Map([...kept, ...rest].map((r) => [r.fdcId, r]));
+  log(`branded: ${unique.length} unique GTINs, ${kept.length} core after caps, ${rest.length} catalogue`);
 
   const names = new Map<number, string>();
   await streamZipCsv(zip, `${dir}/food.csv`, (row, col) => {
@@ -188,34 +216,38 @@ export async function buildBranded(
   log(`branded: names for ${names.size}, nutrients for ${nutrients.size}`);
 
   const generic = new RegExp(cfg.genericServingText, 'i');
-  const foods: FoodItem[] = [];
+  const junk = cfg.catalogue ? new RegExp(cfg.catalogue.junkBrand, 'i') : null;
   const finalPerGroup = new Map<string, number>();
-  for (const r of kept) {
+  const toFood = (r: BrandedRecord): FoodItem | null => {
     const name = tidyName(names.get(r.fdcId) ?? '');
-    if (!name) {
-      drops.add('no product name');
-      continue;
-    }
+    if (!name) return (drops.add('no product name'), null);
     const per100g = pickNutrients(nutrients.get(r.fdcId) ?? []);
-    if (!hasCore(per100g)) {
-      drops.add('missing kcal, protein, carbs or fat');
-      continue;
-    }
-    foods.push({
+    if (!hasCore(per100g)) return (drops.add('missing kcal, protein, carbs or fat'), null);
+    const brand = brandOf(r.brand, r.owner, junk);
+    return {
       id: `b:${r.fdcId}`,
       name,
-      brand: tidyName(r.brand || r.owner),
+      ...(brand ? { brand } : {}),
       aliases: [],
       source: 'branded',
       per100g,
       portions: [brandedPortion(r, generic), { label: '100 g', grams: 100 }],
       gtin: r.gtin,
       category: r.category || undefined,
-    });
+    };
+  };
+  const foods: FoodItem[] = [];
+  for (const r of kept) {
+    const f = toFood(r);
+    if (!f) continue;
+    foods.push(f);
     finalPerGroup.set(r.group, (finalPerGroup.get(r.group) ?? 0) + 1);
   }
+  const catalogue = rest.map(toFood).filter((f): f is FoodItem => f !== null);
+  const byIdOrder = (a: FoodItem, b: FoodItem) => (a.id < b.id ? -1 : 1);
   return {
-    foods: foods.sort((a, b) => (a.id < b.id ? -1 : 1)),
+    foods: foods.sort(byIdOrder),
+    catalogue: catalogue.sort(byIdOrder),
     stats: stats.map((s) => ({
       ...s,
       label: cfg.groups.find((g) => g.id === s.group)!.label,

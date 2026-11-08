@@ -1,6 +1,6 @@
 {
   "_note": "FR-FOOD-1: pinned USDA FoodData Central sources for scripts/seed-foods.ts, plus the branded filter. All USDA FDC data is public domain (CC0 1.0). Downloads go to the git-ignored .cache/usda/ (scripts/foods/fetch.ts) and are checked against sha256.",
-  "version": "2026-10-27.1",
+  "version": "2026-11-07.1",
   "licence": "CC0 1.0 (public domain)",
   "attribution": "U.S. Department of Agriculture, Agricultural Research Service. FoodData Central. fdc.nal.usda.gov",
   "sources": [
@@ -49,6 +49,11 @@
     "genericServingText": "^(amount per serving|serving|per serving|portion|1 serving|none|n/a|-)$",
     "skipCategories": "baby|infant|pet food|alcohol|wine|beer|spirits|liquor|vitamin|supplement|^water$",
     "perCategoryCap": 120,
+    "catalogue": {
+      "_note": "FR-FOOD-8 (D120): every other US product that passes the filter above (any brand, plus the groups' overflow over their caps) ships as the full catalogue, in shards of shardSize rows under public/food/<version>/. It downloads after the core library and is left out of the APK (fetched from the site instead).",
+      "shardSize": 25000,
+      "junkBrand": "^(not a branded item|n/?a|none|null|unknown|generic|-)$"
+    },
     "groups": [
       {
         "id": "costco",
