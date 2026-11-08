@@ -80,13 +80,14 @@ Sources: Pranav's food brief (above) and a data-source check on 2026-10-26 (USDA
 ### Food library (FR-FOOD)
 | ID | Requirement | Pri |
 |---|---|---|
-| FR-FOOD-1 | `scripts/seed-foods.ts` builds the food library deterministically and writes `FOOD-SEED-REPORT.md`. Generic foods: USDA FNDDS 2021–23 (5,432 "as eaten" foods, 65 nutrients, household portions like "1 cup"). Branded foods: a subset of USDA Branded Foods (about 15–25k products) from store brands (Kirkland Signature, Member's Mark, Great Value, Trader Joe's, Good & Gather, Kroger, 365, Aldi) and the biggest national brands, latest record per barcode, nothing older than 2020. Branded foods carry label nutrients only; other micros show "not on label". | M |
-| FR-FOOD-2 | The library (about 2 MB compressed) downloads once from LiftLog's own site in the background after the app first loads, is stored in IndexedDB and then works offline. It isn't precached (NFR-SIZE-1). | M |
+| FR-FOOD-1 | `scripts/seed-foods.ts` builds the food library deterministically and writes `FOOD-SEED-REPORT.md`. Generic foods: USDA FNDDS 2021–23 (5,432 "as eaten" foods, 65 nutrients, household portions like "1 cup"). Branded foods: a core set of USDA Branded Foods (about 15–25k products) from store brands (Kirkland Signature, Member's Mark, Great Value, Trader Joe's, Good & Gather, Kroger, 365, Aldi) and the biggest national brands, latest record per barcode, nothing older than 2020, plus the full catalogue (FR-FOOD-8). Branded foods carry label nutrients only; other micros show "not on label". | M |
+| FR-FOOD-2 | The core library (about 1 MB compressed) downloads once from LiftLog's own site in the background after the app first loads, is stored in IndexedDB and then works offline. It isn't precached (NFR-SIZE-1). The APK carries the core library itself. | M |
 | FR-FOOD-3 | Search by name, brand and alias, with the same typo tolerance as exercises, in under 150 ms over the whole library. Recent, frequent and favourite foods come first. | M |
 | FR-FOOD-4 | Offline barcode scanning (UPC/EAN) against the library, using the scanner LiftLog already has. A miss offers "Create food" with the barcode filled in. | S |
 | FR-FOOD-5 | Custom foods, recipes (ingredients plus number of servings) and quick add (calories and macros only). | M |
 | FR-FOOD-6 | About 150 common Indian dishes with Indian names and aliases, computed from standard recipes of USDA ingredients (or from IFCT 2017 if it turns out to be openly licensed). | M |
 | FR-FOOD-7 | Portion units shared across foods (katori, cup, tbsp, piece, plate, grams, ounces) with per-food gram weights. | M |
+| FR-FOOD-8 | *(Added 2026-11-07 at Pranav's request: "add everything from Walmart, Target, Costco and other stores, all items from all brands".)* Every US product in USDA Branded Foods that passes the FR-FOOD-1 filter, any brand (about 400,000 products from about 34,000 brands, ~20 MB compressed), downloads after the core library in resumable shards and is searchable and scannable offline. It is skipped while the phone asks to save data, and is not in the APK (the APK downloads it from the site). | M |
 
 ### Diary (FR-DIARY)
 | ID | Requirement | Pri |
@@ -133,7 +134,7 @@ Sources: Pranav's food brief (above) and a data-source check on 2026-10-26 (USDA
 |---|---|
 | NFR-REL-6 | Schema v2 is additive (new tables, optional profile fields); a v1 database and a v1 backup upgrade with every training row unchanged, proven by migration tests. |
 | NFR-OFF-3 | After the one background library download, all of Food works offline. Before it finishes, search covers custom and recent foods and says the library is still downloading. |
-| NFR-PERF-5 | Food search returns in under 150 ms over the full library (about 30,000 rows) on a mid-range phone. |
+| NFR-PERF-5 | Food search returns in under 150 ms over the full library (about 410,000 rows with FR-FOOD-8) on a mid-range phone. |
 | NFR-LIC-2 | Food data is public domain (USDA FoodData Central, CC0) and credited in Settings and `LICENSES.md`; DRI values cite the National Academies tables. No ODbL data (Open Food Facts) is bundled. |
 
 ### Milestones (draft)
