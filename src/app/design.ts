@@ -44,6 +44,15 @@ export function sectionFor(pathname: string): Section {
   return pathname === '/food' || pathname.startsWith('/food/') ? 'food' : 'workout';
 }
 
+/**
+ * FR-DSN-3: the sun shows behind the screens rebuilt for it (Today, Active workout, Logging, Rest).
+ * The other screens still put text straight on the page, which would be unreadable where it
+ * crosses the disc and rings, so they get the sun when they are rebuilt (D127).
+ */
+export function hasSun(pathname: string): boolean {
+  return pathname === '/' || pathname === '/workout' || pathname.startsWith('/workout/');
+}
+
 interface LookState {
   design: Design;
   glass: boolean;

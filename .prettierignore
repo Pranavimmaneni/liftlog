@@ -23,3 +23,5 @@ package-lock.json
 src/styles/tokens.css
 .cache/
 .claude/
+# Rising Sun mockups from the design tool, kept as delivered (M13)
+docs/new-design-handoff/

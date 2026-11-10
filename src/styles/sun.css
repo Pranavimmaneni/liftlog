@@ -1,5 +1,5 @@
 /*
- * Rising Sun look (M12, docs/new-design-handoff/HANDOFF.md). Everything here applies only when
+ * Rising Sun look (M13, docs/new-design-handoff/HANDOFF.md). Everything here applies only when
  * <html data-design="sun">; the classic Paper & Iron look is untouched (FR-DSN-1).
  *
  * These rules are deliberately outside any @layer: unlayered CSS beats Tailwind's utility layer, so
@@ -15,7 +15,7 @@
 @import '@fontsource/hanken-grotesk/latin-700';
 
 [data-design='sun'] {
-  --ll-font-display: 'Dela Gothic One', 'Arial Black', sans-serif;
+  --ll-font-sun: 'Dela Gothic One', 'Arial Black', sans-serif;
   --ll-font-sans: 'Hanken Grotesk', system-ui, sans-serif;
   --ll-font-mono: 'Hanken Grotesk', system-ui, sans-serif;
   --ll-r-sm: 8px;
@@ -79,10 +79,15 @@
 }
 
 /* ---------- type (handoff §3) ---------- */
-[data-design='sun'] .t-display,
-[data-design='sun'] .t-display-800,
-.sun-display {
-  font-family: var(--ll-font-display);
+/*
+ * The display face is very wide. Screens not rebuilt yet have titles sized for the condensed
+ * classic face, and would overflow the phone's width with it (mobile Chrome then widens the whole
+ * page), so .t-display keeps the classic face there (D128). Rebuilt screens use these classes.
+ */
+.sun-display,
+.sun-title,
+[data-design='sun'] .ll-stepper-value {
+  font-family: var(--ll-font-sun);
   font-weight: 400;
   letter-spacing: -0.03em;
   line-height: 0.95;
@@ -116,8 +121,11 @@
 [data-design='sun'] .bg-accent {
   background-color: var(--ll-btn);
 }
-[data-design='sun'] a {
-  color: var(--ll-accentText);
+/* Layered, so a utility such as text-ink on a link still wins. */
+@layer base {
+  [data-design='sun'] a {
+    color: var(--ll-accentText);
+  }
 }
 [data-design='sun'] :focus-visible {
   outline-color: var(--ll-accentText);
@@ -423,7 +431,6 @@
 
 /* ---------- pieces used only by the rebuilt Rising Sun screens ---------- */
 .sun-title {
-  font-family: var(--ll-font-display);
   font-weight: 400;
   font-size: 30px;
   line-height: 0.95;

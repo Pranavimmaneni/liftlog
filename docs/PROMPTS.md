@@ -149,6 +149,19 @@ Read its answer. If a proposed resolution is wrong, correct it in one message. T
 
 ---
 
+## M13: Rising Sun, part 1
+
+**Phone checks (M13)** (first: Settings → Look → Rising Sun)
+1. Pixel and iPhone, light and dark: Today shows the sun at the bottom, the workout card (muscle map, month dots) and the Food card (four rings). Tap the month: the dates appear.
+2. Scroll Today and the workout list on the Pixel. If the frosted cards make scrolling stutter, switch off Settings → Frosted glass and compare.
+3. Start a workout and log a set: the rest ring appears on the same screen. Tap Easy / Solid / Hard, open "…" and try +15 s, then "Start set 2 now".
+4. Let a rest run to zero with the phone unlocked: you hear the alert and the ring says "Rest over".
+5. Read the small grey text on cards that cross the red and sage rings (Today's list, the logger's tiles). Say if anything is hard to read.
+6. Open Plan, Progress, Settings and Food: they have the new colours, without the sun, and nothing is cut off or overlapping.
+7. Switch back to Classic: everything looks exactly as before.
+
+---
+
 ## If something goes wrong
 
 - **It's drifting from the design:** "Compare `<screen>` with `design/screens/light/<file>.png` and list every difference, then fix them."

@@ -1,5 +1,5 @@
 /**
- * Copy for the rebuilt Rising Sun screens (M12, FR-DSN-4…7). Merged into `en` as `en.sun`, so all
+ * Copy for the rebuilt Rising Sun screens (M13, FR-DSN-4…7). Merged into `en` as `en.sun`, so all
  * user-facing strings still come from src/copy/en.ts. Sentence case; display titles are uppercased
  * by their style.
  */

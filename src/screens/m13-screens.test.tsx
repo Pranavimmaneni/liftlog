@@ -10,8 +10,8 @@ import { dateKey } from '@/engine/week';
 
 const W = { timeout: 8000 };
 
-/** Rising Sun look (M12, docs/new-design-handoff): look switch, sun, Today, workout, logger, rest. */
-describe('M12 Rising Sun screens', () => {
+/** Rising Sun look (M13, docs/new-design-handoff): look switch, sun, Today, workout, logger, rest. */
+describe('M13 Rising Sun screens', () => {
   beforeEach(async () => {
     await resetDb();
     localStorage.clear();
@@ -35,8 +35,7 @@ describe('M12 Rising Sun screens', () => {
     await waitFor(() => expect(document.documentElement.getAttribute('data-design')).toBe('sun'));
     await waitFor(async () => expect((await db.settings.get('design'))?.value).toBe('sun'));
     expect(localStorage.getItem('ll-design')).toBe('sun');
-    // FR-DSN-3: the sun is behind every screen, and the glass switch appears.
-    expect(await screen.findByTestId('sun-backdrop')).toBeInTheDocument();
+    // FR-DSN-3: the glass switch appears (the sun itself is checked on Today below).
     fireEvent.click(screen.getByRole('switch', { name: 'Frosted glass' }));
     await waitFor(() => expect(document.documentElement.getAttribute('data-glass')).toBe('off'));
     await waitFor(async () => expect((await db.settings.get('sunGlass'))?.value).toBe(false));
@@ -57,6 +56,7 @@ describe('M12 Rising Sun screens', () => {
     await saveWeighIn(dateKey(Date.now()), 80);
     renderRoute('/');
     expect(await screen.findByRole('heading', { name: 'Today' }, W)).toBeInTheDocument();
+    expect(screen.getByTestId('sun-backdrop')).toBeInTheDocument(); // FR-DSN-3
     expect(await screen.findByRole('heading', { name: 'Upper A' }, W)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /start workout/i })).toBeInTheDocument();
     expect(screen.getByRole('img', { name: /muscles this session covers/i })).toBeInTheDocument();

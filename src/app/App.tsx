@@ -5,7 +5,7 @@ import { db } from '@/db/schema';
 import { autoFinishStale } from '@/db/workout';
 import { Toaster } from '@/components/Toast';
 import { useThemeSync } from './theme';
-import { useDesign, useLookSync } from './design';
+import { hasSun, useDesign, useLookSync } from './design';
 import { SunBackdrop } from '@/components/sun/SunBackdrop';
 import { UpdateToast } from './UpdateToast';
 import { StorageBanner } from './StorageBanner';
@@ -33,6 +33,7 @@ export function App() {
   useThemeSync();
   useLookSync();
   const design = useDesign();
+  const { pathname } = useLocation();
   useEffect(() => {
     // FR-WRK-12: a session idle for 3 h is finished when the app comes back.
     void autoFinishStale();
@@ -42,7 +43,7 @@ export function App() {
   }, []);
   return (
     <>
-      {design === 'sun' && <SunBackdrop />}
+      {design === 'sun' && hasSun(pathname) && <SunBackdrop />}
       <StorageBanner />
       <OnboardingGate />
       <UpdateToast />

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { applyLook, applySection, parseDesign, sectionFor, useLook } from './design';
+import { applyLook, applySection, hasSun, parseDesign, sectionFor, useLook } from './design';
 
 describe('look (FR-DSN-1, FR-DSN-2)', () => {
   beforeEach(() => {
@@ -30,6 +30,14 @@ describe('look (FR-DSN-1, FR-DSN-2)', () => {
     applyLook({ glass: true });
     expect(document.documentElement.getAttribute('data-glass')).toBe('on');
     expect(useLook.getState().design).toBe('sun');
+  });
+
+  it('FR-DSN-3: the sun shows only behind the rebuilt screens', () => {
+    expect(hasSun('/')).toBe(true);
+    expect(hasSun('/workout')).toBe(true);
+    expect(hasSun('/workout/bench-press')).toBe(true);
+    expect(hasSun('/settings')).toBe(false);
+    expect(hasSun('/food')).toBe(false);
   });
 
   it('FR-DSN-2: every /food route is the Food section, the rest is LiftLog', () => {

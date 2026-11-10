@@ -147,3 +147,20 @@ Sources: Pranav's food brief (above) and a data-source check on 2026-10-26 (USDA
 
 Not possible without a server: scheduled meal reminders (a web app can't fire them while closed), and live product lookups for barcodes outside the library.
 
+## 1.3.0 Rising Sun redesign (FR-DSN)
+
+Source: `docs/new-design-handoff/HANDOFF.md` and its mockups (direction chosen by Pranav, 2026-11-10). This replaces answer 8 above ("LiftLog's UI does not change") and the "only addition" clause of FR-NAV-2 (D124). Plan: `docs/plans/M13.md`. Milestones M13–M16 (D125).
+
+| ID | Requirement |
+|---|---|
+| FR-DSN-1 | **Look.** Settings has a Look choice: Classic (Paper & Iron) and Rising Sun. Classic is the default until Pranav approves the new look, and is unchanged while both exist. The choice is saved with the other settings (so it is in backups), applies at once and before first paint on the next start. Every existing feature works in both looks |
+| FR-DSN-2 | **Four themes.** In Rising Sun the section picks the colour family (LiftLog = workout, every `/food` route = food) and the light / dark setting picks the variant: Workout Light, Workout Dark, Food Light, Food Dark. All colours are `--ll-*` tokens in `design/tokens.json` / `tokens.css`, so the Food palette can change in one place (handoff §8.5) |
+| FR-DSN-3 | **Sun and glass.** A rising sun (disc and two rings, handoff §5) is fixed behind the content of rebuilt screens, anchored to the bottom, scaled to the viewport width, with a faint grain. Cards are frosted glass (blur 22 px) with a hairline and a top highlight. Where blur is unsupported, or when "Frosted glass" is switched off in Settings, cards are opaque and the grain is dropped. Sheets are opaque |
+| FR-DSN-4 | **Today (S05).** Two cards. Workout: session name, sets and time, the muscle map of the day's muscles, Start / Resume, the month as dots with the streak (dates on tap). Food: calories left, "Log food", four rings (protein, carbs, fat, fibre). The section switch, Settings, banners, this week, weekly quest, weigh-in and level stay reachable |
+| FR-DSN-5 | **Active workout (S06).** Title with an add button; one line with time, sets done and the running rest; a segmented bar of goal sets; the lifts in one list with pictogram, target and set dots, the current one marked; Start / Resume the current lift and Finish at the bottom. Add from list, scan, undo, cancel and finish behave as before |
+| FR-DSN-6 | **Logging a set (S07, S08).** Pictogram and muscle map; today's sets (tap to edit); weight and reps steppers with 56 px buttons; "Last session" and "Today's goal" tiles with the reason line; the planned rest in the header; one Log button. Warm-ups, nudges, extra sets, unilateral sides, "next time", swap, change target and form tips behave as before |
+| FR-DSN-7 | **Rest timer (S25).** After a set is logged the same screen shows the rest: a ring countdown with Skip, the sets, "How did set N feel?" (Easy / Solid / Hard) and "Start set N now". −15 s / +15 s and "Hurts" are in the options sheet. The alert at zero is unchanged (FR-TMR-4) |
+| FR-DSN-8 | **Echo motion (M15).** Ripple on a logged set, logged food or saved weigh-in; celebration on a record, a reached food goal or a finished workout; once per goal per day; a 2 s toast under `prefers-reduced-motion` (handoff §6) |
+| FR-DSN-9 | **Type.** Dela Gothic One for display titles and big numbers on rebuilt screens; Hanken Grotesk for everything else; both self-hosted (NFR-SEC-1). Sentence case except display titles; tabular numbers; nothing below 13 px on rebuilt screens |
+
+Order of rebuilding: M13 Today, Active workout, Logging, Rest; M14 Diary, Add food, Portion, Create food; M15 Echo; M16 the remaining screens (handoff §8.2: their mockups are first drafts, so the PRD decides behaviour).

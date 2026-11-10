@@ -83,7 +83,7 @@
 [data-theme="paper"] { color-scheme: light; }
 [data-theme="iron"] { color-scheme: dark; }
 
-/* Rising Sun tokens (M12, docs/new-design-handoff). Generated from tokens.json "sun". Opt-in: <html data-design="sun">.
+/* Rising Sun tokens (M13, docs/new-design-handoff). Generated from tokens.json "sun". Opt-in: <html data-design="sun">.
    data-section="workout|food" picks the family, data-theme (paper = light, iron = dark) the variant. */
 [data-design="sun"] {
   --ll-paper: #F3F1EA;
