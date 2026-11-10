@@ -132,7 +132,9 @@ async function runImport(opts: ImportOptions): Promise<ImportResult> {
   const core = manifest.chunks;
   const shards = opts.catalogue === false ? [] : (manifest.catalogue?.shards ?? []);
 
-  let { files: done, stale } = await importedFiles(manifest.v);
+  const imported = await importedFiles(manifest.v);
+  let done = imported.files;
+  const stale = imported.stale;
   // A new library version (or rows from no import at all) starts from scratch.
   if (stale || (done.size === 0 && (await db.foodLib.count()) > 0)) {
     await db.transaction('rw', db.foodLib, db.foodSearch, db.meta, async () => {
