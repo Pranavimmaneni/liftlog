@@ -1,0 +1,104 @@
+/*
+ * Rising Sun look: styles used only by the Food screens (F01–F07).
+ * Unlayered like sun.css, so scope every rule under [data-design='sun'] or a sun-food-* class.
+ */
+
+/* Tabs and radio pills share .sun-pill; they mark the chosen one with their own ARIA state. */
+.sun-pill[aria-selected='true'],
+.sun-pill[aria-checked='true'] {
+  border-color: var(--ll-ink);
+  background: var(--ll-ink);
+  color: var(--ll-paper);
+}
+
+/* A pill that sits straight on the page (over the sun) is glass, not the see-through soft fill. */
+.sun-food-onpage:not([aria-selected='true']):not([aria-pressed='true']):not([aria-checked='true']) {
+  background: var(--ll-glass);
+  -webkit-backdrop-filter: blur(22px) saturate(1.5);
+  backdrop-filter: blur(22px) saturate(1.5);
+  box-shadow: inset 0 1px 0 var(--ll-glassEdge);
+}
+[data-glass='off']
+  .sun-food-onpage:not([aria-selected='true']):not([aria-pressed='true']):not([aria-checked='true']) {
+  background: var(--ll-card);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* A soft field: the label sits above, the unit inside on the right (F04). */
+.sun-food-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 48px;
+  padding: 0 14px;
+  border-radius: 14px;
+  border: 1px solid var(--ll-hairline);
+  background: var(--ll-soft);
+}
+.sun-food-field:focus-within {
+  outline: 2px solid var(--ll-accentText);
+  outline-offset: 1px;
+}
+.sun-food-field[data-invalid='true'] {
+  border-color: var(--ll-accentText);
+}
+.sun-food-field input {
+  min-width: 0;
+  flex: 1;
+  height: 46px;
+  background: transparent;
+  font-size: 16px;
+  outline: none;
+}
+
+/* The search pill (F02): glass, with the Scan pill inside on the right. */
+.sun-food-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 52px;
+  padding: 0 6px 0 16px;
+  border-radius: 26px;
+}
+.sun-food-search:focus-within {
+  outline: 2px solid var(--ll-accentText);
+  outline-offset: 1px;
+}
+
+/* Round "+" on a food row: 40 px circle inside a 44 px target. */
+.sun-food-plus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  color: var(--ll-ink);
+}
+.sun-food-plus > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  border: 1.5px solid var(--ll-ink);
+}
+
+/* Square stepper buttons either side of a display number (F03, handoff §4). */
+.sun-food-step {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  flex: none;
+  border-radius: 14px;
+  border: 1px solid var(--ll-hairline);
+  background: var(--ll-soft);
+  color: var(--ll-ink);
+}
+.sun-food-step:disabled {
+  opacity: 0.4;
+}

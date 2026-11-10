@@ -68,19 +68,19 @@ export function Sheet({
   if (!open) return null;
   return createPortal(
     <div className="fixed inset-0 z-[60] flex items-end justify-center">
-      <div className="absolute inset-0 bg-shadow/45" aria-hidden="true" onClick={onClose} />
+      <div className="ll-scrim absolute inset-0 bg-shadow/45" aria-hidden="true" onClick={onClose} />
       <div
         ref={panel}
         role="dialog"
         aria-modal="true"
         aria-labelledby={`${id}-t`}
-        className={`ll-sheet-anim relative max-h-[88dvh] w-full max-w-[480px] overflow-y-auto rounded-t-[10px] border-t-2 bg-paper px-5 pb-[calc(20px+env(safe-area-inset-bottom))] pt-3 ${
+        className={`ll-sheet ll-sheet-anim relative max-h-[88dvh] w-full max-w-[480px] overflow-y-auto rounded-t-[10px] border-t-2 bg-paper px-5 pb-[calc(20px+env(safe-area-inset-bottom))] pt-3 ${
           tone === 'danger' ? 'border-accent' : 'border-ink'
         }`}
       >
-        <div className="mx-auto mb-2 h-1 w-10 rounded bg-rule" aria-hidden="true" />
+        <div className="ll-sheet-handle mx-auto mb-2 h-1 w-10 rounded bg-rule" aria-hidden="true" />
         <div className="flex items-start gap-3">
-          <h2 id={`${id}-t`} className="t-display grow pt-2 text-[28px]">
+          <h2 id={`${id}-t`} className="ll-sheet-title t-display grow pt-2 text-[28px]">
             {title}
           </h2>
           <button type="button" className="ll-icon-btn" aria-label={en.common.close} onClick={onClose}>

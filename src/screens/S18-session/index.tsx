@@ -6,6 +6,7 @@ import { Sheet } from '@/components/Sheet';
 import { toast } from '@/components/Toast';
 import { en } from '@/copy/en';
 import { formatInt, longDate } from '@/copy/format';
+import { useDesign } from '@/app/design';
 import type { SetRow } from '@/db/types';
 import { deleteSession } from '@/db/workout';
 import { formatLoad, hasLoad, toDisplay } from '@/engine/units';
@@ -19,11 +20,13 @@ export default function SessionDetail() {
   const t = useTicket(sessionId);
   const [editing, setEditing] = useState<{ set: SetRow; itemIndex: number } | null>(null);
   const [confirm, setConfirm] = useState(false);
+  const sun = useDesign() === 'sun';
   if (t === null) return <Navigate to="/progress?tab=history" replace />;
   if (!t) return null;
   const { model, totals } = t;
   const units = model.profile.units;
   const d = en.sessionDetail;
+  const c = en.sun.progress.session;
   const setCount = model.items.reduce((n, i) => n + i.sets.length, 0);
   const item = editing ? model.items[editing.itemIndex] : undefined;
 
@@ -34,64 +37,148 @@ export default function SessionDetail() {
         subtitle={`${longDate(model.session.startedAt)} · ${en.summary.week(model.weekNumber)}`}
         backTo="/progress?tab=history"
       />
-      <dl className="ll-card mx-5 mt-3 grid grid-cols-2 gap-x-4 gap-y-2 px-3.5 py-3">
-        <Stat label={en.summary.goalSets} value={`${model.meter.done} / ${model.meter.total}`} />
-        <Stat label={en.summary.lifted} value={`${formatInt(toDisplay(totals.tonnageKg, units))} ${units}`} />
-        <Stat label={en.summary.sets} value={String(totals.workSets)} />
-        <Stat label={en.summary.reps} value={formatInt(totals.reps)} />
-        <Stat label={d.duration} value={en.summary.min(totals.durationMin)} />
-        <Stat label={en.summary.bonusReps} value={`+${model.meter.bonusReps}`} />
-      </dl>
+      {sun ? (
+        <>
+          <section className="sun-glass mx-5 mt-4 rounded-[18px] p-[18px]" aria-label={d.title}>
+            <div className="flex items-end justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-[15px] text-ink2">
+                  {en.summary.min(totals.durationMin)} · {c.goalSets}
+                </p>
+                <p className="sun-display mt-2 break-words text-[38px]">
+                  {model.meter.done} / {model.meter.total}
+                </p>
+              </div>
+              <p className="shrink-0 text-right">
+                <b className="block tabular-nums">
+                  {formatInt(toDisplay(totals.tonnageKg, units))} {units}
+                </b>
+                {t.prs.length > 0 && (
+                  <span className="block text-[14px] text-ink2">{c.records(t.prs.length)}</span>
+                )}
+              </p>
+            </div>
+            <p className="mt-3 text-[14px] text-ink2">
+              {c.line(totals.workSets, formatInt(totals.reps), model.meter.bonusReps)}
+            </p>
+          </section>
 
-      {model.items
-        .filter((i) => i.sets.length > 0)
-        .map((i) => {
-          const itemIndex = model.items.indexOf(i);
-          const lt = i.exercise.loadType;
-          return (
-            <section
-              key={i.exercise.id}
-              className="ll-card mx-5 mt-3 overflow-hidden"
-              aria-label={i.exercise.name}
-            >
-              <h2 className="border-b border-rule px-3.5 py-2.5 text-[16px] font-bold">{i.exercise.name}</h2>
-              <ul>
-                {i.sets.map((s) => {
-                  const label = s.kind === 'warmup' ? d.warm : en.logger.set(s.idx);
-                  const text = `${hasLoad(lt) ? `${formatLoad(s.loadKg, lt, units)} × ` : ''}${s.reps}`;
-                  return (
-                    <li key={s.id} className="border-b border-rule last:border-b-0">
-                      <button
-                        type="button"
-                        className="flex min-h-12 w-full items-center gap-3 px-3.5 text-left"
-                        aria-label={`${d.editSet(s.idx)}: ${text}`}
-                        onClick={() => setEditing({ set: s, itemIndex })}
-                      >
-                        <span
-                          className={`t-mono w-16 shrink-0 text-[12px] ${s.kind === 'warmup' ? 'text-ink2' : ''}`}
-                        >
-                          {label}
-                        </span>
-                        <span className="t-mono grow text-[15px] font-semibold">{text}</span>
-                        {s.goalMet && (
-                          <span className="t-mono text-[11px] font-semibold uppercase text-ink2">
-                            {s.bonusReps > 0 ? `+${s.bonusReps}` : '✓'}
-                          </span>
-                        )}
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            </section>
-          );
-        })}
+          <div className="sun-glass mx-5 mt-3 rounded-[14px] px-4">
+            {model.items
+              .filter((i) => i.sets.length > 0)
+              .map((i) => {
+                const itemIndex = model.items.indexOf(i);
+                const lt = i.exercise.loadType;
+                return (
+                  <section
+                    key={i.exercise.id}
+                    className="border-t border-rule py-3.5 first:border-t-0"
+                    aria-label={i.exercise.name}
+                  >
+                    <h2 className="font-bold">{i.exercise.name}</h2>
+                    <ul className="mt-2 flex flex-wrap gap-2">
+                      {i.sets.map((s) => {
+                        const text = `${hasLoad(lt) ? `${formatLoad(s.loadKg, lt, units)} × ` : ''}${s.reps}`;
+                        return (
+                          <li key={s.id}>
+                            <button
+                              type="button"
+                              className="sun-progress-set"
+                              aria-label={`${d.editSet(s.idx)}: ${text}`}
+                              onClick={() => setEditing({ set: s, itemIndex })}
+                            >
+                              {s.kind === 'warmup' && (
+                                <span className="text-[13px] font-normal text-ink2">{c.warm}</span>
+                              )}
+                              {text}
+                              {s.goalMet && (
+                                <span className="text-[13px] text-ink2">
+                                  {s.bonusReps > 0 ? `+${s.bonusReps}` : '✓'}
+                                </span>
+                              )}
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </section>
+                );
+              })}
+          </div>
 
-      <div className="px-5 pt-5">
-        <Button variant="ghost" className="!text-accent" onClick={() => setConfirm(true)}>
-          {d.deleteSession}
-        </Button>
-      </div>
+          <div className="px-5 pt-5">
+            <Button variant="secondary" onClick={() => setConfirm(true)}>
+              {d.deleteSession}
+            </Button>
+          </div>
+        </>
+      ) : (
+        <>
+          <dl className="ll-card mx-5 mt-3 grid grid-cols-2 gap-x-4 gap-y-2 px-3.5 py-3">
+            <Stat label={en.summary.goalSets} value={`${model.meter.done} / ${model.meter.total}`} />
+            <Stat
+              label={en.summary.lifted}
+              value={`${formatInt(toDisplay(totals.tonnageKg, units))} ${units}`}
+            />
+            <Stat label={en.summary.sets} value={String(totals.workSets)} />
+            <Stat label={en.summary.reps} value={formatInt(totals.reps)} />
+            <Stat label={d.duration} value={en.summary.min(totals.durationMin)} />
+            <Stat label={en.summary.bonusReps} value={`+${model.meter.bonusReps}`} />
+          </dl>
+
+          {model.items
+            .filter((i) => i.sets.length > 0)
+            .map((i) => {
+              const itemIndex = model.items.indexOf(i);
+              const lt = i.exercise.loadType;
+              return (
+                <section
+                  key={i.exercise.id}
+                  className="ll-card mx-5 mt-3 overflow-hidden"
+                  aria-label={i.exercise.name}
+                >
+                  <h2 className="border-b border-rule px-3.5 py-2.5 text-[16px] font-bold">
+                    {i.exercise.name}
+                  </h2>
+                  <ul>
+                    {i.sets.map((s) => {
+                      const label = s.kind === 'warmup' ? d.warm : en.logger.set(s.idx);
+                      const text = `${hasLoad(lt) ? `${formatLoad(s.loadKg, lt, units)} × ` : ''}${s.reps}`;
+                      return (
+                        <li key={s.id} className="border-b border-rule last:border-b-0">
+                          <button
+                            type="button"
+                            className="flex min-h-12 w-full items-center gap-3 px-3.5 text-left"
+                            aria-label={`${d.editSet(s.idx)}: ${text}`}
+                            onClick={() => setEditing({ set: s, itemIndex })}
+                          >
+                            <span
+                              className={`t-mono w-16 shrink-0 text-[12px] ${s.kind === 'warmup' ? 'text-ink2' : ''}`}
+                            >
+                              {label}
+                            </span>
+                            <span className="t-mono grow text-[15px] font-semibold">{text}</span>
+                            {s.goalMet && (
+                              <span className="t-mono text-[11px] font-semibold uppercase text-ink2">
+                                {s.bonusReps > 0 ? `+${s.bonusReps}` : '✓'}
+                              </span>
+                            )}
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </section>
+              );
+            })}
+
+          <div className="px-5 pt-5">
+            <Button variant="ghost" className="!text-accent" onClick={() => setConfirm(true)}>
+              {d.deleteSession}
+            </Button>
+          </div>
+        </>
+      )}
 
       {item && editing && (
         <EditSetSheet

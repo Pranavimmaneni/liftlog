@@ -21,7 +21,8 @@ export function Switch({
       className="flex h-11 w-14 shrink-0 items-center justify-center"
     >
       <span
-        className={`flex h-7 w-12 items-center rounded-[14px] p-[3px] transition-colors ${
+        data-on={checked}
+        className={`ll-switch flex h-7 w-12 items-center rounded-[14px] p-[3px] transition-colors ${
           checked ? 'justify-end bg-ink' : 'justify-start border-2 border-ink2 bg-transparent'
         }`}
       >

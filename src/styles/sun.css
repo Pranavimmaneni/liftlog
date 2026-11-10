@@ -1,0 +1,616 @@
+/*
+ * Rising Sun look (M13, docs/new-design-handoff/HANDOFF.md). Everything here applies only when
+ * <html data-design="sun">; the classic Paper & Iron look is untouched (FR-DSN-1).
+ *
+ * These rules are deliberately outside any @layer: unlayered CSS beats Tailwind's utility layer, so
+ * one rule restyles a shared class (.ll-card, .ll-btn …) on every screen that has not been rebuilt
+ * yet. Colours come from the --ll-* tokens in tokens.css (FR-THM-1).
+ */
+
+/* Self-hosted fonts (NFR-SEC-1), latin subset. */
+@import '@fontsource/dela-gothic-one/latin-400';
+@import '@fontsource/hanken-grotesk/latin-400';
+@import '@fontsource/hanken-grotesk/latin-500';
+@import '@fontsource/hanken-grotesk/latin-600';
+@import '@fontsource/hanken-grotesk/latin-700';
+
+[data-design='sun'] {
+  --ll-font-sun: 'Dela Gothic One', 'Arial Black', sans-serif;
+  --ll-font-sans: 'Hanken Grotesk', system-ui, sans-serif;
+  --ll-font-mono: 'Hanken Grotesk', system-ui, sans-serif;
+  --ll-r-sm: 8px;
+  --ll-r-md: 12px;
+  --ll-r-lg: 14px;
+  --ll-switchOn: var(--ll-sage);
+  font-size: 16px;
+}
+[data-design='sun'][data-section='food'] {
+  --ll-switchOn: var(--ll-btn);
+}
+
+/* ---------- the sun (handoff §5) ---------- */
+.sun-backdrop {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  z-index: -1;
+  width: min(100vw, 480px);
+  aspect-ratio: 390 / 844;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.sun-backdrop svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+[data-glass='off'] .sun-grain {
+  display: none;
+}
+
+/* ---------- glass (handoff §4) ---------- */
+.sun-glass,
+[data-design='sun'] .ll-card {
+  background: var(--ll-glass);
+  -webkit-backdrop-filter: blur(22px) saturate(1.5);
+  backdrop-filter: blur(22px) saturate(1.5);
+  border: 1px solid var(--ll-hairline);
+  box-shadow: inset 0 1px 0 var(--ll-glassEdge);
+}
+[data-design='sun'] .ll-card {
+  border-radius: 14px;
+}
+[data-design='sun'] .ll-card-hard {
+  border-radius: 18px;
+}
+/* Handoff §8.6: opaque cards where blur is unsupported, or switched off in Settings. */
+[data-glass='off'] .sun-glass,
+[data-design='sun'][data-glass='off'] .ll-card {
+  background: var(--ll-card);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .sun-glass,
+  [data-design='sun'] .ll-card {
+    background: var(--ll-card);
+  }
+}
+
+/* ---------- type (handoff §3) ---------- */
+/*
+ * The display face is very wide. Screens not rebuilt yet have titles sized for the condensed
+ * classic face, and would overflow the phone's width with it (mobile Chrome then widens the whole
+ * page), so .t-display keeps the classic face there (D128). Rebuilt screens use these classes.
+ */
+.sun-display,
+.sun-title,
+[data-design='sun'] .ll-stepper-value {
+  font-family: var(--ll-font-sun);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+[data-design='sun'] .t-label {
+  font-family: var(--ll-font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+[data-design='sun'] .t-num,
+[data-design='sun'] .t-mono,
+[data-design='sun'] .font-mono {
+  font-family: var(--ll-font-sans);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+/* Sentence case everywhere except display titles. */
+[data-design='sun'] .font-mono,
+[data-design='sun'] .t-mono {
+  text-transform: none;
+}
+[data-design='sun'] .text-accent {
+  color: var(--ll-accentText);
+}
+/* An !important utility beats unlayered CSS, but loses to !important in an earlier layer. */
+@layer base {
+  [data-design='sun'] .\!text-accent {
+    color: var(--ll-accentText) !important;
+  }
+}
+[data-design='sun'] .bg-accent {
+  background-color: var(--ll-btn);
+}
+/* Layered, so a utility such as text-ink on a link still wins. */
+@layer base {
+  [data-design='sun'] a {
+    color: var(--ll-accentText);
+  }
+}
+[data-design='sun'] :focus-visible {
+  outline-color: var(--ll-accentText);
+  border-radius: 8px;
+}
+
+/* ---------- buttons ---------- */
+[data-design='sun'] .ll-btn {
+  border-radius: 14px;
+  font-family: var(--ll-font-sans);
+  text-transform: none;
+  letter-spacing: 0;
+  box-shadow: none;
+}
+[data-design='sun'] .ll-btn[data-variant='primary'] {
+  height: 58px;
+  border: 1.5px solid var(--ll-ink);
+  background: var(--ll-btn);
+  color: var(--ll-btnInk);
+  font-weight: 700;
+  font-size: 17px;
+}
+[data-design='sun'] .ll-btn[data-variant='secondary'] {
+  height: 48px;
+  border: 1px solid var(--ll-hairline);
+  border-radius: 24px;
+  background: var(--ll-glass);
+  -webkit-backdrop-filter: blur(22px) saturate(1.5);
+  backdrop-filter: blur(22px) saturate(1.5);
+  box-shadow: inset 0 1px 0 var(--ll-glassEdge);
+  color: var(--ll-ink);
+  font-weight: 600;
+  font-size: 15px;
+}
+[data-design='sun'][data-glass='off'] .ll-btn[data-variant='secondary'] {
+  background: var(--ll-card);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+[data-design='sun'] .ll-btn[data-variant='ghost'] {
+  border: 1px solid var(--ll-hairline);
+  background: var(--ll-soft);
+  color: var(--ll-ink);
+  font-weight: 600;
+  font-size: 15px;
+}
+/* Filled, as in the delete confirm (HW1S26b). */
+[data-design='sun'] .ll-btn[data-variant='destructive'] {
+  height: 58px;
+  border: 1.5px solid var(--ll-ink);
+  background: var(--ll-btn);
+  color: var(--ll-btnInk);
+  font-weight: 700;
+  font-size: 17px;
+}
+[data-design='sun'] .ll-btn[data-size='sm'] {
+  height: 44px;
+  font-size: 15px;
+}
+[data-design='sun'] .ll-icon-btn {
+  border-radius: 22px;
+  border: 1px solid var(--ll-hairline);
+  background: var(--ll-glass);
+  color: var(--ll-ink);
+}
+[data-design='sun'] .ll-link {
+  font-family: var(--ll-font-sans);
+  font-size: 14px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ll-accentText);
+}
+
+/* ---------- chips (handoff §4: radius 22, selected = ink fill) ---------- */
+[data-design='sun'] .ll-chip {
+  font-family: var(--ll-font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  padding: 4px 12px;
+  border-radius: 22px;
+  border: 1px solid var(--ll-hairline);
+  background: var(--ll-soft);
+  color: var(--ll-ink);
+}
+[data-design='sun'] .ll-chip[data-variant='on'] {
+  background: var(--ll-ink);
+  border-color: var(--ll-ink);
+  color: var(--ll-paper);
+}
+[data-design='sun'] .ll-chip[data-variant='brass'] {
+  background: var(--ll-brassWash);
+  border-color: var(--ll-brass);
+  color: var(--ll-brassText);
+}
+[data-design='sun'] .ll-chip[data-variant='red'] {
+  background: var(--ll-btn);
+  border-color: var(--ll-btn);
+  color: var(--ll-btnInk);
+}
+[data-design='sun'] .ll-chip[data-variant='soft'] {
+  border-color: transparent;
+}
+[data-design='sun'] .ll-chip[data-variant='outline-red'] {
+  background: transparent;
+  border-color: var(--ll-accentText);
+  color: var(--ll-accentText);
+}
+[data-design='sun'] .ll-chip[data-variant='dashed'] {
+  background: transparent;
+  border-style: dashed;
+}
+
+/* Empty state (S26a): a centred glass card with the one next action. */
+[data-design='sun'] .ll-empty {
+  align-items: center;
+  gap: 12px;
+  padding: 18px;
+  border-style: solid;
+  border-radius: 18px;
+  text-align: center;
+}
+[data-design='sun'] .ll-empty > p {
+  color: var(--ll-ink);
+  font-size: 16px;
+}
+
+/* ---------- rows, fields ---------- */
+[data-design='sun'] .ll-row {
+  min-height: 52px;
+  padding: 3px 16px;
+  border-bottom-color: var(--ll-rule);
+}
+[data-design='sun'] .ll-input {
+  border-radius: 14px;
+  border: 1px solid var(--ll-hairline);
+  background: var(--ll-soft);
+}
+[data-design='sun'] .ll-input[aria-invalid='true'] {
+  border-color: var(--ll-accentText);
+}
+
+/* ---------- segmented control and the LiftLog | Food switch ---------- */
+[data-design='sun'] .ll-seg,
+[data-design='sun'] .ll-section-switch {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 0;
+  padding: 3px;
+  border-radius: 22px;
+  overflow: visible;
+  background: var(--ll-glass);
+  -webkit-backdrop-filter: blur(22px) saturate(1.5);
+  backdrop-filter: blur(22px) saturate(1.5);
+  border: 1px solid var(--ll-hairline);
+  box-shadow: inset 0 1px 0 var(--ll-glassEdge);
+}
+[data-design='sun'] .ll-section-switch {
+  display: grid;
+  width: 100%;
+}
+[data-design='sun'] .ll-seg-item,
+[data-design='sun'] .ll-section-item {
+  border: 0;
+  border-radius: 19px;
+  background: transparent;
+  color: var(--ll-ink);
+  font-family: var(--ll-font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  min-height: 44px;
+}
+[data-design='sun'] .ll-section-item {
+  min-height: 38px;
+}
+[data-design='sun'] .ll-seg-item[aria-pressed='true'],
+[data-design='sun'] .ll-section-item[data-on='true'] {
+  background: var(--ll-ink);
+  color: var(--ll-paper);
+}
+
+/* ---------- switch (46 × 28; on = sage, or the button colour in Food) ---------- */
+[data-design='sun'] .ll-switch {
+  width: 46px;
+  border: 0;
+  background: var(--ll-track);
+}
+[data-design='sun'] .ll-switch[data-on='true'] {
+  background: var(--ll-switchOn);
+}
+[data-design='sun'] .ll-switch > span {
+  width: 22px;
+  height: 22px;
+  background: var(--ll-card);
+}
+
+/* ---------- bottom sheet (opaque card, 28 px top radius, 50% scrim) ---------- */
+[data-design='sun'] .ll-scrim {
+  background: var(--ll-scrim);
+}
+[data-design='sun'] .ll-sheet {
+  border: 0;
+  border-radius: 28px 28px 0 0;
+  background: var(--ll-card);
+  padding-top: 10px;
+}
+[data-design='sun'] .ll-sheet-handle {
+  width: 40px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--ll-track);
+  margin-bottom: 14px;
+}
+[data-design='sun'] .ll-sheet-title {
+  font-family: var(--ll-font-sans);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.2;
+  text-transform: none;
+}
+
+/* ---------- tab bar: floating glass pill ---------- */
+[data-design='sun'] .ll-tabbar {
+  border: 0;
+  background: transparent;
+  bottom: calc(22px + env(safe-area-inset-bottom));
+  padding: 0 20px;
+  pointer-events: none;
+}
+[data-design='sun'] .ll-tabbar > ul {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  height: 64px;
+  max-width: 440px;
+  border-radius: 32px;
+  pointer-events: auto;
+  background: var(--ll-glass);
+  -webkit-backdrop-filter: blur(22px) saturate(1.5);
+  backdrop-filter: blur(22px) saturate(1.5);
+  border: 1px solid var(--ll-hairline);
+  box-shadow: inset 0 1px 0 var(--ll-glassEdge);
+}
+[data-design='sun'][data-glass='off'] .ll-tabbar > ul,
+[data-design='sun'][data-glass='off'] .ll-seg,
+[data-design='sun'][data-glass='off'] .ll-section-switch,
+[data-design='sun'][data-glass='off'] .ll-icon-btn {
+  background: var(--ll-card);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+[data-design='sun'] .ll-tab {
+  width: 100%;
+  gap: 2px;
+  font-family: var(--ll-font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ll-ink2);
+}
+[data-design='sun'] .ll-tab[aria-current='page'] {
+  color: var(--ll-ink);
+}
+[data-design='sun'] .ll-tab[aria-current='page'] svg {
+  color: var(--ll-accent);
+}
+
+/* ---------- stepper: 56 × 56 buttons either side of a display number ---------- */
+.ll-stepper-value {
+  font-size: var(--step-size, 32px);
+}
+[data-design='sun'] .ll-stepper {
+  height: auto;
+  min-height: 56px;
+  border: 0;
+  background: transparent;
+  justify-content: space-between;
+}
+[data-design='sun'] .ll-stepper-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  border: 1px solid var(--ll-hairline);
+  background: var(--ll-soft);
+}
+[data-design='sun'] .ll-stepper-value {
+  font-size: calc(var(--step-size, 32px) * 1.25);
+}
+[data-design='sun'] .ll-stepper-unit {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+/* ---------- pictograms sit straight on the card; the halo takes the card colour ---------- */
+[data-design='sun'] .ll-thumb {
+  --ll-panel: var(--ll-card);
+  background: transparent;
+}
+.sun-picto {
+  --ll-panel: var(--ll-card);
+}
+
+/* The sun sits at z-index -1: only <html> may paint the page colour above it. */
+[data-design='sun'] body {
+  background: transparent;
+}
+
+/* Layout shells stay see-through so the sun shows behind them. */
+[data-design='sun'] .ll-food-shell {
+  background: transparent;
+}
+
+/* ---------- pieces used only by the rebuilt Rising Sun screens ---------- */
+.sun-title {
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+/* Sub-screen header: a glass bar with the back link, the title and a right slot. */
+.sun-bar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, auto) minmax(max-content, 1fr);
+  align-items: center;
+  gap: 8px;
+  /* The layouts already pad for the notch; the bar takes that strip over so it stays glass. */
+  margin-top: calc(-1 * env(safe-area-inset-top));
+  padding: calc(8px + env(safe-area-inset-top)) 12px 8px;
+  border-width: 0 0 1px;
+  font-size: 17px;
+}
+.sun-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 48px;
+  padding: 0 16px;
+  border-radius: 24px;
+  border: 1px solid var(--ll-hairline);
+  background: var(--ll-soft);
+  color: var(--ll-ink);
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+}
+.sun-pill[aria-pressed='true'] {
+  border-color: var(--ll-ink);
+  background: var(--ll-ink);
+  color: var(--ll-paper);
+}
+.sun-list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 52px;
+  padding: 6px 16px;
+  color: var(--ll-ink);
+  text-decoration: none;
+  text-align: left;
+  width: 100%;
+}
+.sun-list-row + .sun-list-row {
+  border-top: 1px solid var(--ll-rule);
+}
+/* ---------- Echo motion (FR-DSN-8, handoff §6): both events start at the sun's centre ---------- */
+.sun-echo-ring,
+.sun-celebration-ring {
+  transform-box: view-box;
+  transform-origin: 195px 860px;
+  opacity: 0;
+}
+.sun-echo-ring {
+  animation: sun-echo 0.9s ease-out both;
+}
+@keyframes sun-echo {
+  0% {
+    transform: scale(0.82);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+.sun-celebration {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: transparent;
+  color: var(--ll-ink);
+  animation: sun-celebration-out 0.4s ease-in 2.6s both;
+}
+.sun-celebration-dim {
+  position: absolute;
+  inset: 0;
+  background: var(--ll-paper);
+  animation: sun-celebration-dim 0.3s ease-out both;
+}
+.sun-celebration-ring {
+  animation: sun-celebration-ring 1.6s ease-out both;
+}
+.sun-celebration-msg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+  text-align: center;
+  animation: sun-celebration-msg 0.4s ease-out 0.5s both;
+}
+@keyframes sun-celebration-dim {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.9;
+  }
+}
+@keyframes sun-celebration-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  85% {
+    transform: scale(3.6);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(3.9);
+    opacity: 0;
+  }
+}
+@keyframes sun-celebration-msg {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes sun-celebration-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes sun-rest-over {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+.sun-rest-over {
+  animation: sun-rest-over 0.9s ease-in-out 3;
+}

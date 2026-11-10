@@ -1,41 +1,28 @@
-import { Link, useNavigate, useSearchParams } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { Icon } from '@/components/Icon';
 import { SectionSwitch } from '@/components/SectionSwitch';
+import { useDesign } from '@/app/design';
 import { en } from '@/copy/en';
 import { MEAL_SLOTS } from '@/db/types';
-import { dailyQuests } from '@/engine/food-quests';
-import { summarizeDay } from '@/engine/food-review';
 import { parseDateKey } from '@/engine/week';
-import { useDay, useFoodStreak, useFoodTargets, useToday, shiftDate } from './hooks';
+import { DiarySun } from './DiarySun';
+import { useDiary, type DiaryState } from './state';
 import { BigNumber, Cta, Label, SegBar } from './ui';
-import { fmt, mealForNow, shortDate } from './format';
+import { fmt, shortDate } from './format';
 
 /**
  * F01 Diary (PRD-1.2 FR-DIARY-1, FR-NUT-1, FR-GAME-1): calories left, macro bars, today's quest and
- * the meals. `?date=YYYY-MM-DD` shows another day.
+ * the meals. `?date=YYYY-MM-DD` shows another day. The Rising Sun look has its own layout
+ * (FR-DSN-11, DiarySun); both read the same state.
  */
 export default function Diary() {
-  const today = useToday();
-  const [params, setParams] = useSearchParams();
-  const date = params.get('date') ?? today;
-  const isToday = date === today;
-  const navigate = useNavigate();
-  const { targets } = useFoodTargets(date);
-  const day = useDay(date);
-  const streak = useFoodStreak(today);
+  const d = useDiary();
+  return useDesign() === 'sun' ? <DiarySun d={d} /> : <DiaryClassic d={d} />;
+}
 
-  const go = (d: string) => setParams(d === today ? {} : { date: d }, { replace: true });
-  const title = isToday
-    ? en.food.diary.today
-    : date === shiftDate(today, -1)
-      ? en.food.diary.yesterday
-      : shortDate(parseDateKey(date));
-  // Rounded first so "left" and "eaten of" always add up on screen.
-  const eaten = Math.round(day?.totals.total.kcal ?? 0);
-  const target = Math.round(targets?.macros.kcal ?? 0);
-  const left = target - eaten;
-  const quest = targets && day ? dailyQuests(summarizeDay(date, day.entries, targets.day), null)[0]! : null;
-  const addHref = (meal: string) => `/food/add?meal=${meal}&date=${date}`;
+function DiaryClassic({ d }: { d: DiaryState }) {
+  const navigate = useNavigate();
+  const { date, isToday, targets, day, streak, title, eaten, target, left, quest, addHref } = d;
 
   return (
     <main className="px-6">
@@ -63,7 +50,7 @@ export default function Diary() {
             type="button"
             className="inline-flex h-11 w-11 items-center justify-center text-ink"
             aria-label={en.food.diary.prevDay}
-            onClick={() => go(shiftDate(date, -1))}
+            onClick={d.prev}
           >
             <Icon name="back" />
           </button>
@@ -72,7 +59,7 @@ export default function Diary() {
             className="inline-flex h-11 w-11 items-center justify-center text-ink disabled:text-rule"
             aria-label={en.food.diary.nextDay}
             disabled={isToday}
-            onClick={() => go(shiftDate(date, 1))}
+            onClick={d.next}
           >
             <Icon name="chevronRight" />
           </button>
@@ -169,7 +156,7 @@ export default function Diary() {
       </ul>
 
       <div className="sticky bottom-[calc(86px+env(safe-area-inset-bottom))] mt-6 pb-2">
-        <Cta onClick={() => navigate(addHref(mealForNow(new Date(), isToday)))}>
+        <Cta onClick={() => navigate(d.logHref())}>
           <Icon name="plus" /> {en.food.diary.logFood}
         </Cta>
       </div>

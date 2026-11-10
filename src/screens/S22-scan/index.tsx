@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Icon } from '@/components/Icon';
+import { useDesign } from '@/app/design';
 import { en } from '@/copy/en';
 import { platform } from '@/platform';
 import { parseMachineCode } from '@/app/qr';
@@ -16,6 +17,8 @@ export default function Scan() {
   const video = useRef<HTMLVideoElement>(null);
   const [state, setState] = useState<State>('starting');
   const s = en.scan;
+  // Rising Sun (FR-DSN-10, HW1S22): same dark camera screen, with the look's type and round shapes.
+  const sun = useDesign() === 'sun';
 
   useEffect(() => {
     let stream: MediaStream | null = null;
@@ -66,7 +69,14 @@ export default function Scan() {
   }, [navigate]);
 
   return (
-    <main className="fixed inset-0 z-40 flex flex-col bg-black text-white" data-theme-fixed="dark">
+    <main
+      className={
+        sun
+          ? 'fixed inset-0 z-40 flex flex-col bg-[rgb(0_0_0)] text-[rgb(255_255_255)]'
+          : 'fixed inset-0 z-40 flex flex-col bg-black text-white'
+      }
+      data-theme-fixed="dark"
+    >
       <video
         ref={video}
         className="absolute inset-0 h-full w-full object-cover"
@@ -75,10 +85,14 @@ export default function Scan() {
         aria-hidden="true"
       />
       <div className="relative flex items-center justify-between px-4 pt-[calc(12px+env(safe-area-inset-top))]">
-        <h1 className="t-display text-[28px]">{s.title}</h1>
+        <h1 className={sun ? 'text-[17px] font-bold' : 't-display text-[28px]'}>{s.title}</h1>
         <button
           type="button"
-          className="flex h-11 w-11 items-center justify-center rounded-md bg-[rgba(0,0,0,0.5)]"
+          className={
+            sun
+              ? 'flex h-11 w-11 items-center justify-center rounded-full bg-[rgba(0,0,0,0.5)]'
+              : 'flex h-11 w-11 items-center justify-center rounded-md bg-[rgba(0,0,0,0.5)]'
+          }
           aria-label={s.close}
           onClick={() => navigate(-1)}
         >
@@ -89,7 +103,11 @@ export default function Scan() {
         <div
           role="img"
           aria-label={s.viewfinder}
-          className="h-[62vmin] w-[62vmin] rounded-lg border-[3px] border-[rgba(255,255,255,0.9)] shadow-[0_0_0_9999px_rgba(0,0,0,0.45)]"
+          className={
+            sun
+              ? 'h-[62vmin] w-[62vmin] rounded-[28px] border-2 border-[rgba(255,255,255,0.9)] shadow-[0_0_0_9999px_rgba(0,0,0,0.45)]'
+              : 'h-[62vmin] w-[62vmin] rounded-lg border-[3px] border-[rgba(255,255,255,0.9)] shadow-[0_0_0_9999px_rgba(0,0,0,0.45)]'
+          }
         />
       </div>
       <div className="relative px-5 pb-[calc(20px+env(safe-area-inset-bottom))] text-center">
@@ -104,7 +122,11 @@ export default function Scan() {
         </p>
         <Link
           to="/scan/stickers"
-          className="t-mono mt-3 inline-flex min-h-11 items-center text-[12px] font-semibold uppercase tracking-[0.08em] text-white underline"
+          className={
+            sun
+              ? 'mt-4 flex min-h-12 items-center justify-center rounded-full border border-[rgba(255,255,255,0.9)] px-5 text-[15px] font-semibold !text-[rgb(255_255_255)] no-underline'
+              : 't-mono mt-3 inline-flex min-h-11 items-center text-[12px] font-semibold uppercase tracking-[0.08em] text-white underline'
+          }
         >
           {s.stickers}
         </Link>

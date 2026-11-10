@@ -17,8 +17,9 @@ export function SectionSwitch({ current }: { current: Section }) {
       to={to}
       end={section === 'liftlog'}
       aria-current={current === section ? 'page' : undefined}
+      data-on={current === section}
       onClick={() => void setRawSetting(LAST_SECTION_KEY, section)}
-      className={`flex min-h-10 min-w-[84px] items-center justify-center rounded-full px-4 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] no-underline ${
+      className={`ll-section-item flex min-h-10 min-w-[84px] items-center justify-center rounded-full px-4 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] no-underline ${
         current === section ? 'bg-ink text-card' : 'text-ink2'
       }`}
     >
@@ -26,7 +27,10 @@ export function SectionSwitch({ current }: { current: Section }) {
     </NavLink>
   );
   return (
-    <nav aria-label={en.food.section.label} className="inline-flex rounded-full border border-rule p-[3px]">
+    <nav
+      aria-label={en.food.section.label}
+      className="ll-section-switch inline-flex rounded-full border border-rule p-[3px]"
+    >
       {item('liftlog', '/', en.food.section.liftlog)}
       {item('food', '/food', en.food.section.food)}
     </nav>

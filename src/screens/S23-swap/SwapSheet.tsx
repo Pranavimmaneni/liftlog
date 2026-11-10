@@ -8,6 +8,7 @@ import { useExerciseMap } from '@/db/catalog';
 import { useGym, useProfile } from '@/db/repo';
 import { presetGym, swapAlternatives, type GymLike, type SuggestContext } from '@/engine/suggest';
 import type { Exercise } from '@/engine/types';
+import { useDesign } from '@/app/design';
 import { ExercisePicker } from '../S13-library/ExercisePicker';
 
 export type SwapScope = 'session' | 'routine';
@@ -41,6 +42,7 @@ export function SwapSheet({
   profileOverride?: SuggestContext['profile'];
   gymOverride?: GymLike;
 }) {
+  const sun = useDesign() === 'sun';
   const map = useExerciseMap();
   const savedGym = useGym();
   const savedProfile = useProfile();
@@ -79,12 +81,18 @@ export function SwapSheet({
             ]}
           />
         )}
-        <h3 className="t-label mt-3">{s.alternatives}</h3>
-        <div className="ll-card mt-2 overflow-hidden" aria-busy={loading}>
+        <h3 className={sun ? 'mt-3 text-[14px] text-ink2 first:mt-0' : 't-label mt-3'}>{s.alternatives}</h3>
+        {/* Rising Sun (HW1S23): rows sit straight on the opaque sheet, hairlines between. */}
+        <div
+          className={sun ? 'mt-1 border-y border-rule' : 'll-card mt-2 overflow-hidden'}
+          aria-busy={loading}
+        >
           {alts.map((a) => (
             <ExerciseRow key={a.id} exercise={a} onClick={() => onChoose(a, inWorkout ? scope : 'routine')} />
           ))}
-          {!loading && !alts.length && <p className="p-3 text-[15px] text-ink2">{s.none}</p>}
+          {!loading && !alts.length && (
+            <p className={sun ? 'py-3.5 text-[15px] text-ink2' : 'p-3 text-[15px] text-ink2'}>{s.none}</p>
+          )}
         </div>
         <div className="mt-3 flex flex-col gap-2.5">
           <Button variant="secondary" onClick={() => setBrowse(true)}>

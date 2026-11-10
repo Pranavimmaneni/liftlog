@@ -7,3 +7,10 @@
 - `illustrations/poses-readme.json`: rig constants.
 
 Mockup numbers (weights, dates, names) are sample data, not requirements.
+
+## Rising Sun (M13 onward)
+
+- `../docs/new-design-handoff/HANDOFF.md`: the redesign brief (themes, type, components, the sun, motion, what is and isn't decided).
+- `../docs/new-design-handoff/screens/H<theme><id>.dc.html` and `png/`: one mockup per screen per theme (W1/W2 = workout light/dark, F1/F2 = food light/dark, M = motion). Their inline CSS is the spec for spacing and sizes.
+- `tokens.json` → `"sun"` and the `[data-design="sun"]` blocks in `tokens.css`: the four Rising Sun themes.
+- Compare the build with the mockups: `SHOOT_LOOK=sun npx tsx scripts/shoot.ts <outDir> today=/ …` (see the script header).

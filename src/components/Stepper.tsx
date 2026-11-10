@@ -1,4 +1,11 @@
-import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type KeyboardEvent,
+  type PointerEvent,
+} from 'react';
 import { Icon } from './Icon';
 import { en } from '@/copy/en';
 
@@ -127,14 +134,14 @@ export function Stepper({
     <div
       role="group"
       aria-label={srLabel}
-      className="flex h-14 min-w-0 items-center rounded-lg border-2 border-ink bg-card"
+      className="ll-stepper flex h-14 min-w-0 items-center rounded-lg border-2 border-ink bg-card"
       data-testid={id ? `stepper-${id}` : undefined}
     >
       {/* While typing, the field takes the whole stepper so every digit stays visible (FR-WRK-5a). */}
       {!editing && (
         <button
           type="button"
-          className="flex h-12 w-11 shrink-0 items-center justify-center rounded-md text-ink"
+          className="ll-stepper-btn flex h-12 w-11 shrink-0 items-center justify-center rounded-md text-ink"
           aria-label={`${srLabel}, ${spoken}, ${en.common.decrease}`}
           onClick={() => bump(-1)}
           disabled={value !== null && value <= min}
@@ -177,14 +184,14 @@ export function Stepper({
           onPointerLeave={cancelPress}
         >
           <span
-            className="t-display whitespace-nowrap leading-none"
-            style={{ fontSize: stepFontSize(text) }}
+            className="ll-stepper-value t-display whitespace-nowrap leading-none"
+            style={{ '--step-size': `${stepFontSize(text)}px` } as CSSProperties}
             aria-hidden="true"
           >
             {text}
           </span>
           <span
-            className="mt-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-ink2"
+            className="ll-stepper-unit mt-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-ink2"
             aria-hidden="true"
           >
             {unitLabel}
@@ -194,7 +201,7 @@ export function Stepper({
       {!editing && (
         <button
           type="button"
-          className="flex h-12 w-11 shrink-0 items-center justify-center rounded-md text-ink"
+          className="ll-stepper-btn flex h-12 w-11 shrink-0 items-center justify-center rounded-md text-ink"
           aria-label={`${srLabel}, ${spoken}, ${en.common.increase}`}
           onClick={() => bump(1)}
           disabled={value !== null && value >= max}

@@ -82,3 +82,150 @@
 :root { color-scheme: light dark; }
 [data-theme="paper"] { color-scheme: light; }
 [data-theme="iron"] { color-scheme: dark; }
+
+/* Rising Sun tokens (M13, docs/new-design-handoff). Generated from tokens.json "sun". Opt-in: <html data-design="sun">.
+   data-section="workout|food" picks the family, data-theme (paper = light, iron = dark) the variant. */
+[data-design="sun"] {
+  --ll-paper: #F3F1EA;
+  --ll-card: #FBFAF5;
+  --ll-panel: #E6E4DC;
+  --ll-rule: #D9D6CB;
+  --ll-ink: #0D0D0C;
+  --ll-ink2: #45453F;
+  --ll-line: rgba(13,15,10,.16);
+  --ll-shadow: transparent;
+  --ll-accent: #D8321F;
+  --ll-onAccent: #0D0D0C;
+  --ll-accentText: #B3261A;
+  --ll-brass: #9DB5A7;
+  --ll-onBrass: #0D0D0C;
+  --ll-brassText: #0D0D0C;
+  --ll-brassWash: rgba(157,181,167,.34);
+  --ll-ghost: #D9D6CB;
+  --ll-equip: #45453F;
+  --ll-equipDark: #45453F;
+  --ll-floor: #45453F;
+  --ll-farLimb: #45453F;
+  --ll-btn: #E5382A;
+  --ll-btnInk: #0D0D0C;
+  --ll-track: #D9D6CB;
+  --ll-glass: rgba(250,249,244,.80);
+  --ll-glassEdge: rgba(255,255,255,.7);
+  --ll-soft: rgba(13,13,12,.07);
+  --ll-hairline: rgba(13,15,10,.16);
+  --ll-sage: #9DB5A7;
+  --ll-onSage: #0D0D0C;
+  --ll-fat: #7E9A8B;
+  --ll-sunDisc: #0D0D0C;
+  --ll-sunRingWide: #9DB5A7;
+  --ll-sunRingThin: #E5382A;
+  --ll-scrim: rgba(0,0,0,.5);
+}
+[data-design="sun"][data-theme="iron"] {
+  --ll-paper: #0B0B0A;
+  --ll-card: #151514;
+  --ll-panel: #2A2A28;
+  --ll-rule: #32322F;
+  --ll-ink: #F3F1EA;
+  --ll-ink2: #BDBBB2;
+  --ll-line: rgba(238,235,221,.18);
+  --ll-shadow: transparent;
+  --ll-accent: #F2473F;
+  --ll-onAccent: #0B0B0A;
+  --ll-accentText: #F2473F;
+  --ll-brass: #9DB5A7;
+  --ll-onBrass: #0B0B0A;
+  --ll-brassText: #9DB5A7;
+  --ll-brassWash: rgba(157,181,167,.2);
+  --ll-ghost: #32322F;
+  --ll-equip: #BDBBB2;
+  --ll-equipDark: #BDBBB2;
+  --ll-floor: #BDBBB2;
+  --ll-farLimb: #BDBBB2;
+  --ll-btn: #F2473F;
+  --ll-btnInk: #0B0B0A;
+  --ll-track: #32322F;
+  --ll-glass: rgba(14,14,13,.74);
+  --ll-glassEdge: rgba(243,241,234,.2);
+  --ll-soft: rgba(243,241,234,.10);
+  --ll-hairline: rgba(238,235,221,.18);
+  --ll-sage: #9DB5A7;
+  --ll-onSage: #0B0B0A;
+  --ll-fat: #9DB5A7;
+  --ll-sunDisc: #1B1F17;
+  --ll-sunRingWide: #9DB5A7;
+  --ll-sunRingThin: #F2473F;
+  --ll-scrim: rgba(0,0,0,.5);
+}
+[data-design="sun"][data-section="food"] {
+  --ll-paper: #E6EDE3;
+  --ll-card: #F3F7F0;
+  --ll-panel: #DCE4DA;
+  --ll-rule: #C9D6CA;
+  --ll-ink: #12201A;
+  --ll-ink2: #3A4A40;
+  --ll-line: rgba(13,15,10,.16);
+  --ll-shadow: transparent;
+  --ll-accent: #2F6B45;
+  --ll-onAccent: #F3F7F0;
+  --ll-accentText: #2F6B45;
+  --ll-brass: #7E9A8B;
+  --ll-onBrass: #12201A;
+  --ll-brassText: #12201A;
+  --ll-brassWash: rgba(126,154,139,.3);
+  --ll-ghost: #C9D6CA;
+  --ll-equip: #3A4A40;
+  --ll-equipDark: #3A4A40;
+  --ll-floor: #3A4A40;
+  --ll-farLimb: #3A4A40;
+  --ll-btn: #2F6B45;
+  --ll-btnInk: #F3F7F0;
+  --ll-track: #C9D6CA;
+  --ll-glass: rgba(241,246,238,.82);
+  --ll-glassEdge: rgba(255,255,255,.7);
+  --ll-soft: rgba(18,32,26,.08);
+  --ll-hairline: rgba(13,15,10,.16);
+  --ll-sage: #7E9A8B;
+  --ll-onSage: #12201A;
+  --ll-fat: #D8321F;
+  --ll-sunDisc: #2F6B45;
+  --ll-sunRingWide: #9DB5A7;
+  --ll-sunRingThin: #12201A;
+  --ll-scrim: rgba(0,0,0,.5);
+}
+[data-design="sun"][data-section="food"][data-theme="iron"] {
+  --ll-paper: #12201A;
+  --ll-card: #1A2C23;
+  --ll-panel: #2B3D33;
+  --ll-rule: #2E4437;
+  --ll-ink: #EEF2E8;
+  --ll-ink2: #B7C6B9;
+  --ll-line: rgba(238,235,221,.18);
+  --ll-shadow: transparent;
+  --ll-accent: #8FD3A4;
+  --ll-onAccent: #12201A;
+  --ll-accentText: #8FD3A4;
+  --ll-brass: #6E9A82;
+  --ll-onBrass: #12201A;
+  --ll-brassText: #B7C6B9;
+  --ll-brassWash: rgba(110,154,130,.26);
+  --ll-ghost: #2E4437;
+  --ll-equip: #B7C6B9;
+  --ll-equipDark: #B7C6B9;
+  --ll-floor: #B7C6B9;
+  --ll-farLimb: #B7C6B9;
+  --ll-btn: #8FD3A4;
+  --ll-btnInk: #12201A;
+  --ll-track: #2E4437;
+  --ll-glass: rgba(18,32,26,.76);
+  --ll-glassEdge: rgba(238,242,232,.2);
+  --ll-soft: rgba(238,242,232,.10);
+  --ll-hairline: rgba(238,235,221,.18);
+  --ll-sage: #6E9A82;
+  --ll-onSage: #12201A;
+  --ll-fat: #F2675A;
+  --ll-sunDisc: #2F6B45;
+  --ll-sunRingWide: #9DB5A7;
+  --ll-sunRingThin: #EEF2E8;
+  --ll-scrim: rgba(0,0,0,.5);
+}

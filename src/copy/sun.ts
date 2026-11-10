@@ -1,0 +1,95 @@
+import { sunFood } from './sun-food';
+import { sunProgress } from './sun-progress';
+import { sunPlan } from './sun-plan';
+import { sunSetup } from './sun-setup';
+
+/**
+ * Copy for the rebuilt Rising Sun screens (M13, FR-DSN-4…7). Merged into `en` as `en.sun`, so all
+ * user-facing strings still come from src/copy/en.ts. Sentence case; display titles are uppercased
+ * by their style.
+ */
+export const sun = {
+  food: sunFood,
+  progress: sunProgress,
+  plan: sunPlan,
+  setup: sunSetup,
+  echo: {
+    dismiss: 'Dismiss',
+    record: 'New record',
+    recordLine: (name: string, set: string) => `${name} · ${set}`,
+    workout: 'Workout finished',
+    goal: 'Goal reached',
+    goals: {
+      kcal: 'Calories for today',
+      protein: 'Protein for today',
+      carbs: 'Carbs for today',
+      fat: 'Fat for today',
+    },
+  },
+  today: {
+    title: 'Today',
+    active: (done: number, total: number, min: number) => `${done} of ${total} sets · ${min} min`,
+    planned: (sets: number, min: number) => `${sets} sets · about ${min} min`,
+    muscles: (names: string) => `Muscles this session covers: ${names}`,
+    streak: (n: number) => (n === 1 ? '1-week streak' : `${n}-week streak`),
+    calendar: (month: string, n: number) =>
+      `${month}: ${n === 1 ? '1 day trained' : `${n} days trained`}. Show or hide dates`,
+    trainedDay: (d: number) => `${d}, trained`,
+    todayDay: (d: number) => `${d}, today`,
+    food: 'Food',
+    kcalLeft: 'kcal left',
+    kcalOver: 'kcal over',
+    logFood: 'Log food',
+    openDiary: 'Open the food diary',
+    grams: (name: string, eaten: string, target: string) => `${name}: ${eaten} of ${target} grams`,
+    more: 'This week',
+    session: (pos: number, total: number) => `Session ${pos} of ${total} is next`,
+    quest: 'Weekly quest',
+    weighIn: 'Weigh-in',
+    weighInAdd: 'Add',
+    level: (n: number) => `Level ${n}`,
+  },
+  workout: {
+    sub: (min: number, done: number, total: number) => `${min} min · ${done} of ${total} sets`,
+    rest: (clock: string) => `rest ${clock}`,
+    addLift: 'Add a lift',
+    nowNext: (set: number, target: string) => `Now · set ${set} next, ${target}`,
+    done: 'Done',
+    resume: (name: string) => `Resume ${name}`,
+    start: (name: string) => `Start ${name}`,
+    setsDone: 'Sets done',
+  },
+  logger: {
+    position: (i: number, n: number) => `${i} of ${n}`,
+    setOf: (i: number, n: number) => `Set ${i} of ${n}`,
+    allDone: (n: number) => (n === 1 ? '1 set done' : `All ${n} sets done`),
+    rest: (clock: string) => `Rest ${clock}`,
+    sets: 'Sets',
+    lastSession: 'Last session',
+    todaysGoal: 'Today’s goal',
+    yourGoal: 'Your goal',
+    repsLine: (reps: string, unit: string) => `${reps} ${unit}`,
+    noLast: 'First time',
+    record: 'record',
+    now: 'now',
+    next: 'next',
+    warmup: 'Warm-up',
+    options: 'Options',
+    optionsFor: (name: string) => `Options for ${name}`,
+    swap: 'Swap exercise',
+    changeGoal: 'Change today’s goal',
+    muscles: (main: string, helps: string) =>
+      helps ? `Main muscles: ${main}. Helping: ${helps}` : `Main muscles: ${main}`,
+  },
+  rest: {
+    label: 'Rest',
+    feel: (n: number) => `How did set ${n} feel?`,
+    startNow: (n: number) => `Start set ${n} now`,
+    startSide: (n: number, side: string) => `Start set ${n} · ${side} now`,
+    startExtra: 'Carry on',
+    nextLift: (name: string) => `Next: ${name}`,
+    ring: (clock: string) => `Rest timer, ${clock} left`,
+    shorter: '15 seconds less',
+    longer: '15 seconds more',
+  },
+};

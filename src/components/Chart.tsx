@@ -1,5 +1,6 @@
 import { useId, useState } from 'react';
 import { en } from '@/copy/en';
+import { useDesign } from '@/app/design';
 
 export interface Point {
   label: string;
@@ -15,6 +16,10 @@ function niceTicks(min: number, max: number, count = 3): number[] {
 /**
  * Single-series line chart (PRD §9, FR-PRO-1). Hand-rolled SVG, token colours, and a table view
  * (CLAUDE.md "Charts get a table view", NFR-A11Y-2).
+ *
+ * In the Rising Sun look (FR-DSN-10, mockup HW1S12) the chart is calmer: an accent line, an ink dot
+ * per point with the latest one in the accent, dates under it and no grid. The screen's hero number
+ * carries the latest value and the table view carries the rest.
  */
 export function LineChart({
   points,
@@ -32,10 +37,12 @@ export function LineChart({
 }) {
   const [table, setTable] = useState(false);
   const id = useId();
+  const sun = useDesign() === 'sun';
   if (!points.length) return <p className="text-[14px] text-ink2">{en.chart.empty}</p>;
-  const W = 300;
-  const H = height;
-  const pad = { l: 30, r: 16, t: 22, b: 26 };
+  // Narrower units in the new look so the 13-unit labels never render below 13 px at 360 px wide.
+  const W = sun ? 280 : 300;
+  const H = sun ? Math.round(height * 0.78) : height;
+  const pad = sun ? { l: 12, r: 12, t: 14, b: 30 } : { l: 30, r: 16, t: 22, b: 26 };
   const vals = points.map((p) => p.value);
   let min = Math.min(...vals);
   let max = Math.max(...vals);
@@ -49,7 +56,7 @@ export function LineChart({
   const d = points.map((p, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)} ${y(p.value).toFixed(1)}`).join('');
   const last = points[points.length - 1]!;
   const ticks = niceTicks(min, max);
-  const every = Math.max(1, Math.ceil(points.length / maxLabels));
+  const every = Math.max(1, Math.ceil(points.length / (sun ? Math.min(maxLabels, 5) : maxLabels)));
   return (
     <figure className="m-0">
       {table ? (
@@ -72,6 +79,44 @@ export function LineChart({
             ))}
           </tbody>
         </table>
+      ) : sun ? (
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          className="h-auto w-full"
+          role="img"
+          aria-label={en.chart.summary(title, points[0]!.value, last.value, unit)}
+        >
+          <path
+            d={d}
+            fill="none"
+            stroke="var(--ll-accent)"
+            strokeWidth="2.5"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
+          {points.length <= 24 &&
+            points
+              .slice(0, -1)
+              .map((p, i) => <circle key={i} cx={x(i)} cy={y(p.value)} r="3" fill="var(--ll-ink)" />)}
+          <circle cx={x(points.length - 1)} cy={y(last.value)} r="5" fill="var(--ll-accent)" />
+          {points.map((p, i) => {
+            // The last label always shows; an earlier one is dropped when it would run into it.
+            const isLast = i === points.length - 1;
+            if (!isLast && (i % every !== 0 || points.length - 1 - i < every)) return null;
+            return (
+              <text
+                key={i}
+                x={x(i)}
+                y={H - 8}
+                fontSize="13"
+                textAnchor={points.length === 1 ? 'middle' : i === 0 ? 'start' : isLast ? 'end' : 'middle'}
+                fill="var(--ll-ink2)"
+              >
+                {p.label}
+              </text>
+            );
+          })}
+        </svg>
       ) : (
         <svg
           viewBox={`0 0 ${W} ${H}`}

@@ -3,8 +3,11 @@ import { useNavigate, useSearchParams } from 'react-router';
 import { Icon } from '@/components/Icon';
 import { Sheet } from '@/components/Sheet';
 import { toast } from '@/components/Toast';
+import { useDesign } from '@/app/design';
 import { en } from '@/copy/en';
 import { logFood, quickAdd, saveCustomFood, saveRecipe } from '@/db/food';
+import { logWithEcho } from './echo';
+import { useFoodTargets } from './hooks';
 import { MEAL_SLOTS, type MealSlot } from '@/db/types';
 import { emptyNutrients, type FoodItem, type NutrientKey, type Nutrients } from '@/engine/food-types';
 import { recipePer100g } from '@/engine/nutrition';
@@ -96,9 +99,60 @@ function NumField({
   );
 }
 
+/** Rising Sun field (mockup F04): the label above a soft field, the unit inside on the right. */
+function SunField({
+  label,
+  unit,
+  error,
+  children,
+}: {
+  label: ReactNode;
+  unit?: ReactNode;
+  error?: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="min-w-0">
+      <label className="block">
+        <span className="block text-[14px] text-ink2">{label}</span>
+        <span className="sun-food-field mt-1.5" data-invalid={!!error}>
+          {children}
+          {unit && <span className="shrink-0 text-[14px] text-ink2">{unit}</span>}
+        </span>
+      </label>
+      {error && (
+        <p role="alert" className="mt-1 text-[13px] text-accent-text">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function SunNum({
+  label,
+  unit,
+  value,
+  onChange,
+  error,
+}: {
+  label: string;
+  unit: string;
+  value: string;
+  onChange: (v: string) => void;
+  error?: string;
+}) {
+  return (
+    <SunField label={label} unit={unit} error={error}>
+      <input inputMode="decimal" value={value} onChange={(e) => onChange(e.target.value)} />
+    </SunField>
+  );
+}
+
 /**
  * F04 New food (PRD-1.2 FR-FOOD-4/5): a single food from a label, a recipe from ingredients, or a quick
  * add. `?meal=&date=` logs one serving after saving; `?name=` and `?barcode=` prefill (search, scan).
+ * The Rising Sun look (FR-DSN-11) lays the same fields out on glass cards, two to a row.
  */
 export default function NewFood() {
   const nf = en.food.newFood;
@@ -111,6 +165,8 @@ export default function NewFood() {
   const date = params.get('date') ?? (meal ? today : null);
   const [tab, setTab] = useState<Tab>((params.get('tab') as Tab) || 'food');
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const sun = useDesign() === 'sun';
+  const { targets } = useFoodTargets(date ?? today);
 
   // single food
   const [name, setName] = useState(params.get('name') ?? '');
@@ -132,7 +188,9 @@ export default function NewFood() {
 
   const done = async (food: FoodItem | null, label: string) => {
     if (food && meal && date) {
-      await logFood({ date, meal, food, portion: food.portions[0]!, servings: 1 });
+      await logWithEcho(date, targets?.macros, () =>
+        logFood({ date, meal, food, portion: food.portions[0]!, servings: 1 }),
+      );
       toast(nf.savedLogged(label, en.food.meals[meal]));
       navigate('/food', { replace: true });
       return;
@@ -212,38 +270,265 @@ export default function NewFood() {
     setErrors(e);
     if (Object.keys(e).length) return;
     const label = name.trim() || nf.tabs.quick;
-    await quickAdd({
-      date: date ?? today,
-      meal: quickMeal,
-      name: label,
-      kcal: kcal!,
-      ...(macro('protein') != null ? { protein: macro('protein')! } : {}),
-      ...(macro('carbs') != null ? { carbs: macro('carbs')! } : {}),
-      ...(macro('fat') != null ? { fat: macro('fat')! } : {}),
-    });
+    await logWithEcho(date ?? today, targets?.macros, () =>
+      quickAdd({
+        date: date ?? today,
+        meal: quickMeal,
+        name: label,
+        kcal: kcal!,
+        ...(macro('protein') != null ? { protein: macro('protein')! } : {}),
+        ...(macro('carbs') != null ? { carbs: macro('carbs')! } : {}),
+        ...(macro('fat') != null ? { fat: macro('fat')! } : {}),
+      }),
+    );
     toast(en.food.add.added(label));
     navigate('/food', { replace: true });
   };
 
   const save = tab === 'food' ? saveFood : tab === 'recipe' ? saveRecipeTab : saveQuick;
+  const tabs = (
+    <TextTabs<Tab>
+      label={nf.tabsLabel}
+      value={tab}
+      onChange={(t) => {
+        setTab(t);
+        setErrors({});
+      }}
+      tabs={[
+        ['food', nf.tabs.food],
+        ['recipe', nf.tabs.recipe],
+        ['quick', nf.tabs.quick],
+      ]}
+    />
+  );
+  const scanHref = `/food/scan?${new URLSearchParams({ ...(meal ? { meal } : {}), ...(date ? { date } : {}) })}`;
+  const picker = (
+    <IngredientPicker
+      open={picking}
+      onClose={() => setPicking(false)}
+      onPick={(food) => {
+        setIngredients((xs) => [...xs, { food, grams: String(food.portions[0]?.grams ?? 100) }]);
+        setPicking(false);
+      }}
+    />
+  );
+  const setGrams = (idx: number, grams: string) =>
+    setIngredients((xs) => xs.map((x, j) => (j === idx ? { ...x, grams } : x)));
+
+  if (sun) {
+    const card = 'sun-glass mt-3 rounded-[18px] p-[18px]';
+    const grid = 'grid grid-cols-2 gap-x-2.5 gap-y-3';
+    const nameField = (
+      <SunField label={nf.name} error={errors.name}>
+        <input value={name} onChange={(e) => setName(e.target.value)} autoComplete="off" />
+      </SunField>
+    );
+    return (
+      <main className="flex min-h-dvh flex-col">
+        <FoodHeader title={nf.title} />
+        <div className="flex grow flex-col px-5">
+          <div className="mt-2.5">{tabs}</div>
+
+          {tab === 'food' && (
+            <>
+              <section className={`${card} !mt-2 flex flex-col gap-3`}>
+                {nameField}
+                <SunField label={nf.brand}>
+                  <input value={brand} onChange={(e) => setBrand(e.target.value)} autoComplete="off" />
+                </SunField>
+                <div className={grid}>
+                  <SunField label={nf.servingName}>
+                    <input
+                      placeholder={nf.servingNamePlaceholder}
+                      value={servingName}
+                      onChange={(e) => setServingName(e.target.value)}
+                    />
+                  </SunField>
+                  <SunNum
+                    label={nf.servingGrams}
+                    unit="g"
+                    value={servingGrams}
+                    onChange={setServingGrams}
+                    error={errors.grams}
+                  />
+                </div>
+                <div className="flex items-end gap-2.5">
+                  <div className="min-w-0 grow">
+                    <SunField label={nf.barcode}>
+                      <input
+                        inputMode="numeric"
+                        value={barcode}
+                        onChange={(e) => setBarcode(e.target.value)}
+                      />
+                    </SunField>
+                  </div>
+                  <button type="button" className="sun-pill shrink-0" onClick={() => navigate(scanHref)}>
+                    <Icon name="barcode" size={18} />
+                    {nf.scan}
+                  </button>
+                </div>
+              </section>
+
+              <section className={card} aria-labelledby="per-serving">
+                <h2 id="per-serving" className="font-bold">
+                  {nf.perServing}
+                </h2>
+                <div className={`${grid} mt-3`}>
+                  <SunNum
+                    label={nf.kcal}
+                    unit="kcal"
+                    value={values.kcal ?? ''}
+                    onChange={set('kcal')}
+                    error={errors.kcal}
+                  />
+                  {(['protein', 'carbs', 'fat', 'fibre'] as NutrientKey[]).map((k) => (
+                    <SunNum
+                      key={k}
+                      label={nf[k as 'protein']}
+                      unit="g"
+                      value={values[k] ?? ''}
+                      onChange={set(k)}
+                      error={errors[k]}
+                    />
+                  ))}
+                  {more &&
+                    MORE.map((k) => (
+                      <SunNum
+                        key={k}
+                        label={en.food.micros[k as 'sodium']}
+                        unit={UNIT[k]!}
+                        value={values[k] ?? ''}
+                        onChange={set(k)}
+                        error={errors[k]}
+                      />
+                    ))}
+                </div>
+                <div className="mt-2">
+                  <TextLink aria-expanded={more} onClick={() => setMore(!more)}>
+                    {more ? nf.fewerNutrients : nf.moreNutrients}
+                  </TextLink>
+                </div>
+                <p className="text-[13px] text-ink2">{nf.unknownNote}</p>
+              </section>
+            </>
+          )}
+
+          {tab === 'recipe' && (
+            <>
+              <section className={`${card} !mt-2`}>{nameField}</section>
+              <section
+                className="sun-glass mt-3 overflow-hidden rounded-[14px]"
+                aria-labelledby="ingredients"
+              >
+                <h2 id="ingredients" className="px-4 pb-1 pt-3 font-bold">
+                  {nf.recipe.ingredients}
+                </h2>
+                <ul>
+                  {ingredients.map((i, idx) => (
+                    <li key={`${i.food.id}-${idx}`} className="sun-list-row !py-1 !pr-1.5">
+                      <span className="min-w-0 grow break-words">{i.food.name}</span>
+                      <label className="sun-food-field !min-h-11 w-[92px] shrink-0 !px-2.5">
+                        <span className="sr-only">{nf.recipe.grams(i.food.name)}</span>
+                        <input
+                          className="text-right tabular-nums"
+                          inputMode="decimal"
+                          value={i.grams}
+                          onChange={(e) => setGrams(idx, e.target.value)}
+                        />
+                        <span className="text-[14px] text-ink2">g</span>
+                      </label>
+                      <button
+                        type="button"
+                        className="inline-flex h-11 w-11 shrink-0 items-center justify-center text-ink2"
+                        aria-label={nf.recipe.remove(i.food.name)}
+                        onClick={() => setIngredients((xs) => xs.filter((_, j) => j !== idx))}
+                      >
+                        <Icon name="close" size={18} />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+                <div className="px-4 pb-3.5 pt-1">
+                  {!ingredients.length && <p className="text-[15px] text-ink2">{nf.recipe.none}</p>}
+                  {errors.ingredients && (
+                    <p role="alert" className="mt-1 text-[13px] text-accent-text">
+                      {errors.ingredients}
+                    </p>
+                  )}
+                  <button type="button" className="sun-pill mt-2.5" onClick={() => setPicking(true)}>
+                    <Icon name="plus" size={18} />
+                    {nf.recipe.addIngredient}
+                  </button>
+                </div>
+              </section>
+              <section className={card}>
+                <div className={grid}>
+                  <SunNum label={nf.recipe.yield} unit="g" value={yieldGrams} onChange={setYieldGrams} />
+                  <SunNum label={nf.recipe.servings} unit="" value={servings} onChange={setServings} />
+                </div>
+                <p className="mt-3 text-[13px] text-ink2">{nf.recipe.yieldHint}</p>
+                {recipe.kcal !== null && recipe.total > 0 && (
+                  <p className="mt-3 font-bold tabular-nums">
+                    {nf.recipe.perServing(String(Math.round(recipe.kcal)))}
+                  </p>
+                )}
+              </section>
+              {picker}
+            </>
+          )}
+
+          {tab === 'quick' && (
+            <>
+              <section className={`${card} !mt-2`}>
+                {nameField}
+                <p className="mt-3 text-[13px] text-ink2">{nf.quick.hint}</p>
+                <div className={`${grid} mt-3`}>
+                  <SunNum
+                    label={nf.kcal}
+                    unit="kcal"
+                    value={values.kcal ?? ''}
+                    onChange={set('kcal')}
+                    error={errors.kcal}
+                  />
+                  {(['protein', 'carbs', 'fat'] as NutrientKey[]).map((k) => (
+                    <SunNum
+                      key={k}
+                      label={nf[k as 'protein']}
+                      unit="g"
+                      value={values[k] ?? ''}
+                      onChange={set(k)}
+                      error={errors[k]}
+                    />
+                  ))}
+                </div>
+              </section>
+              <section className={card}>
+                <Label>{nf.quick.meal}</Label>
+                <div className="mt-2">
+                  <Choices<MealSlot>
+                    label={nf.quick.meal}
+                    value={quickMeal}
+                    onChange={setQuickMeal}
+                    options={MEAL_SLOTS.map((m) => [m, en.food.meals[m]])}
+                  />
+                </div>
+              </section>
+            </>
+          )}
+
+          <div className="mt-auto pb-[calc(24px+env(safe-area-inset-bottom))] pt-5">
+            <Cta onClick={() => void save()}>{nf.save}</Cta>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="flex grow flex-col bg-paper pb-[calc(110px+env(safe-area-inset-bottom))]">
       <FoodHeader title={nf.title} />
       <div className="px-6 pt-4">
-        <TextTabs<Tab>
-          label={nf.tabsLabel}
-          value={tab}
-          onChange={(t) => {
-            setTab(t);
-            setErrors({});
-          }}
-          tabs={[
-            ['food', nf.tabs.food],
-            ['recipe', nf.tabs.recipe],
-            ['quick', nf.tabs.quick],
-          ]}
-        />
+        {tabs}
 
         <div className="mt-4">
           <Field label={nf.name} error={errors.name}>
@@ -291,15 +576,7 @@ export default function NewFood() {
                   onChange={(e) => setBarcode(e.target.value)}
                 />
               </label>
-              <TextLink
-                onClick={() =>
-                  navigate(
-                    `/food/scan?${new URLSearchParams({ ...(meal ? { meal } : {}), ...(date ? { date } : {}) })}`,
-                  )
-                }
-              >
-                {nf.scan}
-              </TextLink>
+              <TextLink onClick={() => navigate(scanHref)}>{nf.scan}</TextLink>
             </div>
 
             <Label className="mt-8">{nf.perServing}</Label>
@@ -358,11 +635,7 @@ export default function NewFood() {
                       className="w-16 bg-transparent text-right font-mono text-[16px] outline-none"
                       inputMode="decimal"
                       value={i.grams}
-                      onChange={(e) =>
-                        setIngredients((xs) =>
-                          xs.map((x, j) => (j === idx ? { ...x, grams: e.target.value } : x)),
-                        )
-                      }
+                      onChange={(e) => setGrams(idx, e.target.value)}
                     />
                     <span className="font-mono text-[13px] text-ink2">g</span>
                   </label>
@@ -396,14 +669,7 @@ export default function NewFood() {
                 {nf.recipe.perServing(String(Math.round(recipe.kcal)))}
               </p>
             )}
-            <IngredientPicker
-              open={picking}
-              onClose={() => setPicking(false)}
-              onPick={(food) => {
-                setIngredients((xs) => [...xs, { food, grams: String(food.portions[0]?.grams ?? 100) }]);
-                setPicking(false);
-              }}
-            />
+            {picker}
           </>
         )}
 
@@ -470,9 +736,16 @@ function IngredientPicker({
     [libIndex, ownIndex, q, boost],
   );
   const hits = useFoodsById(ids, own);
+  const sun = useDesign() === 'sun';
   return (
     <Sheet open={open} onClose={onClose} title={nf.recipe.pick}>
-      <label className="flex h-[52px] items-center gap-2.5 rounded-full border border-rule bg-card px-4">
+      <label
+        className={
+          sun
+            ? 'sun-food-search border border-hairline bg-soft !pr-4'
+            : 'flex h-[52px] items-center gap-2.5 rounded-full border border-rule bg-card px-4'
+        }
+      >
         <Icon name="search" size={20} className="shrink-0 text-ink2" />
         <input
           type="search"

@@ -5,6 +5,9 @@ import { db } from '@/db/schema';
 import { autoFinishStale } from '@/db/workout';
 import { Toaster } from '@/components/Toast';
 import { useThemeSync } from './theme';
+import { hasSun, useDesign, useLookSync } from './design';
+import { SunBackdrop } from '@/components/sun/SunBackdrop';
+import { EchoLayer } from '@/components/sun/Echo';
 import { UpdateToast } from './UpdateToast';
 import { StorageBanner } from './StorageBanner';
 
@@ -29,6 +32,9 @@ function OnboardingGate() {
 /** Root: theme sync, storage-error banner, onboarding gate, service-worker updates, toasts, idle auto-finish. */
 export function App() {
   useThemeSync();
+  useLookSync();
+  const design = useDesign();
+  const { pathname } = useLocation();
   useEffect(() => {
     // FR-WRK-12: a session idle for 3 h is finished when the app comes back.
     void autoFinishStale();
@@ -38,9 +44,11 @@ export function App() {
   }, []);
   return (
     <>
+      {design === 'sun' && hasSun(pathname) && <SunBackdrop />}
       <StorageBanner />
       <OnboardingGate />
       <UpdateToast />
+      {design === 'sun' && <EchoLayer />}
       <Toaster />
     </>
   );

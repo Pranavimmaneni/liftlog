@@ -1,3 +1,4 @@
+import { sun } from './sun';
 /**
  * Every user-facing string (NFR-I18N-1). Plain English, sentence case (NFR-UX-2).
  * Uppercase is applied by the display/label CSS styles, never typed here.
@@ -55,6 +56,17 @@ export const en = {
     system: 'System',
     paper: 'Paper',
     iron: 'Iron',
+    light: 'Light',
+    dark: 'Dark',
+  },
+  sun,
+  look: {
+    title: 'Look',
+    classic: 'Classic',
+    sun: 'Rising Sun',
+    note: 'Rising Sun is the new design. Classic is the look you know. You can switch back at any time.',
+    glass: 'Frosted glass',
+    glassSub: 'Turn off if scrolling feels slow',
   },
   units: {
     kg: 'kg',

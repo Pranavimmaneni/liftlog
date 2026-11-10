@@ -14,6 +14,10 @@ import { setQueueOrder, skipQueueTo, upNextOf, useActiveRoutine, useProfile, use
 import { splitById } from '@/engine/split';
 import { reorder, rotationOrder } from '@/engine/rotation';
 import { weekRange } from '@/engine/week';
+import { prescribe } from '@/engine/prescription';
+import { useDesign } from '@/app/design';
+import { SunTop } from '@/components/sun/SunTop';
+import { PlanSun } from './PlanSun';
 
 /**
  * S15 Plan tab: "Up next" queue with every session, drag/keyboard reorder, "Skip to", tap a name to
@@ -26,6 +30,7 @@ export default function Plan() {
   const settings = useSettings();
   const exMap = useExerciseMap();
   const deload = useDeload();
+  const sun = useDesign() === 'sun';
   const [drag, setDrag] = useState<{ from: number; dy: number } | null>(null);
   const startY = useRef(0);
   const rowH = useRef(110);
@@ -44,8 +49,8 @@ export default function Plan() {
   if (routine === undefined) return null;
   if (!routine) {
     return (
-      <main className="px-5 pt-4">
-        <h1 className="t-display text-[40px]">{en.plan.title}</h1>
+      <main className={sun ? 'px-5 pt-5' : 'px-5 pt-4'}>
+        {sun ? <SunTop title={en.plan.title} /> : <h1 className="t-display text-[40px]">{en.plan.title}</h1>}
         <div className="mt-4">
           <EmptyState
             action={
@@ -80,7 +85,8 @@ export default function Plan() {
   };
   const onDown = (i: number) => (e: PointerEvent<HTMLButtonElement>) => {
     const row = e.currentTarget.closest('li');
-    if (row) rowH.current = row.getBoundingClientRect().height + 10;
+    // Classic rows are cards 10 px apart; Rising Sun rows touch inside one glass list.
+    if (row) rowH.current = row.getBoundingClientRect().height + (sun ? 0 : 10);
     startY.current = e.clientY;
     e.currentTarget.setPointerCapture?.(e.pointerId);
     setDrag({ from: i, dy: 0 });
@@ -91,6 +97,38 @@ export default function Plan() {
     move(drag.from, to);
     setDrag(null);
   };
+
+  if (sun)
+    return (
+      <PlanSun
+        splitName={splitById(routine.splitId)?.name ?? ''}
+        done={done}
+        planned={planned}
+        deload={deload}
+        rows={order.map((idx) => {
+          const s = routine.sessions[idx]!;
+          const exs = s.items.map((i) => exMap?.get(i.exerciseId)).filter((e) => !!e);
+          return {
+            idx,
+            session: s,
+            isNext: next?.sessionIndex === idx,
+            doneThisWeek: !!doneIds?.includes(s.id),
+            lifts: s.items.length,
+            sets: profile ? exs.reduce((n, e) => n + prescribe(profile, e.role).sets, 0) : 0,
+          };
+        })}
+        drag={drag}
+        handleRef={(pos, el) => {
+          handles.current[pos] = el;
+        }}
+        onKey={onKey}
+        onDown={onDown}
+        onMove={(e) => drag && setDrag({ ...drag, dy: e.clientY - startY.current })}
+        onUp={onUp}
+        onCancel={() => setDrag(null)}
+        onSkip={(pos) => void skipQueueTo(routine, pos)}
+      />
+    );
 
   return (
     <main className="px-5 pt-4">

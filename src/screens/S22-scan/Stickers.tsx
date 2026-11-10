@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
 import qrcode from 'qrcode-generator';
-import { Button } from '@/components/Button';
+import { Button, LinkButton } from '@/components/Button';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { EmptyState } from '@/components/Toast';
+import { useDesign } from '@/app/design';
 import { en } from '@/copy/en';
 import { useExerciseMap } from '@/db/catalog';
 import { machineInfo, useCustomMachines } from '@/db/machines';
@@ -28,6 +29,7 @@ export default function Stickers() {
   const map = useExerciseMap();
   const routine = useActiveRoutine();
   const t = en.stickers;
+  const sun = useDesign() === 'sun';
   const machines = useMemo(() => {
     if (!gym || !customs) return null;
     const ids = [...new Set([...gym.machineIds, ...customs.map((c) => c.machineId)])].filter(
@@ -51,17 +53,44 @@ export default function Stickers() {
     <main className="pb-10 print:p-0">
       <div className="print:hidden">
         <ScreenHeader title={t.title} backTo="/settings/gym" />
-        <p className="px-5 pt-2 text-[15px] text-ink2">{t.intro}</p>
-        {machines.length > 0 && (
-          <div className="px-5 pt-3">
-            <Button onClick={() => window.print()}>{t.print}</Button>
-          </div>
+        {sun ? (
+          // Rising Sun (FR-DSN-10): the how-to and Print on a glass card; the sheet itself is unchanged.
+          machines.length > 0 && (
+            <div className="sun-glass mx-5 mt-4 rounded-[14px] p-4">
+              <p className="text-[15px] leading-snug text-ink2">{t.intro}</p>
+              <div className="mt-3">
+                <Button onClick={() => window.print()}>{t.print}</Button>
+              </div>
+            </div>
+          )
+        ) : (
+          <>
+            <p className="px-5 pt-2 text-[15px] text-ink2">{t.intro}</p>
+            {machines.length > 0 && (
+              <div className="px-5 pt-3">
+                <Button onClick={() => window.print()}>{t.print}</Button>
+              </div>
+            )}
+          </>
         )}
       </div>
       {machines.length === 0 ? (
-        <div className="px-5 pt-4">
-          <EmptyState>{t.empty}</EmptyState>
-        </div>
+        sun ? (
+          // S26a: an empty state is a centred glass card with the next step as its button.
+          <div className="px-5 pt-4 print:hidden">
+            <div className="sun-glass rounded-[18px] p-[18px] text-center">
+              <p className="text-[17px] font-bold leading-snug">{t.empty}</p>
+              <p className="mt-1 text-[14px] leading-snug text-ink2">{t.intro}</p>
+              <LinkButton to="/settings/gym" className="mt-4">
+                {en.settings.myGym}
+              </LinkButton>
+            </div>
+          </div>
+        ) : (
+          <div className="px-5 pt-4">
+            <EmptyState>{t.empty}</EmptyState>
+          </div>
+        )
       ) : (
         <ul className="ll-stickers mt-4 grid grid-cols-3 gap-2 px-3 print:mt-0 print:gap-0 print:px-0">
           {machines.map(({ id, info }) => {
@@ -70,7 +99,11 @@ export default function Stickers() {
             return (
               <li
                 key={id}
-                className="flex break-inside-avoid flex-col items-center rounded-md border-[1.5px] border-dashed border-ink2 bg-card p-2 text-center print:rounded-none"
+                className={
+                  sun
+                    ? 'flex break-inside-avoid flex-col items-center rounded-[12px] border-[1.5px] border-dashed border-ink2 bg-card p-2 text-center print:rounded-none'
+                    : 'flex break-inside-avoid flex-col items-center rounded-md border-[1.5px] border-dashed border-ink2 bg-card p-2 text-center print:rounded-none'
+                }
               >
                 <svg
                   viewBox={`-2 -2 ${q.size + 4} ${q.size + 4}`}
@@ -85,7 +118,15 @@ export default function Stickers() {
                 </svg>
                 <div className="mt-1 flex items-center gap-1">
                   {ex && <ExerciseThumb exercise={ex} className="h-[24px] w-[34px]" />}
-                  <span className="text-[11px] font-bold leading-tight">{info!.name}</span>
+                  <span
+                    className={
+                      sun
+                        ? 'text-[13px] font-bold leading-tight print:text-[11px]'
+                        : 'text-[11px] font-bold leading-tight'
+                    }
+                  >
+                    {info!.name}
+                  </span>
                 </div>
               </li>
             );

@@ -3,7 +3,7 @@ import { create } from 'zustand';
 
 interface ToastState {
   message: string | null;
-  show: (m: string) => void;
+  show: (m: string, ms?: number) => void;
   clear: () => void;
 }
 
@@ -11,18 +11,18 @@ let timer: ReturnType<typeof setTimeout> | undefined;
 
 export const useToast = create<ToastState>((set) => ({
   message: null,
-  show(m) {
+  show(m, ms = 2600) {
     clearTimeout(timer);
     set({ message: m });
-    timer = setTimeout(() => set({ message: null }), 2600);
+    timer = setTimeout(() => set({ message: null }), ms);
   },
   clear() {
     set({ message: null });
   },
 }));
 
-export function toast(m: string) {
-  useToast.getState().show(m);
+export function toast(m: string, ms?: number) {
+  useToast.getState().show(m, ms);
 }
 
 /** A polite live region for short confirmations. */
@@ -46,7 +46,7 @@ export function Toaster() {
 /** S26: every list has an empty state: one line of copy plus the next action. */
 export function EmptyState({ children, action }: { children: ReactNode; action?: ReactNode }) {
   return (
-    <div className="ll-card flex flex-col items-start gap-3 border-dashed px-4 py-4">
+    <div className="ll-empty ll-card flex flex-col items-start gap-3 border-dashed px-4 py-4">
       <p className="text-[15px] text-ink2">{children}</p>
       {action}
     </div>

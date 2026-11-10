@@ -1,5 +1,10 @@
 @import 'tailwindcss';
 @import './tokens.css';
+@import './sun.css';
+@import './sun-food.css';
+@import './sun-progress.css';
+@import './sun-plan.css';
+@import './sun-setup.css';
 
 /* Self-hosted fonts (NFR-SEC-1): latin subset only to keep the precache small. */
 @import '@fontsource/big-shoulders-display/latin-700';
@@ -19,6 +24,9 @@
   --color-*: initial;
   --color-transparent: transparent;
   --color-current: currentColor;
+  /* The camera screens are black with white text in every theme (S22, food scan). */
+  --color-black: #000;
+  --color-white: #fff;
   --color-paper: var(--ll-paper);
   --color-card: var(--ll-card);
   --color-panel: var(--ll-panel);
@@ -38,18 +46,39 @@
   --color-equip-dark: var(--ll-equipDark);
   --color-floor: var(--ll-floor);
 
-  --font-display: 'Big Shoulders Display', 'Oswald', sans-serif;
-  --font-sans: 'Instrument Sans', system-ui, sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  /* Rising Sun colours (FR-DSN-2): defined only under data-design="sun". */
+  --color-btn: var(--ll-btn);
+  --color-btn-ink: var(--ll-btnInk);
+  --color-track: var(--ll-track);
+  --color-glass: var(--ll-glass);
+  --color-soft: var(--ll-soft);
+  --color-hairline: var(--ll-hairline);
+  --color-sage: var(--ll-sage);
+  --color-on-sage: var(--ll-onSage);
+  --color-fat: var(--ll-fat);
+  --color-accent-text: var(--ll-accentText);
 
-  --radius-sm: 3px;
-  --radius-md: 5px;
-  --radius-lg: 6px;
+  /* Fonts and radii go through --ll-* so the Rising Sun look can swap them (sun.css). */
+  --font-display: var(--ll-font-display);
+  --font-sans: var(--ll-font-sans);
+  --font-mono: var(--ll-font-mono);
+
+  --radius-sm: var(--ll-r-sm);
+  --radius-md: var(--ll-r-md);
+  --radius-lg: var(--ll-r-lg);
   --shadow-hard: 3px 3px 0 var(--ll-shadow);
   --shadow-hard-sm: 2px 2px 0 var(--ll-shadow);
 }
 
 @layer base {
+  :root {
+    --ll-font-display: 'Big Shoulders Display', 'Oswald', sans-serif;
+    --ll-font-sans: 'Instrument Sans', system-ui, sans-serif;
+    --ll-font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --ll-r-sm: 3px;
+    --ll-r-md: 5px;
+    --ll-r-lg: 6px;
+  }
   html {
     -webkit-text-size-adjust: 100%;
     background: var(--ll-paper);

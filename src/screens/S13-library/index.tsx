@@ -1,14 +1,15 @@
 import { useState, type ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { ScreenHeader } from '@/components/ScreenHeader';
-import { ToggleChip } from '@/components/Chip';
 import { ExerciseRow } from '@/components/ExerciseRow';
 import { Icon } from '@/components/Icon';
 import { EmptyState } from '@/components/Toast';
 import { en } from '@/copy/en';
 import { EQUIPMENT, MACHINES } from '@/engine/data';
 import { EXPERIENCES, MUSCLE_GROUPS, type Experience, type MuscleGroup } from '@/engine/types';
+import { useDesign } from '@/app/design';
 import { useLibrary } from './useLibrary';
+import { Toggle } from './Toggle';
 
 const PAGE = 50;
 
@@ -24,6 +25,27 @@ function FilterSelect<T extends string>({
   options: [T, string][];
 }) {
   const on = value !== null;
+  const sun = useDesign() === 'sun';
+  if (sun)
+    return (
+      <label className="sun-pill sun-plan-pill relative focus-within:outline-2" data-on={on}>
+        <span>{on ? options.find(([v]) => v === value)?.[1] : label}</span>
+        <Icon name="chevronDown" size={16} />
+        <select
+          aria-label={label}
+          className="absolute inset-0 cursor-pointer opacity-0"
+          value={value ?? ''}
+          onChange={(e) => onChange((e.target.value || null) as T | null)}
+        >
+          <option value="">{`${label}: ${en.library.any}`}</option>
+          {options.map(([v, l]) => (
+            <option key={v} value={v}>
+              {l}
+            </option>
+          ))}
+        </select>
+      </label>
+    );
   return (
     <label
       className={`relative inline-flex min-h-12 items-center gap-2 rounded-md border-[1.5px] px-3 font-mono text-[13px] font-semibold uppercase tracking-[0.1em] ${
@@ -65,6 +87,7 @@ export default function Library() {
     level,
   });
   const navigate = useNavigate();
+  const sun = useDesign() === 'sun';
   // FR-NAV-1: opened from Plan or Settings; a direct visit has no history, so back goes to Plan.
   const back = () =>
     (window.history.state as { idx?: number } | null)?.idx ? navigate(-1) : navigate('/plan');
@@ -75,13 +98,27 @@ export default function Library() {
     if (!query && recentCount && i === 0)
       rows.push(
         <li key="h-recent">
-          <h3 className="t-label px-3 pb-1 pt-2.5">{en.library.recent}</h3>
+          <h3
+            className={
+              sun ? 'px-4 pb-1 pt-3 text-[13px] font-semibold text-ink2' : 't-label px-3 pb-1 pt-2.5'
+            }
+          >
+            {en.library.recent}
+          </h3>
         </li>,
       );
     if (!query && recentCount && i === recentCount)
       rows.push(
         <li key="h-all">
-          <h3 className="t-label border-t-[1.5px] border-line px-3 pb-1 pt-2.5">{en.library.all}</h3>
+          <h3
+            className={
+              sun
+                ? 'px-4 pb-1 pt-3 text-[13px] font-semibold text-ink2'
+                : 't-label border-t-[1.5px] border-line px-3 pb-1 pt-2.5'
+            }
+          >
+            {en.library.all}
+          </h3>
         </li>,
       );
     rows.push(
@@ -101,13 +138,35 @@ export default function Library() {
   return (
     <main className="px-5 pb-[calc(24px+env(safe-area-inset-bottom))]">
       <div className="-mx-5">
-        <ScreenHeader title={en.library.title} size={40} subtitle={en.library.count(total)} onBack={back} />
+        <ScreenHeader
+          title={en.library.title}
+          size={40}
+          subtitle={en.library.count(total)}
+          onBack={back}
+          right={
+            sun ? (
+              <Link
+                to="/library/new"
+                className="flex min-h-11 items-center px-2 text-[15px] font-semibold text-ink no-underline"
+                aria-label={en.library.create}
+              >
+                {en.sun.plan.newExercise}
+              </Link>
+            ) : undefined
+          }
+        />
       </div>
-      <label className="mt-4 flex h-[60px] items-center gap-3 rounded-lg border-2 border-ink bg-card px-4">
-        <Icon name="search" size={26} className="shrink-0 text-ink2" />
+      <label
+        className={
+          sun
+            ? 'sun-glass sun-plan-search mt-3.5'
+            : 'mt-4 flex h-[60px] items-center gap-3 rounded-lg border-2 border-ink bg-card px-4'
+        }
+      >
+        <Icon name="search" size={sun ? 20 : 26} className="shrink-0 text-ink2" />
         <input
           type="search"
-          className="h-full w-full bg-transparent text-[20px] outline-none"
+          className={sun ? '' : 'h-full w-full bg-transparent text-[20px] outline-none'}
           placeholder={en.library.search}
           aria-label={en.library.search}
           value={query}
@@ -118,9 +177,9 @@ export default function Library() {
         />
       </label>
       <div className="mt-2.5 flex flex-wrap gap-2">
-        <ToggleChip on={inGym} check className="!min-h-12 !text-[13px]" onClick={() => setInGym(!inGym)}>
+        <Toggle on={inGym} check className="!min-h-12 !text-[13px]" onClick={() => setInGym(!inGym)}>
           {en.library.inMyGym}
-        </ToggleChip>
+        </Toggle>
         <FilterSelect
           label={en.library.muscle}
           value={muscle}
@@ -143,7 +202,7 @@ export default function Library() {
           options={EXPERIENCES.map((l) => [l, en.levels[l]!])}
         />
       </div>
-      <p className="t-label mt-4" aria-live="polite">
+      <p className={sun ? 'mt-3 text-[13px] text-ink2' : 't-label mt-4'} aria-live="polite">
         {loading ? en.common.loading : en.library.results(results.length)}
       </p>
       {!loading && results.length === 0 && outside.length === 0 ? (
@@ -162,14 +221,30 @@ export default function Library() {
         rows.length > 0 && <ul className="ll-card mt-2 overflow-hidden">{rows}</ul>
       )}
       {results.length > limit && (
-        <button type="button" className="ll-link w-full" onClick={() => setLimit(limit + PAGE)}>
+        <button
+          type="button"
+          className={sun ? 'll-btn mt-2.5 w-full' : 'll-link w-full'}
+          data-variant={sun ? 'secondary' : undefined}
+          onClick={() => setLimit(limit + PAGE)}
+        >
           {en.common.more}
         </button>
       )}
       {outside.length > 0 && (
         <>
-          <h2 className="t-label mt-4">{en.library.outsideGym}</h2>
-          <ul className="ll-card mt-2 overflow-hidden" aria-label={en.library.outsideGym}>
+          {/* Rising Sun: the heading sits on the list's glass, never straight on the sun. */}
+          {!sun && <h2 className="t-label mt-4">{en.library.outsideGym}</h2>}
+          <ul
+            className={`ll-card overflow-hidden ${sun ? 'mt-3' : 'mt-2'}`}
+            aria-label={en.library.outsideGym}
+          >
+            {sun && (
+              <li>
+                <h2 className="px-4 pb-1 pt-3 text-[13px] font-semibold text-ink2">
+                  {en.library.outsideGym}
+                </h2>
+              </li>
+            )}
             {outside.slice(0, PAGE).map((r) => (
               <li key={r.exercise.id}>
                 <Link to={`/library/${r.exercise.id}`} className="block text-ink no-underline">
@@ -180,10 +255,23 @@ export default function Library() {
           </ul>
         </>
       )}
-      <Link to="/library/new" className="ll-btn mt-3 h-14 w-full" data-variant="ghost">
-        <Icon name="plus" /> {en.library.create}
-      </Link>
-      <p className="mt-3 text-[14px] leading-snug text-ink2">{en.library.footer}</p>
+      {sun ? (
+        <>
+          <Link to="/library/new" className="ll-btn mt-3 w-full" data-variant="secondary">
+            <Icon name="plus" size={18} /> {en.library.create}
+          </Link>
+          <p className="sun-glass mt-3 rounded-[14px] px-4 py-3 text-[13px] leading-snug text-ink2">
+            {en.library.footer}
+          </p>
+        </>
+      ) : (
+        <>
+          <Link to="/library/new" className="ll-btn mt-3 h-14 w-full" data-variant="ghost">
+            <Icon name="plus" /> {en.library.create}
+          </Link>
+          <p className="mt-3 text-[14px] leading-snug text-ink2">{en.library.footer}</p>
+        </>
+      )}
     </main>
   );
 }

@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { Icon } from '@/components/Icon';
+import { SunTop } from '@/components/sun/SunTop';
+import { useDesign } from '@/app/design';
 import { EmptyState, toast } from '@/components/Toast';
 import { muscleName } from '@/components/ExerciseRow';
 import { en } from '@/copy/en';
@@ -29,6 +31,8 @@ export default function ReviewScreen() {
   const review = useLiveQuery(() => getReview(kind, t), [kind, t]);
   const [showAll, setShowAll] = useState(false);
   const r = en.review;
+  const c = en.sun.progress.review;
+  const sun = useDesign() === 'sun';
   const go = (k: ReviewKind, time: number) => setParams({ kind: k, t: String(time) }, { replace: true });
   const step = (dir: 1 | -1) => {
     if (kind === 'week') go('week', addDays(t, 7 * dir));
@@ -52,65 +56,136 @@ export default function ReviewScreen() {
   const visible = showAll ? changes : changes.slice(0, 5);
 
   return (
-    <main className="px-5 pb-6 pt-4">
-      <div className="flex items-start justify-between gap-3">
-        <h1 className="t-display min-w-0 text-[40px] leading-[0.95]">{title}</h1>
-        <div
-          role="group"
-          aria-label={r.kind}
-          className="mt-1 flex shrink-0 overflow-hidden rounded-lg border-[1.5px] border-line"
-        >
-          {(['week', 'month'] as const).map((k) => (
-            <button
-              key={k}
-              type="button"
-              aria-pressed={kind === k}
-              className={`t-mono h-11 px-2.5 text-[11px] font-semibold uppercase tracking-[0.08em] ${kind === k ? 'bg-ink text-card' : 'bg-card text-ink'}`}
-              onClick={() => go(k, t)}
+    <main className={sun ? 'px-5 pb-6 pt-5' : 'px-5 pb-6 pt-4'}>
+      {sun ? (
+        <>
+          <SunTop
+            title={c.title}
+            right={kind === 'week' ? en.summary.week(review.weekNumber) : monthName(review.start)}
+          />
+          <div role="group" aria-label={r.kind} className="mt-3 flex gap-2">
+            {(['week', 'month'] as const).map((k) => (
+              <button
+                key={k}
+                type="button"
+                aria-pressed={kind === k}
+                className="sun-pill sun-progress-pill"
+                onClick={() => go(k, t)}
+              >
+                {k === 'week' ? c.week : c.month}
+              </button>
+            ))}
+          </div>
+          <section className="sun-glass mt-4 rounded-[18px] px-2 pb-4 pt-1" aria-label={title}>
+            <div className="flex items-center justify-between">
+              <button
+                type="button"
+                className="flex h-11 w-11 items-center justify-center rounded-full text-ink"
+                aria-label={r.prev}
+                onClick={() => step(-1)}
+              >
+                <Icon name="back" />
+              </button>
+              <p className="text-[15px] font-medium">{range}</p>
+              <button
+                type="button"
+                className="flex h-11 w-11 items-center justify-center rounded-full text-ink disabled:opacity-30"
+                aria-label={r.next}
+                disabled={future}
+                onClick={() => step(1)}
+              >
+                <Icon name="chevronRight" />
+              </button>
+            </div>
+            <dl className="mt-1 grid grid-cols-3 gap-1 text-center">
+              <SunStat
+                label={c.sessions}
+                value={`${review.sessionsDone}/${review.sessionsPlanned}`}
+                sub={
+                  review.sessionsDone >= review.sessionsPlanned
+                    ? r.onPlan
+                    : r.offPlan(review.sessionsPlanned - review.sessionsDone)
+                }
+              />
+              <SunStat
+                label={c.goalSets}
+                value={`${pct}%`}
+                sub={c.of(review.goalSetsMet, review.goalSetsTotal)}
+              />
+              <SunStat
+                label={c.records}
+                value={String(review.prs.length)}
+                sub={review.bestPr ? r.best(shortName(map.get(review.bestPr.exerciseId))) : ''}
+              />
+            </dl>
+          </section>
+        </>
+      ) : (
+        <>
+          <div className="flex items-start justify-between gap-3">
+            <h1 className="t-display min-w-0 text-[40px] leading-[0.95]">{title}</h1>
+            <div
+              role="group"
+              aria-label={r.kind}
+              className="mt-1 flex shrink-0 overflow-hidden rounded-lg border-[1.5px] border-line"
             >
-              {k === 'week' ? r.weekly : r.monthly}
+              {(['week', 'month'] as const).map((k) => (
+                <button
+                  key={k}
+                  type="button"
+                  aria-pressed={kind === k}
+                  className={`t-mono h-11 px-2.5 text-[11px] font-semibold uppercase tracking-[0.08em] ${kind === k ? 'bg-ink text-card' : 'bg-card text-ink'}`}
+                  onClick={() => go(k, t)}
+                >
+                  {k === 'week' ? r.weekly : r.monthly}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="-ml-2.5 mt-1 flex items-center">
+            <button
+              type="button"
+              className="flex h-11 w-11 items-center justify-center text-ink"
+              aria-label={r.prev}
+              onClick={() => step(-1)}
+            >
+              <Icon name="back" />
             </button>
-          ))}
-        </div>
-      </div>
-      <div className="-ml-2.5 mt-1 flex items-center">
-        <button
-          type="button"
-          className="flex h-11 w-11 items-center justify-center text-ink"
-          aria-label={r.prev}
-          onClick={() => step(-1)}
-        >
-          <Icon name="back" />
-        </button>
-        <p className="t-label">{range}</p>
-        <button
-          type="button"
-          className="flex h-11 w-11 items-center justify-center text-ink disabled:opacity-30"
-          aria-label={r.next}
-          disabled={future}
-          onClick={() => step(1)}
-        >
-          <Icon name="chevronRight" />
-        </button>
-      </div>
+            <p className="t-label">{range}</p>
+            <button
+              type="button"
+              className="flex h-11 w-11 items-center justify-center text-ink disabled:opacity-30"
+              aria-label={r.next}
+              disabled={future}
+              onClick={() => step(1)}
+            >
+              <Icon name="chevronRight" />
+            </button>
+          </div>
 
-      <div className="mt-3.5 grid grid-cols-3 gap-2">
-        <Stat
-          label={r.sessions}
-          value={`${review.sessionsDone}/${review.sessionsPlanned}`}
-          sub={
-            review.sessionsDone >= review.sessionsPlanned
-              ? r.onPlan
-              : r.offPlan(review.sessionsPlanned - review.sessionsDone)
-          }
-        />
-        <Stat label={r.goalSets} value={`${review.goalSetsMet}/${review.goalSetsTotal}`} sub={`${pct}%`} />
-        <Stat
-          label={r.newPrs}
-          value={String(review.prs.length)}
-          sub={review.bestPr ? r.best(shortName(map.get(review.bestPr.exerciseId))) : ''}
-        />
-      </div>
+          <div className="mt-3.5 grid grid-cols-3 gap-2">
+            <Stat
+              label={r.sessions}
+              value={`${review.sessionsDone}/${review.sessionsPlanned}`}
+              sub={
+                review.sessionsDone >= review.sessionsPlanned
+                  ? r.onPlan
+                  : r.offPlan(review.sessionsPlanned - review.sessionsDone)
+              }
+            />
+            <Stat
+              label={r.goalSets}
+              value={`${review.goalSetsMet}/${review.goalSetsTotal}`}
+              sub={`${pct}%`}
+            />
+            <Stat
+              label={r.newPrs}
+              value={String(review.prs.length)}
+              sub={review.bestPr ? r.best(shortName(map.get(review.bestPr.exerciseId))) : ''}
+            />
+          </div>
+        </>
+      )}
 
       {review.sessionsDone === 0 ? (
         <div className="mt-3">
@@ -131,8 +206,8 @@ export default function ReviewScreen() {
 
       {kind === 'month' && review.muscleTrend.length > 0 && <MuscleTrend review={review} />}
 
-      <section className="ll-card mt-3 px-3.5 py-3" aria-labelledby="next-h">
-        <h2 id="next-h" className="t-label">
+      <section className={`ll-card mt-3 ${sun ? 'px-4 py-3.5' : 'px-3.5 py-3'}`} aria-labelledby="next-h">
+        <h2 id="next-h" className={sun ? 'font-bold' : 't-label'}>
           {r.nextWeek}
         </h2>
         {review.changes.length === 0 ? (
@@ -147,7 +222,7 @@ export default function ReviewScreen() {
                   className="flex items-center gap-3 border-b border-rule py-2.5 last:border-b-0"
                 >
                   <span className="min-w-0 grow">
-                    <span className="block text-[16px] font-bold leading-tight">
+                    <span className={`block text-[16px] leading-tight ${sun ? 'font-medium' : 'font-bold'}`}>
                       {ex?.name ?? exerciseId}
                     </span>
                     <span className="block text-[14px] text-ink2">{change.reason}</span>
@@ -169,6 +244,17 @@ export default function ReviewScreen() {
         )}
       </section>
     </main>
+  );
+}
+
+/** A review number in the Rising Sun look: display figure, its label, and a quiet detail line. */
+function SunStat({ label, value, sub }: { label: string; value: string; sub: string }) {
+  return (
+    <div className="flex min-w-0 flex-col">
+      <dt className="order-2 text-[13px] text-ink2">{label}</dt>
+      <dd className="sun-display order-1 break-words pb-1.5 text-[22px]">{value}</dd>
+      {sub && <dd className="order-3 break-words text-[13px] text-ink2">{sub}</dd>}
+    </div>
   );
 }
 
@@ -241,6 +327,7 @@ function Insights({ review, map }: { review: Review; map: Map<string, Exercise> 
   const gym = useGym();
   const profile = useProfile();
   const [swapOpen, setSwapOpen] = useState(false);
+  const sun = useDesign() === 'sun';
   const w = review.goingWell;
   const n = review.needsWork;
   const name = (id: string) => map.get(id)?.name ?? id;
@@ -275,6 +362,78 @@ function Insights({ review, map }: { review: Review; map: Map<string, Exercise> 
           : r.workHurts(name(n.exerciseId));
   const swapId = n && (n.code === 'stalled' || n.code === 'hurts') ? n.exerciseId : null;
 
+  const chip = sun ? 'sun-pill !min-h-11 !rounded-[18px] !py-2' : 'll-chip min-h-11 shrink-0';
+  const fixes = (
+    <>
+      {n?.code === 'muscle_low' && fix && routine && (
+        <button
+          type="button"
+          className={chip}
+          data-variant={sun ? undefined : 'outline-red'}
+          onClick={async () => {
+            const target = routine.sessions[fix.sessionIndex]!;
+            await updateRoutineSessions(
+              routine.id,
+              routine.sessions.map((s, i) =>
+                i === fix.sessionIndex
+                  ? { ...s, items: [...s.items, { exerciseId: fix.exerciseId, order: s.items.length }] }
+                  : s,
+              ),
+            );
+            toast(en.routine.fixed(name(fix.exerciseId), target.name));
+          }}
+        >
+          {r.fixAdd(name(fix.exerciseId))}
+        </button>
+      )}
+      {swapId && routine && (
+        <button
+          type="button"
+          className={chip}
+          data-variant={sun ? undefined : 'outline-red'}
+          onClick={() => setSwapOpen(true)}
+        >
+          {r.fixSwap}
+        </button>
+      )}
+      {n?.code === 'missed' && (
+        <Link to="/settings/profile" className={chip} data-variant={sun ? undefined : 'outline-red'}>
+          {r.fixDays}
+        </Link>
+      )}
+    </>
+  );
+  const swapSheet = swapId && routine && (
+    <SwapSheet
+      open={swapOpen}
+      current={map.get(swapId) ?? null}
+      onClose={() => setSwapOpen(false)}
+      onChoose={async (e) => {
+        await updateRoutineSessions(
+          routine.id,
+          routine.sessions.map((s) => ({
+            ...s,
+            items: s.items.map((i) => (i.exerciseId === swapId ? { ...i, exerciseId: e.id } : i)),
+          })),
+        );
+        setSwapOpen(false);
+        toast(en.detail.swapped(name(swapId), e.name));
+      }}
+    />
+  );
+
+  if (sun)
+    return (
+      <section className="sun-glass mt-3 rounded-[18px] p-[18px]">
+        <h2 className="font-bold">{r.goingWell}</h2>
+        <p className="mt-1 text-[15px] leading-snug text-ink2">{well}</p>
+        <h2 className="mt-4 font-bold">{r.needsWork}</h2>
+        <p className="mt-1 text-[15px] leading-snug text-ink2">{work}</p>
+        <div className="mt-3 flex flex-wrap gap-2 empty:hidden">{fixes}</div>
+        {swapSheet}
+      </section>
+    );
+
   return (
     <div className="mt-3 flex flex-col gap-2">
       <div className="ll-card flex items-center gap-2.5 px-3 py-2.5">
@@ -299,61 +458,9 @@ function Insights({ review, map }: { review: Review; map: Map<string, Exercise> 
           <p className={`t-label ${n ? '!text-accent' : ''}`}>{r.needsWork}</p>
           <p className="text-[15px] leading-snug">{work}</p>
         </div>
-        {n?.code === 'muscle_low' && fix && routine && (
-          <button
-            type="button"
-            className="ll-chip min-h-11 shrink-0"
-            data-variant="outline-red"
-            onClick={async () => {
-              const target = routine.sessions[fix.sessionIndex]!;
-              await updateRoutineSessions(
-                routine.id,
-                routine.sessions.map((s, i) =>
-                  i === fix.sessionIndex
-                    ? { ...s, items: [...s.items, { exerciseId: fix.exerciseId, order: s.items.length }] }
-                    : s,
-                ),
-              );
-              toast(en.routine.fixed(name(fix.exerciseId), target.name));
-            }}
-          >
-            {r.fixAdd(name(fix.exerciseId))}
-          </button>
-        )}
-        {swapId && routine && (
-          <button
-            type="button"
-            className="ll-chip min-h-11 shrink-0"
-            data-variant="outline-red"
-            onClick={() => setSwapOpen(true)}
-          >
-            {r.fixSwap}
-          </button>
-        )}
-        {n?.code === 'missed' && (
-          <Link to="/settings/profile" className="ll-chip min-h-11 shrink-0" data-variant="outline-red">
-            {r.fixDays}
-          </Link>
-        )}
+        {fixes}
       </div>
-      {swapId && routine && (
-        <SwapSheet
-          open={swapOpen}
-          current={map.get(swapId) ?? null}
-          onClose={() => setSwapOpen(false)}
-          onChoose={async (e) => {
-            await updateRoutineSessions(
-              routine.id,
-              routine.sessions.map((s) => ({
-                ...s,
-                items: s.items.map((i) => (i.exerciseId === swapId ? { ...i, exerciseId: e.id } : i)),
-              })),
-            );
-            setSwapOpen(false);
-            toast(en.detail.swapped(name(swapId), e.name));
-          }}
-        />
-      )}
+      {swapSheet}
     </div>
   );
 }

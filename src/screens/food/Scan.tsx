@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { Icon } from '@/components/Icon';
+import { useDesign } from '@/app/design';
 import { en } from '@/copy/en';
 import { platform } from '@/platform';
 import { findByGtin } from '@/db/food';
@@ -12,6 +13,7 @@ type State = 'starting' | 'scanning' | 'no-camera' | 'invalid' | { missing: stri
  * PRD-1.2 FR-FOOD-4: scan a food barcode offline against the library. Same camera screen as S22
  * (FR-PLT-5): native BarcodeDetector where it reads EAN/UPC, else the self-hosted zxing-wasm reader.
  * A match opens Add food with the portion sheet; a miss offers "Create food" with the code filled in.
+ * The Rising Sun look (FR-DSN-11) keeps the camera screen and only takes the new shapes and type.
  */
 export default function Scan() {
   const navigate = useNavigate();
@@ -20,6 +22,7 @@ export default function Scan() {
   const [state, setState] = useState<State>('starting');
   const [code, setCode] = useState('');
   const s = en.food.scan;
+  const sun = useDesign() === 'sun';
 
   const handle = (r: ScanResult): boolean => {
     if (r.kind === 'found') {
@@ -102,10 +105,10 @@ export default function Scan() {
         aria-hidden="true"
       />
       <div className="relative flex items-center justify-between px-4 pt-[calc(12px+env(safe-area-inset-top))]">
-        <h1 className="t-display text-[28px]">{s.title}</h1>
+        <h1 className={sun ? 'sun-display text-[19px] uppercase' : 't-display text-[28px]'}>{s.title}</h1>
         <button
           type="button"
-          className="flex h-11 w-11 items-center justify-center rounded-md bg-[rgba(0,0,0,0.5)]"
+          className={`flex h-11 w-11 items-center justify-center bg-[rgba(0,0,0,0.5)] ${sun ? 'rounded-full' : 'rounded-md'}`}
           aria-label={s.close}
           onClick={() => navigate(-1)}
         >
@@ -129,7 +132,11 @@ export default function Scan() {
             <div className="mt-3 flex justify-center gap-3">
               <button
                 type="button"
-                className="min-h-11 rounded-md bg-paper px-5 font-semibold text-ink"
+                className={
+                  sun
+                    ? 'min-h-[52px] w-full rounded-[14px] bg-btn px-5 text-[16px] font-bold text-btn-ink'
+                    : 'min-h-11 rounded-md bg-paper px-5 font-semibold text-ink'
+                }
                 onClick={() =>
                   navigate(`/food/new?${carryParams(params, { barcode: displayCode(missing) })}`, {
                     replace: true,
@@ -142,17 +149,26 @@ export default function Scan() {
           </div>
         )}
         <form className="mt-4 flex items-end gap-2" onSubmit={(e) => void submit(e)}>
-          <label className="grow text-[13px]">
+          <label className={sun ? 'grow text-[14px]' : 'grow text-[13px]'}>
             {s.code}
             <input
-              className="mt-1 block h-11 w-full rounded-md bg-paper px-3 text-[16px] text-ink"
+              className={`mt-1 block w-full bg-paper text-[16px] text-ink ${
+                sun ? 'h-12 rounded-[14px] px-3.5' : 'h-11 rounded-md px-3'
+              }`}
               inputMode="numeric"
               autoComplete="off"
               value={code}
               onChange={(e) => setCode(e.target.value)}
             />
           </label>
-          <button type="submit" className="min-h-11 rounded-md bg-paper px-5 font-semibold text-ink">
+          <button
+            type="submit"
+            className={
+              sun
+                ? 'min-h-12 rounded-full bg-paper px-5 font-semibold text-ink'
+                : 'min-h-11 rounded-md bg-paper px-5 font-semibold text-ink'
+            }
+          >
             {s.find}
           </button>
         </form>

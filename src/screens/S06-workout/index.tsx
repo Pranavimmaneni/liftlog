@@ -1,78 +1,33 @@
-import { useEffect, useState } from 'react';
-import { Link, useNavigate, useOutletContext } from 'react-router';
+import { Link } from 'react-router';
 import { Button } from '@/components/Button';
 import { Chip } from '@/components/Chip';
 import { GoalMeter } from '@/components/GoalMeter';
 import { Icon } from '@/components/Icon';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { SetDots } from '@/components/SetDots';
-import { Sheet } from '@/components/Sheet';
 import { ExerciseThumb } from '@/illustration/Pictogram';
 import { en } from '@/copy/en';
-import { useSessionModel, type ItemModel } from '@/app/session-model';
-import { useRest } from '@/app/rest-store';
-import { addToSession, cancelSession, discardSession, finishSession } from '@/db/workout';
-import { formatLoad, hasLoad } from '@/engine/units';
-import type { Units } from '@/engine/types';
+import { useDesign } from '@/app/design';
 import { platform } from '@/platform';
-import { ExercisePicker } from '../S13-library/ExercisePicker';
 import { RestChip } from '../S25-timer/RestTimer';
-import { toast } from '@/components/Toast';
+import { targetLine } from './target';
+import { useWorkoutState, WorkoutSheets, type WorkoutState } from './state';
+import { WorkoutSun } from './WorkoutSun';
 
-/** FR-WRK-16: how long "Undo" stays after Start workout. */
-export const UNDO_START_MS = 10_000;
-
-export function targetLine(item: Pick<ItemModel, 'goal' | 'exercise'>, units: Units): string {
-  const g = item.goal;
-  const reps = g.repMin === g.repMax ? `${g.repMin}` : `${g.repMin}–${g.repMax}`;
-  const lt = item.exercise.loadType;
-  if (lt === 'timed') return en.workout.target(g.sets, `${reps} s`, '');
-  const load = hasLoad(lt) && g.loadKg !== null ? formatLoad(g.loadKg, lt, units) : '';
-  return en.workout.target(g.sets, reps, load);
+/** S06 active workout. The Rising Sun look has its own layout over the same state (FR-DSN-5). */
+export default function Workout() {
+  const w = useWorkoutState();
+  const sun = useDesign() === 'sun';
+  if (!w.model) return null;
+  return sun ? <WorkoutSun w={w} /> : <WorkoutClassic w={w} />;
 }
 
 /** S06 active workout: exercises with thumbnail, target, set dots, bonus chip; current highlighted (FR-WRK-2/3). */
-export default function Workout() {
-  const { sessionId } = useOutletContext<{ sessionId: string }>();
-  const model = useSessionModel(sessionId);
-  const navigate = useNavigate();
-  const [adding, setAdding] = useState(false);
-  const [confirmDiscard, setConfirmDiscard] = useState(false);
-  const skipRest = useRest((s) => s.skip);
-  const [finishing, setFinishing] = useState(false);
-  const [confirmCancel, setConfirmCancel] = useState(false);
-  const [now, setNow] = useState(() => Date.now());
-  const startedAt = model?.session.startedAt;
-  const logged = model ? model.items.reduce((n, i) => n + i.sets.length, 0) : 0;
-  const undoLeft = startedAt === undefined || logged ? 0 : startedAt + UNDO_START_MS - now;
-  useEffect(() => {
-    if (undoLeft <= 0) return;
-    const t = window.setTimeout(() => setNow(Date.now()), undoLeft);
-    return () => window.clearTimeout(t);
-  }, [undoLeft]);
-
-  if (!model) return null;
+function WorkoutClassic({ w }: { w: WorkoutState }) {
+  const model = w.model!;
+  const { logged, undoLeft, finish, cancel, finishing, setAdding, setConfirmCancel } = w;
   const units = model.profile.units;
   const lock = platform.capabilities();
-
-  const finish = async () => {
-    const work = model.items.reduce((n, i) => n + i.work.length, 0);
-    if (!work) return setConfirmDiscard(true);
-    setFinishing(true);
-    const r = await finishSession(sessionId);
-    skipRest();
-    void platform.keepAwake(false);
-    navigate(r.status === 'finished' ? `/summary/${r.sessionId}` : '/', { replace: true });
-  };
-
-  // FR-WRK-16: a workout started by mistake goes without a trace; the Up next queue is untouched.
-  const cancel = async (message?: string) => {
-    await cancelSession(sessionId);
-    skipRest();
-    void platform.keepAwake(false);
-    if (message) toast(message);
-    navigate('/', { replace: true });
-  };
 
   return (
     <main className="flex grow flex-col pb-[calc(20px+env(safe-area-inset-bottom))]">
@@ -188,62 +143,7 @@ export default function Workout() {
         </Button>
       </div>
 
-      <ExercisePicker
-        open={adding}
-        title={en.workout.addFromList}
-        exclude={model.items.map((i) => i.exercise.id)}
-        onClose={() => setAdding(false)}
-        onPick={async (e) => {
-          setAdding(false);
-          await addToSession(sessionId, e.id);
-          navigate(`/workout/${e.id}`);
-        }}
-        onCreate={(name) => navigate('/library/new', { state: { addToWorkout: true, name } })}
-      />
-      <Sheet
-        open={confirmDiscard}
-        onClose={() => setConfirmDiscard(false)}
-        title={en.workout.finishConfirmTitle}
-        tone="danger"
-        footer={
-          <>
-            <Button
-              variant="destructive"
-              onClick={async () => {
-                await discardSession(sessionId);
-                skipRest();
-                void platform.keepAwake(false);
-                navigate('/', { replace: true });
-              }}
-            >
-              {en.workout.discard}
-            </Button>
-            <Button variant="secondary" onClick={() => setConfirmDiscard(false)}>
-              {en.workout.keepGoing}
-            </Button>
-          </>
-        }
-      >
-        <p className="text-[15px]">{en.workout.finishConfirmBody}</p>
-      </Sheet>
-      <Sheet
-        open={confirmCancel}
-        onClose={() => setConfirmCancel(false)}
-        title={en.workout.cancelTitle}
-        tone="danger"
-        footer={
-          <>
-            <Button variant="destructive" onClick={() => void cancel(en.workout.cancelled)}>
-              {en.workout.cancel}
-            </Button>
-            <Button variant="secondary" onClick={() => setConfirmCancel(false)}>
-              {en.workout.keepGoing}
-            </Button>
-          </>
-        }
-      >
-        <p className="text-[15px]">{en.workout.cancelBody(logged, model.session.name)}</p>
-      </Sheet>
+      <WorkoutSheets w={w} />
     </main>
   );
 }

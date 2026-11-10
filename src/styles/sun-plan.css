@@ -1,0 +1,66 @@
+/*
+ * Rising Sun look: styles used only by the Plan, routine, library and exercise screens.
+ * Unlayered like sun.css, so scope every rule under [data-design='sun'] or a sun-plan-* class.
+ */
+
+/* A filter pill or session tab: .sun-pill on glass, ink fill when chosen (handoff §4 chips). */
+.sun-plan-pill {
+  min-height: 44px;
+  background: var(--ll-glass);
+  -webkit-backdrop-filter: blur(22px) saturate(1.5);
+  backdrop-filter: blur(22px) saturate(1.5);
+  white-space: nowrap;
+}
+[data-glass='off'] .sun-plan-pill {
+  background: var(--ll-card);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.sun-plan-pill[aria-pressed='true'],
+.sun-plan-pill[aria-selected='true'],
+.sun-plan-pill[data-on='true'] {
+  border-color: var(--ll-ink);
+  background: var(--ll-ink);
+  color: var(--ll-paper);
+}
+/* Inside a card or sheet the pill takes the soft fill again. */
+.sun-plan-pill[data-soft='true']:not([aria-pressed='true']) {
+  background: var(--ll-soft);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* Search field: a 48 px glass pill (HW1S13). */
+.sun-plan-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 18px;
+  border-radius: 24px;
+}
+.sun-plan-search input {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  font-size: 16px;
+  outline: none;
+}
+.sun-plan-search:focus-within {
+  outline: 2px solid var(--ll-accentText);
+  outline-offset: 2px;
+}
+
+/* A row being dragged lifts off the glass list as an opaque card. */
+.sun-plan-dragging {
+  z-index: 10;
+  background: var(--ll-card);
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px var(--ll-hairline);
+}
+
+/* Session tabs in the routine builder: four fit across a 360 px phone. */
+.sun-plan-tab {
+  padding: 0 12px;
+  font-size: 14px;
+}

@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased: Rising Sun look (M13–M16, FR-DSN-1…11)
+- A new look you can switch on in Settings → Look → Rising Sun. Classic stays the default and is unchanged.
+- Rising Sun: cream, black, red and sage for LiftLog, green for Food, in light and dark; new type; a rising sun behind frosted cards; a floating tab bar.
+- Every screen has its new layout: Today (a workout card with the day's muscles and the month, a Food card with calories left and four rings), the active workout, logging a set with the rest timer on the same screen, the summary, Plan, the routine editor, Progress, reviews, strength levels, the library, Settings, onboarding and all Food screens. The food diary now shows fibre next to protein, carbs and fat.
+- Echo: the sun ripples when you log a set, a food or a weigh-in, and sweeps the screen for a new record, a food goal reached or a finished workout. With reduced motion you get a short message instead.
+- "Frosted glass" switch in Settings for phones where the blur makes scrolling slow.
+- Fixed in both looks: the camera screens are black with white text again.
+
 ## Unreleased: every brand (FR-FOOD-8)
 - Food search now covers about 410,000 foods: every US product in USDA's label database from about 34,000 brands, including store brands from Walmart (Great Value, Marketside), Target (Good & Gather, Market Pantry, Archer Farms), Kroger, Albertsons, Publix, H-E-B, Meijer, Wegmans and more, plus all the national brands. Barcode scanning finds them too.
 - The first 1 MB still arrives quickly; the rest (about 20 MB) downloads in the background in pieces, carries on where it stopped, and waits while your phone is saving data.

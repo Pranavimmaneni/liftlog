@@ -1,17 +1,14 @@
 import { useNavigate, useParams, Navigate } from 'react-router';
 import { Button } from '@/components/Button';
+import { Icon } from '@/components/Icon';
 import { en } from '@/copy/en';
 import { formatInt, longDate } from '@/copy/format';
-import { bonusPercent } from '@/engine/summary';
-import { displayNumber, formatLoad, fromDisplay, hasLoad, toDisplay } from '@/engine/units';
-import { useTicket } from './useTicket';
-import { Icon } from '@/components/Icon';
-import { toast } from '@/components/Toast';
+import { useDesign } from '@/app/design';
 import { useMotivation } from '@/db/motivation';
-import { levelInfo } from '@/engine/xp';
-import { dateKey } from '@/engine/week';
-import { platform } from '@/platform';
-import { renderTicketPng } from '@/app/ticket-image';
+import { displayNumber, formatLoad, fromDisplay, toDisplay } from '@/engine/units';
+import { SummarySun } from './SummarySun';
+import { useTicket } from './useTicket';
+import { summaryView } from './view';
 
 /** S09 session ticket (FR-SUM-1/2, FR-XP-2/5): numbers, stamp, PRs, level + XP, milestones, share. */
 export default function Summary() {
@@ -19,65 +16,13 @@ export default function Summary() {
   const navigate = useNavigate();
   const t = useTicket(sessionId);
   const motivation = useMotivation();
+  const sun = useDesign() === 'sun';
   if (t === null) return <Navigate to="/" replace />;
   if (!t) return null;
   const { model, totals } = t;
-  const units = model.profile.units;
-  const meter = model.meter;
-  const pct = meter.total ? Math.round((meter.done / meter.total) * 100) : 0;
-  const repMaxAvg = model.items.length
-    ? model.items.reduce((n, i) => n + i.goal.repMax, 0) / model.items.length
-    : 10;
-  const bonusPct = bonusPercent(meter.bonusReps, meter.total, repMaxAvg);
-  const tonnage = Math.round(toDisplay(totals.tonnageKg, units));
-  const diff = t.prev ? Math.round(toDisplay(totals.tonnageKg - t.prev.totals.tonnageKg, units)) : null;
-  const changed = t.next
-    .filter((n) => ['up', 'less_assist', 'more_reps', 'widen', 'calibrated'].includes(n.goal.reason.code))
-    .slice(0, 3);
-  const xp = motivation?.perSession.get(model.session.id) ?? null;
-  const lvl = xp ? levelInfo(xp.cumulative) : null;
-  const share = async () => {
-    const blob = await renderTicketPng({
-      number: en.summary.ticket(String(t.number).padStart(3, '0')).replace(/^LiftLog · /, ''),
-      name: model.session.name,
-      dateLine: `${longDate(model.session.startedAt)} · ${en.summary.week(model.weekNumber)}`,
-      lifted: `${formatInt(tonnage)} ${units}`,
-      sets: String(totals.workSets),
-      reps: String(totals.reps),
-      goalPct: pct,
-      rows: [
-        [en.summary.goalSets, `${meter.done} / ${meter.total}`],
-        [en.summary.bonusReps, `+${meter.bonusReps}`],
-      ],
-      prs: t.prs.map(
-        (p) => `${p.exercise?.name ?? ''} · ${displayNumber(p.loadKg, units)} ${units} × ${p.reps}`,
-      ),
-      xpLine: xp && lvl ? `${en.xp.levelTitle(lvl.level)} · ${en.summary.xp(xp.total)}` : null,
-      labels: {
-        lifted: en.summary.lifted,
-        sets: en.summary.sets,
-        reps: en.summary.reps,
-        goalsMet: en.summary.goalsMet,
-        brand: en.app.name,
-      },
-    });
-    const r = await platform.share({
-      name: `liftlog-${model.session.name.toLowerCase().replace(/\W+/g, '-')}-${dateKey(model.session.startedAt)}.png`,
-      mime: 'image/png',
-      data: blob,
-      title: model.session.name,
-    });
-    if (r === 'downloaded') toast(en.summary.shareSaved);
-  };
-  const nextItems = (changed.length ? changed : t.next.slice(0, 3)).map((n) => {
-    const reps =
-      n.goal.reason.code === 'widen' || n.goal.reason.code === 'more_reps' ? ` × ${n.goal.repMax}` : '';
-    const load =
-      hasLoad(n.exercise.loadType) && n.goal.loadKg !== null
-        ? ` ${formatLoad(n.goal.loadKg, n.exercise.loadType, units)}`
-        : '';
-    return `${n.exercise.name}${load}${reps}`;
-  });
+  const v = summaryView(t, motivation);
+  if (sun) return <SummarySun t={t} v={v} onDone={() => navigate('/', { replace: true })} />;
+  const { units, meter, pct, bonusPct, tonnage, diff, xp, lvl, share, nextItems } = v;
 
   return (
     <main className="flex min-h-dvh flex-col px-5 pb-[calc(20px+env(safe-area-inset-bottom))] pt-4">

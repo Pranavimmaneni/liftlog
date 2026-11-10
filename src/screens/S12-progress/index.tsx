@@ -1,37 +1,29 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
-import { useLiveQuery } from 'dexie-react-hooks';
 import { LineChart } from '@/components/Chart';
 import { Icon } from '@/components/Icon';
 import { SegmentedControl } from '@/components/SegmentedControl';
 import { EmptyState, toast } from '@/components/Toast';
 import { en } from '@/copy/en';
 import { longDate, shortDate, weekdayDate } from '@/copy/format';
-import { db } from '@/db/schema';
-import { useExerciseMap } from '@/db/catalog';
-import {
-  defaultReviewTime,
-  getLiftSeries,
-  getRecentPrs,
-  getReview,
-  getStrength,
-  weeklyBest,
-} from '@/db/insight';
-import { deleteWeighIn, useBodyweights, useProfile } from '@/db/repo';
-import { useSettings } from '@/db/settings';
-import { relativeChange } from '@/engine/review';
-import { displayNumber, hasLoad, loadUnitLabel, toDisplay } from '@/engine/units';
-import { weekRange, weekNumber } from '@/engine/week';
+import { useDesign } from '@/app/design';
+import { deleteWeighIn } from '@/db/repo';
+import { displayNumber, hasLoad, toDisplay } from '@/engine/units';
 import { RecompCard } from '../S10-review/RecompCard';
 import { WeighInSheet } from '../S20-weighin/WeighInSheet';
+import { ProgressSun } from './ProgressSun';
+import { useBody, useHistory, useLifts } from './data';
 
-type Tab = 'lifts' | 'body' | 'history';
+export type Tab = 'lifts' | 'body' | 'history';
 
 /** S12 Progress hub (FR-PRO-1): Lifts, Body and History, plus the PR list. */
 export default function Progress() {
   const [params, setParams] = useSearchParams();
   const tab: Tab = (['lifts', 'body', 'history'] as const).find((t) => t === params.get('tab')) ?? 'lifts';
   const p = en.progress;
+  const sun = useDesign() === 'sun';
+  const setTab = (t: Tab) => setParams({ tab: t }, { replace: true });
+  if (sun) return <ProgressSun tab={tab} onTab={setTab} />;
   return (
     <main className="px-5 pb-6 pt-4">
       <h1 className="t-display text-[40px]">{p.title}</h1>
@@ -39,7 +31,7 @@ export default function Progress() {
         className="mt-3"
         label={p.tabs}
         value={tab}
-        onChange={(t) => setParams({ tab: t }, { replace: true })}
+        onChange={setTab}
         options={[
           { value: 'lifts', label: p.lifts },
           { value: 'body', label: p.body },
@@ -55,43 +47,10 @@ export default function Progress() {
 
 function Lifts() {
   const p = en.progress;
-  const map = useExerciseMap();
-  const profile = useProfile();
-  const settings = useSettings();
-  const lifts = useLiveQuery(() => getLiftSeries(), []);
-  const prs = useLiveQuery(() => getRecentPrs(10), []);
-  const strength = useLiveQuery(() => getStrength(), []);
-  const [pick, setPick] = useState<string | null>(null);
-  const now = Date.now();
-  const [wStart, wEnd] = weekRange(now, settings.weekStart);
-  const week = useLiveQuery(async () => {
-    const done = await db.sessions
-      .filter((s) => s.endedAt !== undefined && s.startedAt >= wStart && s.startedAt < wEnd)
-      .count();
-    const first = (await db.sessions.filter((s) => s.endedAt !== undefined).toArray()).sort(
-      (a, b) => a.startedAt - b.startedAt,
-    )[0];
-    return {
-      done,
-      number: first
-        ? weekNumber(defaultReviewTime(now, settings.weekStart), first.startedAt, settings.weekStart)
-        : 1,
-    };
-  }, [wStart]);
-  const current = lifts?.find((l) => l.exerciseId === pick) ?? lifts?.[0];
-  const ex = current ? map?.get(current.exerciseId) : undefined;
-  const units = profile?.units ?? 'kg';
-  const chart = useMemo(
-    () => (current ? weeklyBest(current.points, now, settings.weekStart) : []),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [current, settings.weekStart],
-  );
-  if (!lifts || !map || !profile) return null;
+  const d = useLifts();
+  if (!d) return null;
+  const { map, profile, units, lifts, prs, strength, week, current, ex, setPick, change, spanWeeks } = d;
   const s = en.strength;
-  const change = relativeChange(chart.map((c) => ({ at: c.at, value: c.value })));
-  const spanWeeks =
-    chart.length >= 2 ? Math.round((chart[chart.length - 1]!.at - chart[0]!.at) / (7 * 86_400_000)) : 0;
-  const latest = current?.points[current.points.length - 1];
 
   return (
     <>
@@ -125,8 +84,8 @@ function Lifts() {
             <Icon name="chevronDown" size={14} className="pointer-events-none absolute right-2.5" />
           </label>
           <p className="t-display mt-2.5 text-[40px] leading-none">
-            {latest ? displayNumber(chart[chart.length - 1]?.value ?? latest.value, units) : '–'}
-            <span className="text-[16px] normal-case"> {loadUnitLabel(ex.loadType, units)}</span>
+            {d.value}
+            <span className="text-[16px] normal-case"> {d.unit}</span>
           </p>
           <p className="mt-0.5 text-[13px] text-ink2">
             {p.e1rm}
@@ -138,14 +97,7 @@ function Lifts() {
             )}
           </p>
           <div className="mt-2">
-            <LineChart
-              points={chart.map((c) => ({
-                label: c.label,
-                value: Math.round(toDisplay(c.value, units) * 10) / 10,
-              }))}
-              unit={loadUnitLabel(ex.loadType, units)}
-              title={`${p.e1rm}, ${ex.name}`}
-            />
+            <LineChart points={d.points} unit={d.unit} title={d.chartTitle} />
           </div>
         </section>
       )}
@@ -218,14 +170,10 @@ function Lifts() {
 
 function Body() {
   const p = en.progress;
-  const profile = useProfile();
-  const weights = useBodyweights();
+  const d = useBody();
   const [open, setOpen] = useState(false);
-  const review = useLiveQuery(() => getReview('week', Date.now()), []);
-  if (!profile || !weights) return null;
-  const units = profile.units;
-  const sorted = [...weights].sort((a, b) => a.date.localeCompare(b.date));
-  const last = sorted[sorted.length - 1];
+  if (!d) return null;
+  const { units, sorted, last, review } = d;
   return (
     <>
       {review && (
@@ -305,13 +253,7 @@ function Body() {
 
 function History() {
   const p = en.progress;
-  const sessions = useLiveQuery(
-    async () =>
-      (await db.sessions.filter((s) => s.endedAt !== undefined).toArray()).sort(
-        (a, b) => b.startedAt - a.startedAt,
-      ),
-    [],
-  );
+  const sessions = useHistory();
   if (!sessions) return null;
   if (!sessions.length)
     return (

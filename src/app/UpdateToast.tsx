@@ -3,6 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '@/db/schema';
 import { isNative } from '@/platform';
 import { en } from '@/copy/en';
+import { useDesign } from './design';
 
 type WB = import('workbox-window').Workbox;
 
@@ -13,6 +14,7 @@ type WB = import('workbox-window').Workbox;
 export function UpdateToast() {
   const [wb, setWb] = useState<WB | null>(null);
   const [waiting, setWaiting] = useState(false);
+  const sun = useDesign() === 'sun';
   const activeSession = useLiveQuery(() => db.sessions.filter((s) => s.endedAt === undefined).count(), [], 0);
 
   useEffect(() => {
@@ -35,13 +37,26 @@ export function UpdateToast() {
   return (
     <div
       role="status"
-      className="fixed inset-x-0 bottom-[calc(84px+env(safe-area-inset-bottom))] z-50 mx-auto flex max-w-[440px] items-center gap-3 px-4"
+      className={
+        sun
+          ? 'fixed inset-x-0 bottom-[calc(100px+env(safe-area-inset-bottom))] z-50 mx-auto flex max-w-[440px] items-center gap-3 px-5'
+          : 'fixed inset-x-0 bottom-[calc(84px+env(safe-area-inset-bottom))] z-50 mx-auto flex max-w-[440px] items-center gap-3 px-4'
+      }
     >
-      <div className="ll-card ll-card-hard flex w-full items-center gap-3 px-4 py-2">
-        <span className="grow text-[15px] font-semibold">{en.update.ready}</span>
+      {/* Rising Sun (FR-DSN-10): opaque, so it reads over the tab bar and whatever scrolls under it. */}
+      <div
+        className={
+          sun
+            ? 'll-card ll-card-hard sun-setup-opaque flex w-full items-center gap-3 py-2 pl-4 pr-2'
+            : 'll-card ll-card-hard flex w-full items-center gap-3 px-4 py-2'
+        }
+      >
+        <span className={sun ? 'grow text-[16px] font-semibold' : 'grow text-[15px] font-semibold'}>
+          {en.update.ready}
+        </span>
         <button
           type="button"
-          className="ll-chip min-h-11"
+          className={sun ? 'll-chip min-h-11 !px-4 !text-[15px]' : 'll-chip min-h-11'}
           data-variant="red"
           onClick={() => wb?.messageSkipWaiting()}
         >

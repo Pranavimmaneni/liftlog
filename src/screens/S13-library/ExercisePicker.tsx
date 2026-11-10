@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { Button } from '@/components/Button';
 import { Sheet } from '@/components/Sheet';
 import { ExerciseRow } from '@/components/ExerciseRow';
-import { ToggleChip } from '@/components/Chip';
 import { Icon } from '@/components/Icon';
 import { EmptyState } from '@/components/Toast';
 import { en } from '@/copy/en';
 import type { Exercise } from '@/engine/types';
+import { useDesign } from '@/app/design';
 import { useLibrary } from './useLibrary';
+import { Toggle } from './Toggle';
 
 const PAGE = 60;
 
@@ -30,6 +31,7 @@ export function ExercisePicker({
   onCreate?: (name: string) => void;
   exclude?: string[];
 }) {
+  const sun = useDesign() === 'sun';
   const [query, setQuery] = useState('');
   const [inGym, setInGym] = useState(true);
   const [limit, setLimit] = useState(PAGE);
@@ -57,11 +59,17 @@ export function ExercisePicker({
   );
   return (
     <Sheet open={open} onClose={onClose} title={title}>
-      <label className="flex h-14 items-center gap-3 rounded-lg border-2 border-ink bg-card px-4">
-        <Icon name="search" className="shrink-0 text-ink2" />
+      <label
+        className={
+          sun
+            ? 'sun-plan-search border border-hairline bg-soft'
+            : 'flex h-14 items-center gap-3 rounded-lg border-2 border-ink bg-card px-4'
+        }
+      >
+        <Icon name="search" size={sun ? 20 : 24} className="shrink-0 text-ink2" />
         <input
           type="search"
-          className="h-full w-full bg-transparent text-[18px] outline-none"
+          className={sun ? '' : 'h-full w-full bg-transparent text-[18px] outline-none'}
           placeholder={en.library.search}
           aria-label={en.library.search}
           value={query}
@@ -72,9 +80,9 @@ export function ExercisePicker({
         />
       </label>
       <div className="mt-2.5 flex gap-2">
-        <ToggleChip on={inGym} check onClick={() => setInGym(!inGym)}>
+        <Toggle on={inGym} check soft onClick={() => setInGym(!inGym)}>
           {en.library.inMyGym}
-        </ToggleChip>
+        </Toggle>
       </div>
       {list.length > 0 && (
         <div className="ll-card mt-3 overflow-hidden" role="list">
@@ -88,7 +96,9 @@ export function ExercisePicker({
       )}
       {others.length > 0 && (
         <>
-          <h3 className="t-label mt-4">{en.library.outsideGym}</h3>
+          <h3 className={sun ? 'mt-4 text-[13px] font-semibold text-ink2' : 't-label mt-4'}>
+            {en.library.outsideGym}
+          </h3>
           <div className="ll-card mt-2 overflow-hidden" role="list" aria-label={en.library.outsideGym}>
             {others.slice(0, PAGE).map(row)}
           </div>
@@ -100,8 +110,12 @@ export function ExercisePicker({
         </div>
       )}
       {onCreate && (
-        <Button variant="ghost" className="mt-3 h-14 w-full" onClick={() => onCreate(query.trim())}>
-          <Icon name="plus" /> {en.library.create}
+        <Button
+          variant={sun ? 'secondary' : 'ghost'}
+          className={sun ? 'mt-3 w-full' : 'mt-3 h-14 w-full'}
+          onClick={() => onCreate(query.trim())}
+        >
+          <Icon name="plus" size={sun ? 18 : 24} /> {en.library.create}
         </Button>
       )}
     </Sheet>

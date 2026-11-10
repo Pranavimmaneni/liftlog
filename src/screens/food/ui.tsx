@@ -1,13 +1,56 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { useNavigate } from 'react-router';
 import { Icon } from '@/components/Icon';
+import { ScreenHeader } from '@/components/ScreenHeader';
+import { useDesign } from '@/app/design';
 import { en } from '@/copy/en';
 
 /**
  * The Food section's minimal kit (mockups F01–F07, design/screens-v2/food/food.css): one big number
  * per screen, hairline rules instead of boxes, thin segmented bars, one primary button.
  * Colours are Paper & Iron tokens only (FR-THM-1).
+ *
+ * In the Rising Sun look (FR-DSN-11) the same parts take the handoff's shapes: continuous 6 px
+ * bars, pills, square stepper buttons, the glass sub-screen bar. Classic is unchanged.
  */
+
+/** Rising Sun progress bar with a text alternative (mockup `.bar`). `color` is a token colour. */
+export function SunMeter({
+  value,
+  max,
+  extra = 0,
+  color = 'var(--ll-accent)',
+  label,
+}: {
+  value: number;
+  max: number;
+  /** Added on top in sage (a preview of "after this"). */
+  extra?: number;
+  color?: string;
+  label?: string;
+}) {
+  const pct = (v: number) => (max > 0 ? Math.min(100, Math.max(0, (v / max) * 100)) : 0);
+  const base = pct(value);
+  return (
+    <div
+      role="meter"
+      aria-label={label}
+      aria-valuemin={0}
+      aria-valuemax={Math.round(max)}
+      aria-valuenow={Math.round(value)}
+      className="flex h-1.5 overflow-hidden rounded-full bg-soft"
+    >
+      <i aria-hidden="true" className="block h-full" style={{ width: `${base}%`, background: color }} />
+      {extra > 0 && (
+        <i
+          aria-hidden="true"
+          className="block h-full bg-sage"
+          style={{ width: `${pct(value + extra) - base}%` }}
+        />
+      )}
+    </div>
+  );
+}
 
 /** Thin segmented bar (the quiet game motif). `tone` colours the filled segments. */
 export function SegBar({
@@ -28,6 +71,17 @@ export function SegBar({
   thick?: boolean;
   label?: string;
 }) {
+  const sun = useDesign() === 'sun';
+  if (sun)
+    return (
+      <SunMeter
+        value={value}
+        max={max}
+        extra={extra}
+        label={label}
+        color={tone === 'accent' ? 'var(--ll-accent)' : 'var(--ll-ink)'}
+      />
+    );
   const filled = max > 0 ? Math.min(segments, Math.round((value / max) * segments)) : 0;
   const plus = max > 0 ? Math.min(segments - filled, Math.round((extra / max) * segments)) : 0;
   return (
@@ -59,6 +113,8 @@ export function SegBar({
 }
 
 export function Label({ children, className = '' }: { children: ReactNode; className?: string }) {
+  const sun = useDesign() === 'sun';
+  if (sun) return <p className={`text-[14px] font-semibold text-ink2 ${className}`}>{children}</p>;
   return (
     <p className={`font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-ink2 ${className}`}>
       {children}
@@ -67,6 +123,16 @@ export function Label({ children, className = '' }: { children: ReactNode; class
 }
 
 export function BigNumber({ value, unit, size = 84 }: { value: string; unit?: string; size?: number }) {
+  const sun = useDesign() === 'sun';
+  if (sun)
+    return (
+      <p>
+        <span className="sun-display" style={{ fontSize: size >= 80 ? 54 : 44 }}>
+          {value}
+        </span>
+        {unit && <span className="text-[15px] text-ink2"> {unit}</span>}
+      </p>
+    );
   return (
     <p className="leading-[0.9]">
       <span className="t-display font-extrabold" style={{ fontSize: size }}>
@@ -78,19 +144,33 @@ export function BigNumber({ value, unit, size = 84 }: { value: string; unit?: st
 }
 
 /** Header for Food's sub-screens: back + display title (F02–F05). */
-export function FoodHeader({ title, sub, backTo }: { title: ReactNode; sub?: ReactNode; backTo?: string }) {
+export function FoodHeader({
+  title,
+  sub,
+  backTo,
+  right,
+}: {
+  title: ReactNode;
+  sub?: ReactNode;
+  backTo?: string;
+  /** Rising Sun only: the right slot of the glass bar. */
+  right?: ReactNode;
+}) {
   const navigate = useNavigate();
+  const sun = useDesign() === 'sun';
+  const back = () => {
+    const idx = (window.history.state as { idx?: number } | null)?.idx;
+    if (idx) navigate(-1);
+    else navigate(backTo ?? '/food');
+  };
+  if (sun) return <ScreenHeader title={title} subtitle={sub} onBack={back} right={right} />;
   return (
     <header className="flex items-center gap-1 px-6 pt-5">
       <button
         type="button"
         aria-label={en.common.back}
         className="-ml-3 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-ink"
-        onClick={() => {
-          const idx = (window.history.state as { idx?: number } | null)?.idx;
-          if (idx) navigate(-1);
-          else navigate(backTo ?? '/food');
-        }}
+        onClick={back}
       >
         <Icon name="back" />
       </button>
@@ -114,6 +194,24 @@ export function TextTabs<T extends string>({
   onChange: (v: T) => void;
   label: string;
 }) {
+  const sun = useDesign() === 'sun';
+  if (sun)
+    return (
+      <div role="tablist" aria-label={label} className="-mx-5 flex gap-2 overflow-x-auto px-5 py-1">
+        {tabs.map(([v, text]) => (
+          <button
+            key={v}
+            type="button"
+            role="tab"
+            aria-selected={v === value}
+            onClick={() => onChange(v)}
+            className="sun-pill sun-food-onpage !min-h-11 shrink-0"
+          >
+            {text}
+          </button>
+        ))}
+      </div>
+    );
   return (
     <div role="tablist" aria-label={label} className="flex gap-5 overflow-x-auto">
       {tabs.map(([v, text]) => (
@@ -146,6 +244,7 @@ export function Choices<T extends string>({
   onChange: (v: T) => void;
   label: string;
 }) {
+  const sun = useDesign() === 'sun';
   return (
     <div role="radiogroup" aria-label={label} className="flex flex-wrap gap-2">
       {options.map(([v, text]) => (
@@ -155,9 +254,13 @@ export function Choices<T extends string>({
           role="radio"
           aria-checked={v === value}
           onClick={() => onChange(v)}
-          className={`min-h-11 rounded-full border px-4 text-[14px] ${
-            v === value ? 'border-ink bg-ink text-card' : 'border-rule text-ink2'
-          }`}
+          className={
+            sun
+              ? 'sun-pill !min-h-11'
+              : `min-h-11 rounded-full border px-4 text-[14px] ${
+                  v === value ? 'border-ink bg-ink text-card' : 'border-rule text-ink2'
+                }`
+          }
         >
           {text}
         </button>
@@ -180,7 +283,10 @@ export function RoundStepper({
   onMore: () => void;
   canLess?: boolean;
 }) {
-  const btn = 'flex h-[52px] w-[52px] items-center justify-center rounded-full border border-rule text-ink';
+  const sun = useDesign() === 'sun';
+  const btn = sun
+    ? 'sun-food-step'
+    : 'flex h-[52px] w-[52px] items-center justify-center rounded-full border border-rule text-ink';
   return (
     <div className="flex items-center justify-between">
       <button
@@ -193,8 +299,17 @@ export function RoundStepper({
         <Icon name="minus" />
       </button>
       <div className="text-center" aria-live="polite">
-        <p className="t-display text-[56px] font-extrabold leading-none">{value}</p>
-        <Label className="mt-2">{unit}</Label>
+        {sun ? (
+          <>
+            <p className="sun-display text-[38px]">{value}</p>
+            <p className="mt-1.5 text-[13px] text-ink2">{unit}</p>
+          </>
+        ) : (
+          <>
+            <p className="t-display text-[56px] font-extrabold leading-none">{value}</p>
+            <Label className="mt-2">{unit}</Label>
+          </>
+        )}
       </div>
       <button
         type="button"
@@ -233,6 +348,25 @@ export function FieldRow({
   onClick?: () => void;
   muted?: boolean;
 }) {
+  const sun = useDesign() === 'sun';
+  if (sun) {
+    const body = (
+      <>
+        <span className="min-w-0">{label}</span>
+        <span className={`flex shrink-0 items-center gap-1 tabular-nums ${muted ? 'text-ink2' : ''}`}>
+          {value}
+          {onClick && <Icon name="chevronRight" size={16} className="text-ink2" />}
+        </span>
+      </>
+    );
+    return onClick ? (
+      <button type="button" className="sun-list-row" onClick={onClick}>
+        {body}
+      </button>
+    ) : (
+      <div className="sun-list-row">{body}</div>
+    );
+  }
   const inner = (
     <>
       <span className="text-[15px]">{label}</span>
@@ -253,10 +387,15 @@ export function TextLink({
   children,
   ...rest
 }: ButtonHTMLAttributes<HTMLButtonElement> & { children: ReactNode }) {
+  const sun = useDesign() === 'sun';
   return (
     <button
       type="button"
-      className="min-h-11 font-mono text-[12px] font-semibold uppercase tracking-[0.06em] text-accent"
+      className={
+        sun
+          ? 'min-h-11 text-left text-[15px] font-semibold text-accent-text'
+          : 'min-h-11 font-mono text-[12px] font-semibold uppercase tracking-[0.06em] text-accent'
+      }
       {...rest}
     >
       {children}

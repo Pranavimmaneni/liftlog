@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { en } from '@/copy/en';
+import { useDesign } from './design';
 
 /** IndexedDB / Dexie failures that mean "your data may not have been saved". */
 const STORAGE_ERRORS = new Set([
@@ -26,6 +27,7 @@ export function isStorageError(e: unknown): boolean {
 /** S26 storage-error banner with "Export backup" (PRD §4.1). */
 export function StorageBanner() {
   const [on, setOn] = useState(false);
+  const sun = useDesign() === 'sun';
   useEffect(() => {
     const l = (v: boolean) => setOn(v);
     listeners.push(l);
@@ -43,12 +45,18 @@ export function StorageBanner() {
   return (
     <div
       role="alert"
-      className="fixed inset-x-0 top-0 z-50 mx-auto flex max-w-[480px] items-center gap-3 border-b-2 border-accent bg-card px-4 pb-3 pt-[calc(12px+env(safe-area-inset-top))]"
+      className={
+        sun
+          ? 'fixed inset-x-0 top-0 z-50 mx-auto flex max-w-[480px] items-center gap-3 rounded-b-[18px] border-b-2 border-accent-text bg-card px-5 pb-3 pt-[calc(12px+env(safe-area-inset-top))]'
+          : 'fixed inset-x-0 top-0 z-50 mx-auto flex max-w-[480px] items-center gap-3 border-b-2 border-accent bg-card px-4 pb-3 pt-[calc(12px+env(safe-area-inset-top))]'
+      }
     >
-      <p className="grow text-[14px] leading-snug">{en.storage.error}</p>
+      <p className={sun ? 'grow text-[15px] leading-snug' : 'grow text-[14px] leading-snug'}>
+        {en.storage.error}
+      </p>
       <button
         type="button"
-        className="ll-chip min-h-11 shrink-0"
+        className={sun ? 'll-chip min-h-11 shrink-0 !px-3.5 !text-[14px]' : 'll-chip min-h-11 shrink-0'}
         data-variant="outline-red"
         onClick={async () => (await import('./share-backup')).shareBackup()}
       >

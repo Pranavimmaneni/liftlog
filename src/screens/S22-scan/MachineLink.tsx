@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
+import { LinkButton } from '@/components/Button';
 import { EmptyState } from '@/components/Toast';
+import { useDesign } from '@/app/design';
 import { en } from '@/copy/en';
 import { db } from '@/db/schema';
 import { getExerciseMap } from '@/db/catalog';
@@ -16,6 +18,7 @@ export default function MachineLink() {
   const { machineId = '' } = useParams();
   const navigate = useNavigate();
   const [problem, setProblem] = useState<string | null>(null);
+  const sun = useDesign() === 'sun';
 
   useEffect(() => {
     let cancelled = false;
@@ -47,7 +50,15 @@ export default function MachineLink() {
 
   return (
     <main className="px-5 pt-6">
-      {problem ? (
+      {problem && sun ? (
+        // Rising Sun (FR-DSN-10, S26a): a centred glass card with the way on as its button.
+        <div className="sun-glass rounded-[18px] p-[18px] text-center">
+          <p className="text-[17px] font-bold leading-snug">{problem}</p>
+          <LinkButton to="/scan" className="mt-4">
+            {en.scan.title}
+          </LinkButton>
+        </div>
+      ) : problem ? (
         <EmptyState
           action={
             <Link to="/scan" className="ll-link">
@@ -58,7 +69,12 @@ export default function MachineLink() {
           {problem}
         </EmptyState>
       ) : (
-        <p role="status" className="text-[15px] text-ink2">
+        <p
+          role="status"
+          className={
+            sun ? 'sun-glass rounded-[14px] px-4 py-3.5 text-[15px] text-ink2' : 'text-[15px] text-ink2'
+          }
+        >
           {en.scan.resolving}
         </p>
       )}

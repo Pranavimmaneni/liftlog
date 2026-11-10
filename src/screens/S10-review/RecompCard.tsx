@@ -1,6 +1,7 @@
 import { Chip } from '@/components/Chip';
 import { Sparkline } from '@/components/Chart';
 import { en } from '@/copy/en';
+import { useDesign } from '@/app/design';
 import type { RecompStatus } from '@/engine/review';
 import type { Point } from '@/engine/strength';
 import { displayNumber } from '@/engine/units';
@@ -22,6 +23,7 @@ export function RecompCard({
   units: Units;
 }) {
   const r = en.review;
+  const small = useDesign() === 'sun' ? 'text-[13px]' : 'text-[12px]';
   const bw = [...bodyweight].sort((a, b) => a.at - b.at);
   const first = bw[0];
   const last = bw[bw.length - 1];
@@ -44,7 +46,7 @@ export function RecompCard({
         <>
           <div className="mt-2.5 grid grid-cols-2 gap-3">
             <div className="min-w-0">
-              <p className="text-[12px] text-ink2">{r.bodyweight}</p>
+              <p className={`${small} text-ink2`}>{r.bodyweight}</p>
               <p className="t-mono text-[15px] font-semibold">
                 {first && last
                   ? `${displayNumber(first.value, units)} → ${displayNumber(last.value, units)} ${units}`
@@ -53,7 +55,7 @@ export function RecompCard({
               <Sparkline values={bw.map((p) => p.value)} label={r.bodyweight} />
             </div>
             <div className="min-w-0">
-              <p className="text-[12px] text-ink2">{r.strengthAvg}</p>
+              <p className={`${small} text-ink2`}>{r.strengthAvg}</p>
               <p className="t-mono text-[15px] font-semibold">
                 {change === null ? '–' : `${change >= 0 ? '+' : ''}${Math.round(change * 100)}%`}
               </p>
