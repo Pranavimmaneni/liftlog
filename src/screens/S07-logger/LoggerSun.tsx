@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Link } from 'react-router';
 import { Button } from '@/components/Button';
 import { muscleName } from '@/components/ExerciseRow';
@@ -12,6 +12,7 @@ import { poseDef } from '@/illustration/svg';
 import { en } from '@/copy/en';
 import { formatReason, list } from '@/copy/format';
 import { useRest } from '@/app/rest-store';
+import { celebrateOnce } from '@/app/echo';
 import { setEffort, setHurts, swapInSession } from '@/db/workout';
 import type { SetRow } from '@/db/types';
 import { ADJUST_MS, formatClock, restSecondsFor } from '@/engine/timer';
@@ -107,6 +108,17 @@ export function LoggerSun({ L }: { L: LoggerReady }) {
   const adjust = useRest((s) => s.adjust);
   const t = en.sun.logger;
   const r = en.sun.rest;
+
+  // FR-DSN-8: a new record celebrates once, when the set that set it has just been logged.
+  const prSet = item.work.find((s) => s.id === item.prSetId);
+  useEffect(() => {
+    if (!prSet || Date.now() - prSet.loggedAt > 5000) return;
+    const text = hasLoad(lt)
+      ? `${formatLoad(prSet.loadKg, lt, units)} × ${prSet.reps}`
+      : `${prSet.reps}${lt === 'timed' ? ' s' : ''}`;
+    celebrateOnce(en.sun.echo.record, { [`pr-${prSet.id}`]: en.sun.echo.recordLine(ex.name, text) });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prSet?.id]);
 
   const resting = remaining !== null;
   const restOver = remaining === 0;

@@ -487,6 +487,103 @@
 .sun-list-row + .sun-list-row {
   border-top: 1px solid var(--ll-rule);
 }
+/* ---------- Echo motion (FR-DSN-8, handoff §6): both events start at the sun's centre ---------- */
+.sun-echo-ring,
+.sun-celebration-ring {
+  transform-box: view-box;
+  transform-origin: 195px 860px;
+  opacity: 0;
+}
+.sun-echo-ring {
+  animation: sun-echo 0.9s ease-out both;
+}
+@keyframes sun-echo {
+  0% {
+    transform: scale(0.82);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+.sun-celebration {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: transparent;
+  color: var(--ll-ink);
+  animation: sun-celebration-out 0.4s ease-in 2.6s both;
+}
+.sun-celebration-dim {
+  position: absolute;
+  inset: 0;
+  background: var(--ll-paper);
+  animation: sun-celebration-dim 0.3s ease-out both;
+}
+.sun-celebration-ring {
+  animation: sun-celebration-ring 1.6s ease-out both;
+}
+.sun-celebration-msg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+  text-align: center;
+  animation: sun-celebration-msg 0.4s ease-out 0.5s both;
+}
+@keyframes sun-celebration-dim {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.9;
+  }
+}
+@keyframes sun-celebration-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  85% {
+    transform: scale(3.6);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(3.9);
+    opacity: 0;
+  }
+}
+@keyframes sun-celebration-msg {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes sun-celebration-out {
+  to {
+    opacity: 0;
+  }
+}
+
 @keyframes sun-rest-over {
   0%,
   100% {

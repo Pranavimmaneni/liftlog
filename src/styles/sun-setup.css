@@ -1,0 +1,4 @@
+/*
+ * Rising Sun look: styles used only by the onboarding, Settings, install and scan screens.
+ * Unlayered like sun.css, so scope every rule under [data-design='sun'] or a sun-setup-* class.
+ */

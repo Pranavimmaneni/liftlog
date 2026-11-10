@@ -1,6 +1,10 @@
 @import 'tailwindcss';
 @import './tokens.css';
 @import './sun.css';
+@import './sun-food.css';
+@import './sun-progress.css';
+@import './sun-plan.css';
+@import './sun-setup.css';
 
 /* Self-hosted fonts (NFR-SEC-1): latin subset only to keep the precache small. */
 @import '@fontsource/big-shoulders-display/latin-700';

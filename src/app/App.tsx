@@ -7,6 +7,7 @@ import { Toaster } from '@/components/Toast';
 import { useThemeSync } from './theme';
 import { hasSun, useDesign, useLookSync } from './design';
 import { SunBackdrop } from '@/components/sun/SunBackdrop';
+import { EchoLayer } from '@/components/sun/Echo';
 import { UpdateToast } from './UpdateToast';
 import { StorageBanner } from './StorageBanner';
 
@@ -47,6 +48,7 @@ export function App() {
       <StorageBanner />
       <OnboardingGate />
       <UpdateToast />
+      {design === 'sun' && <EchoLayer />}
       <Toaster />
     </>
   );

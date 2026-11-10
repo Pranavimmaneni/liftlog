@@ -44,13 +44,15 @@ export function sectionFor(pathname: string): Section {
   return pathname === '/food' || pathname.startsWith('/food/') ? 'food' : 'workout';
 }
 
+/** Camera screens fill the page, so the sun is hidden there (handoff §5). */
+const SUNLESS = ['/scan', '/food/scan'];
+
 /**
- * FR-DSN-3: the sun shows behind the screens rebuilt for it (Today, Active workout, Logging, Rest).
- * The other screens still put text straight on the page, which would be unreadable where it
- * crosses the disc and rings, so they get the sun when they are rebuilt (D127).
+ * FR-DSN-3: the sun is behind every screen except the scanners. Screens keep their text on glass
+ * cards so it stays readable where a card crosses the disc and rings (handoff §8.7).
  */
 export function hasSun(pathname: string): boolean {
-  return pathname === '/' || pathname === '/workout' || pathname.startsWith('/workout/');
+  return !SUNLESS.some((p) => pathname === p || pathname.startsWith(p + '/'));
 }
 
 interface LookState {

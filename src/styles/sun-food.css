@@ -1,0 +1,4 @@
+/*
+ * Rising Sun look: styles used only by the Food screens (F01–F07).
+ * Unlayered like sun.css, so scope every rule under [data-design='sun'] or a sun-food-* class.
+ */

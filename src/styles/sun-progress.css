@@ -1,0 +1,4 @@
+/*
+ * Rising Sun look: styles used only by the Progress, review, strength, summary and body screens.
+ * Unlayered like sun.css, so scope every rule under [data-design='sun'] or a sun-progress-* class.
+ */

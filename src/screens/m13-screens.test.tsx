@@ -48,7 +48,7 @@ describe('M13 Rising Sun screens', () => {
   it('FR-DSN-2: the section follows the route', async () => {
     await seedOnboarded();
     renderRoute('/food');
-    await waitFor(() => expect(document.documentElement.getAttribute('data-section')).toBe('food'));
+    await waitFor(() => expect(document.documentElement.getAttribute('data-section')).toBe('food'), W);
   });
 
   it('FR-DSN-4: Today is a workout card and a Food card, with the rest kept in a quiet list', async () => {

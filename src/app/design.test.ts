@@ -32,12 +32,14 @@ describe('look (FR-DSN-1, FR-DSN-2)', () => {
     expect(useLook.getState().design).toBe('sun');
   });
 
-  it('FR-DSN-3: the sun shows only behind the rebuilt screens', () => {
+  it('FR-DSN-3: the sun is behind every screen except the scanners', () => {
     expect(hasSun('/')).toBe(true);
-    expect(hasSun('/workout')).toBe(true);
     expect(hasSun('/workout/bench-press')).toBe(true);
-    expect(hasSun('/settings')).toBe(false);
-    expect(hasSun('/food')).toBe(false);
+    expect(hasSun('/settings')).toBe(true);
+    expect(hasSun('/food')).toBe(true);
+    expect(hasSun('/scan')).toBe(false);
+    expect(hasSun('/scan/stickers')).toBe(false);
+    expect(hasSun('/food/scan')).toBe(false);
   });
 
   it('FR-DSN-2: every /food route is the Food section, the rest is LiftLog', () => {

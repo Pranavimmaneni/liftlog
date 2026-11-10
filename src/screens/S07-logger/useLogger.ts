@@ -21,6 +21,7 @@ import {
 } from '@/engine/units';
 import type { Effort, Exercise, Units } from '@/engine/types';
 import { platform } from '@/platform';
+import { ripple } from '@/app/echo';
 
 export const EFFORTS: Effort[] = ['easy', 'solid', 'hard'];
 
@@ -127,6 +128,7 @@ export function useLogger() {
       bonusReps: bonusReps(row, g, lt, model.bodyweightKg),
     });
     platform.tap();
+    ripple(); // FR-DSN-8: a logged set ripples the sun (no-op in the classic look).
     setExtra(false);
     setNudgeUsed(null);
     // FR-TMR-1: rest starts on logging a work set (after the right side for unilateral).

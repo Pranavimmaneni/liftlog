@@ -3,7 +3,7 @@ import { create } from 'zustand';
 
 interface ToastState {
   message: string | null;
-  show: (m: string) => void;
+  show: (m: string, ms?: number) => void;
   clear: () => void;
 }
 
@@ -11,18 +11,18 @@ let timer: ReturnType<typeof setTimeout> | undefined;
 
 export const useToast = create<ToastState>((set) => ({
   message: null,
-  show(m) {
+  show(m, ms = 2600) {
     clearTimeout(timer);
     set({ message: m });
-    timer = setTimeout(() => set({ message: null }), 2600);
+    timer = setTimeout(() => set({ message: null }), ms);
   },
   clear() {
     set({ message: null });
   },
 }));
 
-export function toast(m: string) {
-  useToast.getState().show(m);
+export function toast(m: string, ms?: number) {
+  useToast.getState().show(m, ms);
 }
 
 /** A polite live region for short confirmations. */

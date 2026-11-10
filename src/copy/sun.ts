@@ -1,9 +1,31 @@
+import { sunFood } from './sun-food';
+import { sunProgress } from './sun-progress';
+import { sunPlan } from './sun-plan';
+import { sunSetup } from './sun-setup';
+
 /**
  * Copy for the rebuilt Rising Sun screens (M13, FR-DSN-4…7). Merged into `en` as `en.sun`, so all
  * user-facing strings still come from src/copy/en.ts. Sentence case; display titles are uppercased
  * by their style.
  */
 export const sun = {
+  food: sunFood,
+  progress: sunProgress,
+  plan: sunPlan,
+  setup: sunSetup,
+  echo: {
+    dismiss: 'Dismiss',
+    record: 'New record',
+    recordLine: (name: string, set: string) => `${name} · ${set}`,
+    workout: 'Workout finished',
+    goal: 'Goal reached',
+    goals: {
+      kcal: 'Calories for today',
+      protein: 'Protein for today',
+      carbs: 'Carbs for today',
+      fat: 'Fat for today',
+    },
+  },
   today: {
     title: 'Today',
     active: (done: number, total: number, min: number) => `${done} of ${total} sets · ${min} min`,

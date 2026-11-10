@@ -1,0 +1,4 @@
+/*
+ * Rising Sun look: styles used only by the Plan, routine, library and exercise screens.
+ * Unlayered like sun.css, so scope every rule under [data-design='sun'] or a sun-plan-* class.
+ */
