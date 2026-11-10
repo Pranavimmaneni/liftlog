@@ -4,6 +4,7 @@ import { Sheet } from '@/components/Sheet';
 import { Button } from '@/components/Button';
 import { Stepper } from '@/components/Stepper';
 import { toast } from '@/components/Toast';
+import { useDesign } from '@/app/design';
 import { en } from '@/copy/en';
 import { shortDate } from '@/copy/format';
 import { compressImage } from '@/app/image';
@@ -45,6 +46,8 @@ export function MachinePanel({ exercise, units }: { exercise: Exercise; units: U
   const inc = incrementIn(units, exercise.incrementKg, exercise.loadType);
   const [incValue, setIncValue] = useState<number | null>(inc);
   const m = en.machine;
+  // Rising Sun (FR-DSN-10, HW1S08): a glass card under the logger card; the machine's name leads.
+  const sun = useDesign() === 'sun';
   if (note === undefined) return null;
   const settings = Object.entries(note?.settings ?? {});
 
@@ -60,20 +63,41 @@ export function MachinePanel({ exercise, units }: { exercise: Exercise; units: U
   };
 
   return (
-    <section className="ll-card mx-5 mt-3 px-3.5 py-3" aria-labelledby="machine-h">
-      <div className="flex items-center justify-between">
-        <h2 id="machine-h" className="t-label">
-          {m.title}
-        </h2>
-        {note?.updatedAt && (
-          <span className="t-mono text-[11px] text-ink2">{m.saved(shortDate(note.updatedAt))}</span>
-        )}
-      </div>
-      <div className="mt-2.5 flex gap-3">
+    <section
+      className={sun ? 'sun-glass mx-5 mt-3 rounded-[18px] px-[18px] py-4' : 'll-card mx-5 mt-3 px-3.5 py-3'}
+      aria-labelledby="machine-h"
+    >
+      {sun ? (
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h2 id="machine-h" className="text-[13px] font-medium text-ink2">
+              {m.title}
+            </h2>
+            <p className="break-words text-[17px] font-bold leading-tight">{info?.name ?? exercise.name}</p>
+          </div>
+          {note?.updatedAt && (
+            <span className="shrink-0 text-[13px] text-ink2">{m.saved(shortDate(note.updatedAt))}</span>
+          )}
+        </div>
+      ) : (
+        <div className="flex items-center justify-between">
+          <h2 id="machine-h" className="t-label">
+            {m.title}
+          </h2>
+          {note?.updatedAt && (
+            <span className="t-mono text-[11px] text-ink2">{m.saved(shortDate(note.updatedAt))}</span>
+          )}
+        </div>
+      )}
+      <div className={sun ? 'mt-3 flex gap-3' : 'mt-2.5 flex gap-3'}>
         {url ? (
           <button
             type="button"
-            className="h-24 w-24 shrink-0 overflow-hidden rounded-lg border-[1.5px] border-line"
+            className={
+              sun
+                ? 'h-[88px] w-[88px] shrink-0 overflow-hidden rounded-[14px] border border-hairline'
+                : 'h-24 w-24 shrink-0 overflow-hidden rounded-lg border-[1.5px] border-line'
+            }
             aria-label={m.photoOptions(info?.name ?? exercise.name)}
             onClick={() => setPhotoSheet(true)}
           >
@@ -86,7 +110,11 @@ export function MachinePanel({ exercise, units }: { exercise: Exercise; units: U
         ) : (
           <button
             type="button"
-            className="flex h-24 w-24 shrink-0 flex-col items-center justify-center gap-1.5 rounded-lg border-[1.5px] border-dashed border-ink2 bg-panel font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-ink2"
+            className={
+              sun
+                ? 'flex h-[88px] w-[88px] shrink-0 flex-col items-center justify-center gap-1.5 rounded-[14px] border border-dashed border-ink2 bg-soft text-[13px] font-semibold text-ink2'
+                : 'flex h-24 w-24 shrink-0 flex-col items-center justify-center gap-1.5 rounded-lg border-[1.5px] border-dashed border-ink2 bg-panel font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-ink2'
+            }
             onClick={() => fileRef.current?.click()}
           >
             <Icon name="camera" />
@@ -107,23 +135,37 @@ export function MachinePanel({ exercise, units }: { exercise: Exercise; units: U
             e.target.value = '';
           }}
         />
-        <div className="grid grow grid-cols-2 content-start gap-2">
+        <div className="grid min-w-0 grow grid-cols-2 content-start gap-2">
           {settings.map(([k, v]) => (
             <button
               key={k}
               type="button"
-              className="min-h-11 rounded-md bg-panel px-2 py-1.5 text-left"
+              className={
+                sun
+                  ? 'min-h-12 min-w-0 rounded-[12px] border border-hairline bg-soft px-2.5 py-2 text-left'
+                  : 'min-h-11 rounded-md bg-panel px-2 py-1.5 text-left'
+              }
               aria-label={m.editSetting(k, v)}
               onClick={() => setEdit({ key: k, value: v, oldKey: k })}
             >
-              <span className="t-label block">{k}</span>
-              <span className="t-display block text-[24px]">{v}</span>
+              <span className={sun ? 'block break-words text-[13px] text-ink2' : 't-label block'}>{k}</span>
+              <span
+                className={
+                  sun ? 'sun-display mt-1 block break-words text-[19px]' : 't-display block text-[24px]'
+                }
+              >
+                {v}
+              </span>
             </button>
           ))}
           {settings.length < 4 && (
             <button
               type="button"
-              className="flex min-h-11 items-center justify-center rounded-md border-[1.5px] border-dashed border-ink2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-ink2"
+              className={
+                sun
+                  ? 'flex min-h-12 items-center justify-center rounded-[12px] border border-dashed border-ink2 text-[14px] font-semibold text-ink2'
+                  : 'flex min-h-11 items-center justify-center rounded-md border-[1.5px] border-dashed border-ink2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-ink2'
+              }
               onClick={() => setEdit({ key: '', value: '' })}
             >
               + {m.addSetting}
@@ -131,14 +173,22 @@ export function MachinePanel({ exercise, units }: { exercise: Exercise; units: U
           )}
           <button
             type="button"
-            className="col-span-2 min-h-11 rounded-md bg-panel px-2 py-1.5 text-left"
+            className={
+              sun
+                ? 'col-span-2 min-h-12 rounded-[12px] border border-hairline bg-soft px-2.5 py-2 text-left'
+                : 'col-span-2 min-h-11 rounded-md bg-panel px-2 py-1.5 text-left'
+            }
             onClick={() => {
               setIncValue(inc);
               setIncSheet(true);
             }}
           >
-            <span className="t-label block">{m.stack}</span>
-            <span className="mt-0.5 block text-[13px] font-semibold">{m.stackLine(inc, units)}</span>
+            <span className={sun ? 'block text-[13px] text-ink2' : 't-label block'}>{m.stack}</span>
+            <span
+              className={sun ? 'block text-[14px] font-semibold' : 'mt-0.5 block text-[13px] font-semibold'}
+            >
+              {m.stackLine(inc, units)}
+            </span>
           </button>
         </div>
       </div>

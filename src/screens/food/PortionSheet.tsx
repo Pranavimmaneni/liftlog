@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Sheet } from '@/components/Sheet';
+import { useDesign } from '@/app/design';
 import { en } from '@/copy/en';
 import type { FoodItem, Portion } from '@/engine/food-types';
 import { scale } from '@/engine/nutrition';
-import { Choices, Cta, Label, RoundStepper, SegBar } from './ui';
+import { Choices, Cta, Label, RoundStepper, SegBar, SunMeter } from './ui';
 import { fmt } from './format';
 
 const GRAMS = '__grams';
@@ -16,6 +17,8 @@ export interface PortionChoice {
 /**
  * F03 portion sheet (PRD-1.2 FR-DIARY-2): pick a unit (the food's own portions, or grams), set the
  * amount with − / +, see kcal and macros, and what this does to today's protein before adding.
+ * In the Rising Sun look (FR-DSN-11, mockup F03) the amount comes first, then the unit pills and
+ * the four numbers in one row.
  */
 export function PortionSheet({
   food,
@@ -36,6 +39,7 @@ export function PortionSheet({
   /** Today's protein so far and its target, for the "after this" line. */
   dayProtein?: { eaten: number; target: number };
 }) {
+  const sun = useDesign() === 'sun';
   const portions = food?.portions.length ? food.portions : [{ label: '100 g', grams: 100 }];
   const [unit, setUnit] = useState<string>(GRAMS);
   const [servings, setServings] = useState(1);
@@ -81,6 +85,69 @@ export function PortionSheet({
     .join(' · ');
   const macro = (v: number | null) => (v === null ? '–' : `${fmt(v)} g`);
 
+  const stepper = isGrams ? (
+    <RoundStepper
+      value={fmt(grams)}
+      unit={en.food.units.grams}
+      canLess={grams > 10}
+      onLess={() => setGrams((g) => Math.max(10, g - 10))}
+      onMore={() => setGrams((g) => g + 10)}
+    />
+  ) : (
+    <RoundStepper
+      value={fmt(servings, 1)}
+      unit={portion.label.replace(/^1 /, '')}
+      canLess={servings > 0.5}
+      onLess={() => setServings((s) => Math.max(0.5, s - 0.5))}
+      onMore={() => setServings((s) => s + 0.5)}
+    />
+  );
+
+  if (sun)
+    return (
+      <Sheet open={open} onClose={onClose} title={food.name}>
+        <p className="-mt-1 text-[14px] text-ink2">{sub}</p>
+        <div className="mt-4">{stepper}</div>
+        <div className="mt-4">
+          <Choices options={choices} value={unit} onChange={setUnit} label={en.food.portion.grams} />
+        </div>
+        <div className="mt-4 grid grid-cols-4 text-center">
+          <div>
+            <p className="text-[17px] font-bold tabular-nums">{n.kcal === null ? '–' : fmt(n.kcal)}</p>
+            <p className="text-[13px] text-ink2">{en.sun.food.portion.kcal}</p>
+          </div>
+          {(['protein', 'carbs', 'fat'] as const).map((k) => (
+            <div key={k}>
+              <p className="text-[17px] font-bold tabular-nums">{macro(n[k])}</p>
+              <p className="text-[13px] text-ink2">{en.food.macros[k].toLowerCase()}</p>
+            </div>
+          ))}
+        </div>
+        {dayProtein && dayProtein.target > 0 && (
+          <div className="mt-4">
+            <div className="flex justify-between text-[14px]">
+              <span className="text-ink2">{en.food.portion.after}</span>
+              <span className="tabular-nums">
+                <b>{fmt(dayProtein.eaten + (n.protein ?? 0))}</b>
+                <span className="text-ink2"> / {fmt(dayProtein.target)} g</span>
+              </span>
+            </div>
+            <div className="mt-2">
+              <SunMeter
+                value={dayProtein.eaten}
+                extra={n.protein ?? 0}
+                max={dayProtein.target}
+                label={en.food.portion.after}
+              />
+            </div>
+          </div>
+        )}
+        <div className="mt-5">
+          <Cta onClick={() => onDone({ portion, servings: amount })}>{action}</Cta>
+        </div>
+      </Sheet>
+    );
+
   return (
     <Sheet open={open} onClose={onClose} title={food.name}>
       <p className="-mt-1 text-[13px] text-ink2">{sub}</p>
@@ -89,25 +156,7 @@ export function PortionSheet({
         <Choices options={choices} value={unit} onChange={setUnit} label={en.food.portion.grams} />
       </div>
 
-      <div className="mt-6">
-        {isGrams ? (
-          <RoundStepper
-            value={fmt(grams)}
-            unit={en.food.units.grams}
-            canLess={grams > 10}
-            onLess={() => setGrams((g) => Math.max(10, g - 10))}
-            onMore={() => setGrams((g) => g + 10)}
-          />
-        ) : (
-          <RoundStepper
-            value={fmt(servings, 1)}
-            unit={portion.label.replace(/^1 /, '')}
-            canLess={servings > 0.5}
-            onLess={() => setServings((s) => Math.max(0.5, s - 0.5))}
-            onMore={() => setServings((s) => s + 0.5)}
-          />
-        )}
-      </div>
+      <div className="mt-6">{stepper}</div>
 
       <p className="mt-6 text-center leading-none">
         <span className="t-display text-[40px] font-extrabold">{n.kcal === null ? '–' : fmt(n.kcal)}</span>

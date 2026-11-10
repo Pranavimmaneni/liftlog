@@ -32,16 +32,16 @@ describe('M13 Rising Sun screens', () => {
     expect(screen.queryByTestId('sun-backdrop')).toBeNull();
 
     fireEvent.click(within(look).getByRole('button', { name: 'Rising Sun' }));
-    await waitFor(() => expect(document.documentElement.getAttribute('data-design')).toBe('sun'));
-    await waitFor(async () => expect((await db.settings.get('design'))?.value).toBe('sun'));
+    await waitFor(() => expect(document.documentElement.getAttribute('data-design')).toBe('sun'), W);
+    await waitFor(async () => expect((await db.settings.get('design'))?.value).toBe('sun'), W);
     expect(localStorage.getItem('ll-design')).toBe('sun');
     // FR-DSN-3: the glass switch appears (the sun itself is checked on Today below).
     fireEvent.click(screen.getByRole('switch', { name: 'Frosted glass' }));
-    await waitFor(() => expect(document.documentElement.getAttribute('data-glass')).toBe('off'));
-    await waitFor(async () => expect((await db.settings.get('sunGlass'))?.value).toBe(false));
+    await waitFor(() => expect(document.documentElement.getAttribute('data-glass')).toBe('off'), W);
+    await waitFor(async () => expect((await db.settings.get('sunGlass'))?.value).toBe(false), W);
 
     fireEvent.click(within(look).getByRole('button', { name: 'Classic' }));
-    await waitFor(() => expect(document.documentElement.getAttribute('data-design')).toBe('classic'));
+    await waitFor(() => expect(document.documentElement.getAttribute('data-design')).toBe('classic'), W);
     expect(screen.queryByTestId('sun-backdrop')).toBeNull();
   });
 
@@ -82,10 +82,10 @@ describe('M13 Rising Sun screens', () => {
       expect(within(food).getByText(new RegExp(`^${m}: 0 of \\d+ grams$`))).toBeInTheDocument();
 
     // Kept features: this week (FR-RTN-5), quest (FR-XP-6), weigh-in (S20), level (FR-XP-2).
-    const more = screen.getByRole('region', { name: 'This week' });
+    const more = await screen.findByRole('region', { name: 'This week' }, W);
     expect(within(more).getByText(/session 1 of 4 is next/i)).toBeInTheDocument();
-    expect(within(more).getByText('Weekly quest')).toBeInTheDocument();
-    expect(within(more).getByRole('link', { name: /level 1/i })).toBeInTheDocument();
+    expect(await within(more).findByText('Weekly quest', {}, W)).toBeInTheDocument();
+    expect(await within(more).findByRole('link', { name: /level 1/i }, W)).toBeInTheDocument();
     fireEvent.click(within(more).getByRole('button', { name: /weigh-in/i }));
     expect(await screen.findByRole('dialog', { name: /weigh-in/i }, W)).toBeInTheDocument();
   });
@@ -141,7 +141,7 @@ describe('M13 Rising Sun screens', () => {
     // FR-WRK-6: one-tap effort for the set just logged.
     const feel = await screen.findByRole('group', { name: 'How did set 1 feel?' }, W);
     fireEvent.click(within(feel).getByRole('button', { name: 'Easy' }));
-    await waitFor(async () => expect((await db.sets.toArray())[0]!.effort).toBe('easy'));
+    await waitFor(async () => expect((await db.sets.toArray())[0]!.effort).toBe('easy'), W);
 
     // Handoff §8.1: −15 s / +15 s and "Hurts" live in the options sheet (FR-TMR-3).
     const before = useRest.getState().timer!.durationMs;

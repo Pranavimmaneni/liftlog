@@ -6,6 +6,7 @@ import { SegmentedControl } from '@/components/SegmentedControl';
 import { Stepper } from '@/components/Stepper';
 import { toast } from '@/components/Toast';
 import { en } from '@/copy/en';
+import { useDesign } from '@/app/design';
 import { saveProfile, saveWeighIn, useBodyweights, useProfile } from '@/db/repo';
 import { dateKey } from '@/engine/week';
 import { fromDisplay, toDisplay } from '@/engine/units';
@@ -26,6 +27,7 @@ export default function BodyStats() {
   const [year, setYear] = useState('');
   const [bw, setBw] = useState<number | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const sun = useDesign() === 'sun';
   const thisYear = new Date().getFullYear();
   const minYear = thisYear - 100;
   const maxYear = thisYear - 12;
@@ -57,25 +59,71 @@ export default function BodyStats() {
     navigate(next, { replace: true });
   };
 
+  const actions = (
+    <>
+      <Button onClick={save} disabled={yearBad}>
+        {b.save}
+      </Button>
+      <Button
+        variant="secondary"
+        onClick={async () => {
+          if (!profile.sex) await saveProfile({ sex: 'unspecified' });
+          navigate(next, { replace: true });
+        }}
+      >
+        {b.skip}
+      </Button>
+    </>
+  );
+
   return (
     <main className="pb-[calc(24px+env(safe-area-inset-bottom))]">
       <ScreenHeader title={b.title} backTo="/progress?tab=body" />
-      <p className="px-5 pt-2 text-[15px] leading-snug text-ink2">{b.intro}</p>
-      <div className="flex flex-col gap-5 px-5 pt-4">
+      {!sun && <p className="px-5 pt-2 text-[15px] leading-snug text-ink2">{b.intro}</p>}
+      <div
+        className={
+          sun
+            ? 'sun-glass mx-5 mt-4 flex flex-col gap-5 rounded-[18px] p-[18px]'
+            : 'flex flex-col gap-5 px-5 pt-4'
+        }
+      >
+        {sun && <p className="text-[15px] leading-snug text-ink2">{b.intro}</p>}
         <div>
-          <p className="t-label">{b.sex}</p>
-          <SegmentedControl<Sex>
-            className="mt-1.5"
-            label={b.sex}
-            value={sex}
-            onChange={setSex}
-            height={44}
-            options={[
-              { value: 'male', label: b.male },
-              { value: 'female', label: b.female },
-              { value: 'unspecified', label: b.unspecified },
-            ]}
-          />
+          <p className={sun ? 'font-bold' : 't-label'}>{b.sex}</p>
+          {sun ? (
+            <div role="group" aria-label={b.sex} className="mt-2 flex flex-wrap gap-2">
+              {(
+                [
+                  ['male', b.male],
+                  ['female', b.female],
+                  ['unspecified', b.unspecified],
+                ] as const
+              ).map(([value, label]) => (
+                <button
+                  key={value}
+                  type="button"
+                  className="sun-pill !min-h-11"
+                  aria-pressed={sex === value}
+                  onClick={() => setSex(value)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <SegmentedControl<Sex>
+              className="mt-1.5"
+              label={b.sex}
+              value={sex}
+              onChange={setSex}
+              height={44}
+              options={[
+                { value: 'male', label: b.male },
+                { value: 'female', label: b.female },
+                { value: 'unspecified', label: b.unspecified },
+              ]}
+            />
+          )}
           <p className="mt-1.5 text-[13px] text-ink2">{b.sexWhy}</p>
         </div>
         <div>
@@ -115,19 +163,9 @@ export default function BodyStats() {
           </div>
           <p className="mt-1.5 text-[13px] text-ink2">{b.bodyweightWhy}</p>
         </div>
-        <Button onClick={save} disabled={yearBad}>
-          {b.save}
-        </Button>
-        <Button
-          variant="secondary"
-          onClick={async () => {
-            if (!profile.sex) await saveProfile({ sex: 'unspecified' });
-            navigate(next, { replace: true });
-          }}
-        >
-          {b.skip}
-        </Button>
+        {!sun && actions}
       </div>
+      {sun && <div className="flex flex-col gap-3 px-5 pt-5">{actions}</div>}
     </main>
   );
 }

@@ -9,6 +9,7 @@ import { updateRoutineSessions, useActiveRoutine, useGym, useProfile } from '@/d
 import { presetGym } from '@/engine/suggest';
 import type { RoutineSession } from '@/db/types';
 import { splitById } from '@/engine/split';
+import { useDesign } from '@/app/design';
 import { RoutineBuilder } from '../S04-routine/RoutineBuilder';
 
 /** S04 reached from the Plan tab: edit the active routine's sessions. */
@@ -19,6 +20,7 @@ export default function EditRoutine() {
   const exMap = useExerciseMap();
   const gym = useGym();
   const navigate = useNavigate();
+  const sun = useDesign() === 'sun';
   const [sessions, setSessions] = useState<RoutineSession[] | null>(null);
   useEffect(() => {
     if (routine && !sessions) setSessions(routine.sessions);
@@ -26,8 +28,13 @@ export default function EditRoutine() {
   if (!routine || !profile || !exMap || !sessions) return null;
   return (
     <main className="flex min-h-dvh flex-col">
-      <ScreenHeader title={en.plan.editTitle} backTo="/plan" />
+      <ScreenHeader
+        title={en.plan.editTitle}
+        subtitle={sun ? splitById(routine.splitId)?.name : undefined}
+        backTo="/plan"
+      />
       <RoutineBuilder
+        showTitle={!sun}
         splitName={splitById(routine.splitId)?.name ?? ''}
         sessions={sessions}
         onChange={setSessions}
@@ -40,7 +47,13 @@ export default function EditRoutine() {
           limitations: profile.limitations,
         }}
       />
-      <div className="sticky bottom-0 mt-auto bg-paper px-5 pb-[calc(20px+env(safe-area-inset-bottom))] pt-3">
+      <div
+        className={`sticky bottom-0 mt-auto px-5 pt-3 ${
+          sun
+            ? 'pb-[calc(24px+env(safe-area-inset-bottom))]'
+            : 'bg-paper pb-[calc(20px+env(safe-area-inset-bottom))]'
+        }`}
+      >
         <Button
           onClick={async () => {
             await updateRoutineSessions(routine.id, sessions);

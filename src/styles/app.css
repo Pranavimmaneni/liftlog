@@ -24,6 +24,9 @@
   --color-*: initial;
   --color-transparent: transparent;
   --color-current: currentColor;
+  /* The camera screens are black with white text in every theme (S22, food scan). */
+  --color-black: #000;
+  --color-white: #fff;
   --color-paper: var(--ll-paper);
   --color-card: var(--ll-card);
   --color-panel: var(--ll-panel);

@@ -17,6 +17,7 @@ export function SectionSwitch({ current }: { current: Section }) {
       to={to}
       end={section === 'liftlog'}
       aria-current={current === section ? 'page' : undefined}
+      data-on={current === section}
       onClick={() => void setRawSetting(LAST_SECTION_KEY, section)}
       className={`ll-section-item flex min-h-10 min-w-[84px] items-center justify-center rounded-full px-4 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] no-underline ${
         current === section ? 'bg-ink text-card' : 'text-ink2'

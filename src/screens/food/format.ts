@@ -34,3 +34,15 @@ export function foodSub(f: FoodItem): string {
 export function shortDate(d: Date): string {
   return new Intl.DateTimeFormat(undefined, { weekday: 'short', day: 'numeric', month: 'short' }).format(d);
 }
+
+/** The parts of `foodSub`, for layouts that show the calories on their own (Rising Sun F02). */
+export function foodPortion(f: FoodItem): { label: string; kcal: string; protein: string | null } {
+  const p = f.portions[0] ?? { label: '100 g', grams: 100 };
+  const n = scale(f.per100g, p.grams);
+  const label = f.source === 'custom' && f.portions.length === 0 ? '100 g' : p.label;
+  return {
+    label: f.source === 'custom' ? `${en.food.add.source.custom} · ${label}` : label,
+    kcal: n.kcal === null ? '–' : fmt(n.kcal),
+    protein: n.protein === null || n.protein < 1 ? null : fmt(n.protein),
+  };
+}

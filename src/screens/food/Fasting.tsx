@@ -3,6 +3,9 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { Sheet } from '@/components/Sheet';
 import { Button } from '@/components/Button';
 import { SectionSwitch } from '@/components/SectionSwitch';
+import { Ring } from '@/components/sun/Ring';
+import { SunTop } from '@/components/sun/SunTop';
+import { useDesign } from '@/app/design';
 import { toast } from '@/components/Toast';
 import { en } from '@/copy/en';
 import { db } from '@/db/schema';
@@ -46,7 +49,8 @@ function localInput(t: number): string {
 
 /**
  * F07 Fasting (PRD-1.2 FR-FAST-1): start a fast from a preset, watch the ring, end it. Everything is
- * computed from timestamps (like the rest timer), so it stays right after the phone sleeps.
+ * computed from timestamps (like the rest timer), so it stays right after the phone sleeps. The
+ * Rising Sun look (FR-DSN-11, mockup F07) puts the ring on a glass card with the plan pills under it.
  */
 export default function Fasting() {
   const fasts = useLiveQuery(() => db.fasts.orderBy('startedAt').toArray(), []);
@@ -57,6 +61,7 @@ export default function Fasting() {
   const [now, setNow] = useState(() => Date.now());
   const [plan, setPlan] = useState(String(NUTRITION.fasting.defaultHours));
   const [editing, setEditing] = useState(false);
+  const sun = useDesign() === 'sun';
   useEffect(() => {
     const id = window.setInterval(() => setNow(Date.now()), 30_000);
     return () => window.clearInterval(id);
@@ -79,6 +84,137 @@ export default function Fasting() {
     ...(streak ? [f.inARow(streak)] : []),
   ];
   const today = new Date(now).toDateString();
+
+  const end = async () => {
+    if (!open) return;
+    await endFast(open.id);
+    toast(f.ended);
+  };
+  const start = async () => {
+    await startFast(Number(plan));
+    setNow(Date.now());
+    toast(f.started);
+  };
+  const trainingLine =
+    open && usualAt !== null
+      ? trainingInFast(open, usual, now)
+        ? f.inFast(next, clock(usualAt))
+        : f.inWindow(next, clock(usualAt))
+      : '';
+
+  if (sun) {
+    const sf = en.sun.food.fasting;
+    const planText = f.plan(open?.planHours ?? Number(plan));
+    return (
+      <main className="px-5 pt-5">
+        <SunTop
+          title={f.title}
+          section="food"
+          right={<span aria-label={sf.planLabel(planText)}>{planText}</span>}
+        />
+
+        <section className="sun-glass mt-4 rounded-[18px] px-[18px] py-5">
+          <Ring
+            value={state ? state.progress : 0}
+            size={230}
+            stroke={12}
+            color="var(--ll-accent)"
+            className="mx-auto"
+          >
+            {open && state ? (
+              <div
+                className="flex flex-col items-center px-6 text-center"
+                role="meter"
+                aria-label={f.progress}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={Math.min(100, Math.round(state.progress * 100))}
+              >
+                <span className="text-[15px] text-ink2">{sf.fasting}</span>
+                <span className="sun-display mt-1 text-[38px]" data-testid="fast-elapsed">
+                  {elapsedText(state.elapsedMs)}
+                </span>
+                <span className="mt-1 text-[14px] text-ink2">
+                  {state.done ? f.done : f.left(leftText(state.remainingMs))}
+                </span>
+              </div>
+            ) : (
+              <p className="px-8 text-center text-[16px] text-ink2">{f.none}</p>
+            )}
+          </Ring>
+          {open && state ? (
+            <p className="mt-4 text-center text-[15px]">
+              {f.eatFrom} <b className="tabular-nums">{clock(state.eatFrom)}</b>
+              <span className="text-ink2">
+                {' · '}
+                {f.since(clock(open.startedAt))}
+              </span>
+            </p>
+          ) : (
+            <div className="mt-4">
+              <Label>{f.pick}</Label>
+              <div className="mt-2">
+                <Choices
+                  label={f.pick}
+                  value={plan}
+                  onChange={setPlan}
+                  options={NUTRITION.fasting.presets.map((h) => [String(h), f.plan(h)])}
+                />
+              </div>
+            </div>
+          )}
+        </section>
+
+        <div className="mt-3">
+          {open ? (
+            <Cta onClick={() => void end()}>{f.end}</Cta>
+          ) : (
+            <Cta onClick={() => void start()}>{f.start}</Cta>
+          )}
+        </div>
+
+        <section className="sun-glass mt-3 rounded-[18px] px-[18px] py-4">
+          <div className="flex items-baseline justify-between gap-3">
+            <h2 className="font-bold">{f.thisWeek}</h2>
+            {streak > 0 && <span className="text-[14px] text-ink2">{f.inARow(streak)}</span>}
+          </div>
+          <ul className="mt-3 grid grid-cols-7 gap-1.5 text-center" data-testid="fast-week">
+            {strip.map((d) => {
+              const date = parseDateKey(d.date);
+              const isToday = date.toDateString() === today;
+              return (
+                <li
+                  key={d.date}
+                  aria-label={f.dayLabel(date.toLocaleDateString('en', { weekday: 'long' }), d.hours)}
+                >
+                  <div
+                    className={`h-2.5 rounded-full ${
+                      d.hours !== null ? 'bg-accent' : isToday ? 'bg-ink' : 'bg-track'
+                    }`}
+                    aria-hidden="true"
+                  />
+                  <p
+                    aria-hidden="true"
+                    className={`mt-1.5 text-[13px] ${isToday ? 'font-bold text-ink' : 'text-ink2'}`}
+                  >
+                    {date.toLocaleDateString('en', { weekday: 'narrow' })}
+                  </p>
+                </li>
+              );
+            })}
+          </ul>
+          {(open || last) && (
+            <div className="mt-2 flex items-center justify-between gap-3 border-t border-rule pt-2">
+              <span className="min-w-0 text-[14px] text-ink2">{trainingLine}</span>
+              <TextLink onClick={() => setEditing(true)}>{f.change}</TextLink>
+            </div>
+          )}
+        </section>
+
+        {last && <EditSheet open={editing} onClose={() => setEditing(false)} fast={last} />}
+      </main>
+    );
+  }
 
   return (
     <main className="pb-[calc(96px+env(safe-area-inset-bottom))]">
@@ -167,13 +303,7 @@ export default function Fasting() {
 
         {(open || last) && (
           <div className="mt-6 flex items-center justify-between gap-3">
-            <span className="text-[13px] text-ink2">
-              {open && usualAt !== null
-                ? trainingInFast(open, usual, now)
-                  ? f.inFast(next, clock(usualAt))
-                  : f.inWindow(next, clock(usualAt))
-                : ''}
-            </span>
+            <span className="text-[13px] text-ink2">{trainingLine}</span>
             <TextLink onClick={() => setEditing(true)}>{f.change}</TextLink>
           </div>
         )}
@@ -181,24 +311,9 @@ export default function Fasting() {
 
       <div className="fixed inset-x-0 bottom-[calc(86px+env(safe-area-inset-bottom))] mx-auto max-w-[480px] px-6">
         {open ? (
-          <Cta
-            onClick={async () => {
-              await endFast(open.id);
-              toast(f.ended);
-            }}
-          >
-            {f.end}
-          </Cta>
+          <Cta onClick={() => void end()}>{f.end}</Cta>
         ) : (
-          <Cta
-            onClick={async () => {
-              await startFast(Number(plan));
-              setNow(Date.now());
-              toast(f.started);
-            }}
-          >
-            {f.start}
-          </Cta>
+          <Cta onClick={() => void start()}>{f.start}</Cta>
         )}
       </div>
 

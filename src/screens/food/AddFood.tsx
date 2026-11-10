@@ -1,83 +1,43 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router';
+import { Link } from 'react-router';
 import { Icon } from '@/components/Icon';
-import { toast } from '@/components/Toast';
+import { useDesign } from '@/app/design';
 import { en } from '@/copy/en';
-import { getFood, logFood } from '@/db/food';
-import { LIBRARY_MANIFEST } from '@/db/food-lib';
-import { MEAL_SLOTS, type MealSlot } from '@/db/types';
-import { listFoods, searchFoods } from '@/engine/food-search';
 import type { FoodItem } from '@/engine/food-types';
-import { indexesFor, useDay, useFoodsById, useFoodSearch, useFoodTargets, useToday } from './hooks';
+import { AddFoodSun } from './AddFoodSun';
 import { PortionSheet } from './PortionSheet';
+import { ADD_TABS, useAddFood, type AddFoodState } from './state';
 import { FoodHeader, TextTabs } from './ui';
-import { foodSub, mealForNow } from './format';
-
-type Tab = 'all' | 'recent' | 'mine' | 'indian' | 'brands';
-const SOURCE: Partial<Record<Tab, FoodItem['source']>> = {
-  mine: 'custom',
-  indian: 'indian',
-  brands: 'branded',
-};
+import { foodSub } from './format';
 
 /**
  * F02 Add food (PRD-1.2 FR-FOOD-3/4): search the library and the user's own foods, scan a barcode,
  * or create a food. `?meal=&date=` say where it goes; `?food=<id>` opens that food's portion sheet
- * (barcode hits); `?suggest=a,b` lists coach suggestions first (F06 fixes).
+ * (barcode hits); `?suggest=a,b` lists coach suggestions first (F06 fixes). The Rising Sun look has
+ * its own layout (FR-DSN-11, AddFoodSun); both read the same state and share the portion sheet.
  */
 export default function AddFood() {
-  const today = useToday();
-  const [params] = useSearchParams();
-  const date = params.get('date') ?? today;
-  const mealParam = params.get('meal') as MealSlot | null;
-  const meal: MealSlot =
-    mealParam && MEAL_SLOTS.includes(mealParam) ? mealParam : mealForNow(new Date(), date === today);
-  const search = useFoodSearch(today);
-  const { targets } = useFoodTargets(date);
-  const day = useDay(date);
-  const [q, setQ] = useState('');
-  const [tab, setTab] = useState<Tab>('all');
-  const [picked, setPicked] = useState<FoodItem | null>(null);
+  const a = useAddFood();
+  const sun = useDesign() === 'sun';
+  const { meal, targets, day, picked, setPicked } = a;
+  return (
+    <>
+      {sun ? <AddFoodSun a={a} /> : <AddFoodClassic a={a} />}
+      <PortionSheet
+        food={picked}
+        open={!!picked}
+        onClose={() => setPicked(null)}
+        action={en.food.portion.add(en.food.meals[meal])}
+        dayProtein={
+          targets ? { eaten: day?.totals.total.protein ?? 0, target: targets.macros.protein } : undefined
+        }
+        onDone={a.add}
+      />
+    </>
+  );
+}
 
-  const preset = params.get('food');
-  useEffect(() => {
-    if (!preset) return;
-    let alive = true;
-    void getFood(preset).then((f) => alive && f && setPicked(f));
-    return () => {
-      alive = false;
-    };
-  }, [preset]);
-
-  const suggestIds = useMemo(() => (params.get('suggest') ?? '').split(',').filter(Boolean), [params]);
-  const suggested = useFoodsById(suggestIds, search.own);
-
-  // FR-FOOD-3/8: search gives ids; only the foods on screen are loaded (D121).
-  const { libIndex, ownIndex, boost, recent } = search;
-  const resultIds = useMemo((): string[] => {
-    const src = SOURCE[tab];
-    if (q.trim()) {
-      const rec = new Set(recent);
-      return searchFoods(indexesFor({ libIndex, ownIndex }, q), q, {
-        limit: 50,
-        boost,
-        filter: (id, source) => (tab === 'recent' ? rec.has(id) : !src || source === src),
-      }).map((h) => h.id);
-    }
-    if (tab === 'all' || tab === 'recent') return recent;
-    if (tab === 'brands' || !src) return [];
-    return listFoods(src === 'custom' ? ownIndex : libIndex, src).map((h) => h.id);
-  }, [q, tab, libIndex, ownIndex, boost, recent]);
-  const results = useFoodsById(resultIds, search.own);
-
-  const empty = q.trim()
-    ? en.food.add.none(q.trim())
-    : tab === 'mine'
-      ? en.food.add.emptyMine
-      : tab === 'brands'
-        ? en.food.add.search
-        : en.food.add.emptyRecent;
-  const qs = `meal=${meal}&date=${date}`;
+function AddFoodClassic({ a }: { a: AddFoodState }) {
+  const { meal, q, setQ, tab, setTab, setPicked, suggested, results, empty } = a;
 
   const row = (f: FoodItem) => (
     <li key={f.id} className="flex min-h-[60px] items-center gap-3 border-t border-rule py-2.5">
@@ -101,10 +61,7 @@ export default function AddFood() {
 
   return (
     <main className="pb-[calc(32px+env(safe-area-inset-bottom))]">
-      <FoodHeader
-        title={en.food.add.title(en.food.meals[meal])}
-        backTo={`/food${date === today ? '' : `?date=${date}`}`}
-      />
+      <FoodHeader title={en.food.add.title(en.food.meals[meal])} backTo={a.backTo} />
       <div className="px-6">
         <label className="mt-6 flex h-[52px] items-center gap-2.5 rounded-full border border-rule bg-card pl-4 pr-1">
           <Icon name="search" size={20} className="shrink-0 text-ink2" />
@@ -117,7 +74,7 @@ export default function AddFood() {
             onChange={(e) => setQ(e.target.value)}
           />
           <Link
-            to={`/food/scan?${qs}`}
+            to={a.scanHref}
             className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-ink"
             aria-label={en.food.add.scan}
           >
@@ -125,28 +82,18 @@ export default function AddFood() {
           </Link>
         </label>
 
-        {LIBRARY_MANIFEST && !search.libraryReady && (
-          <p className="mt-3 text-[13px] text-ink2" role="status">
-            {typeof navigator !== 'undefined' && navigator.onLine === false
-              ? en.food.library.offline
-              : en.food.library.downloading}
+        {a.notices.map((text) => (
+          <p key={text} className="mt-3 text-[13px] text-ink2" role="status">
+            {text}
           </p>
-        )}
-        {search.catalogue && (
-          <p className="mt-3 text-[13px] text-ink2" role="status">
-            {en.food.library.catalogue(Math.round((100 * search.catalogue.done) / search.catalogue.total))}
-          </p>
-        )}
+        ))}
 
         <div className="mt-3">
           <TextTabs
             label={en.food.add.search}
             value={tab}
             onChange={setTab}
-            tabs={(['all', 'recent', 'mine', 'indian', 'brands'] as Tab[]).map((t) => [
-              t,
-              en.food.add.tabs[t],
-            ])}
+            tabs={ADD_TABS.map((t) => [t, en.food.add.tabs[t]])}
           />
         </div>
 
@@ -166,30 +113,11 @@ export default function AddFood() {
 
         <div className="mt-6 flex items-center justify-between">
           <span className="text-[13px] text-ink2">{en.food.add.notFound}</span>
-          <Link
-            to={`/food/new?${qs}${q.trim() ? `&name=${encodeURIComponent(q.trim())}` : ''}`}
-            className="ll-link"
-          >
+          <Link to={a.createHref} className="ll-link">
             {en.food.add.create}
           </Link>
         </div>
       </div>
-
-      <PortionSheet
-        food={picked}
-        open={!!picked}
-        onClose={() => setPicked(null)}
-        action={en.food.portion.add(en.food.meals[meal])}
-        dayProtein={
-          targets ? { eaten: day?.totals.total.protein ?? 0, target: targets.macros.protein } : undefined
-        }
-        onDone={async ({ portion, servings }) => {
-          if (!picked) return;
-          await logFood({ date, meal, food: picked, portion, servings });
-          toast(en.food.add.added(picked.name));
-          setPicked(null);
-        }}
-      />
     </main>
   );
 }

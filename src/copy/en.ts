@@ -64,7 +64,7 @@ export const en = {
     title: 'Look',
     classic: 'Classic',
     sun: 'Rising Sun',
-    note: 'Rising Sun is the new design. Today, the workout, logging a set and the rest timer are rebuilt; the other screens have its colours and type for now.',
+    note: 'Rising Sun is the new design. Classic is the look you know. You can switch back at any time.',
     glass: 'Frosted glass',
     glassSub: 'Turn off if scrolling feels slow',
   },

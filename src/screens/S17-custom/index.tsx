@@ -5,7 +5,6 @@ import { ScreenHeader } from '@/components/ScreenHeader';
 import { SegmentedControl } from '@/components/SegmentedControl';
 import { Stepper } from '@/components/Stepper';
 import { Switch } from '@/components/Switch';
-import { ToggleChip } from '@/components/Chip';
 import { toast } from '@/components/Toast';
 import { en } from '@/copy/en';
 import { useExerciseMap } from '@/db/catalog';
@@ -22,6 +21,8 @@ import { useProfile } from '@/db/repo';
 import { EQUIPMENT, MACHINES } from '@/engine/data';
 import { fromDisplay, toDisplay } from '@/engine/units';
 import { MUSCLE_GROUPS, type LoadType, type MuscleGroup, type Role } from '@/engine/types';
+import { useDesign } from '@/app/design';
+import { Toggle } from '../S13-library/Toggle';
 
 const LOAD_TYPES: LoadType[] = [
   'barbell',
@@ -63,6 +64,9 @@ export default function CustomExercise() {
   const [touched, setTouched] = useState(false);
   const units = profile?.units ?? 'kg';
   const c = en.custom;
+  const sun = useDesign() === 'sun';
+  // Rising Sun (HW1S17): quiet 13 px field names; the fields sit together on one glass card.
+  const lab = sun ? 'block text-[13px] text-ink2' : 't-label';
 
   useEffect(() => {
     if (!exerciseId || !map) return;
@@ -122,7 +126,11 @@ export default function CustomExercise() {
         backTo={exerciseId ? `/library/${exerciseId}` : from.addToWorkout ? '/workout' : '/library'}
       />
       <form
-        className="flex flex-col gap-4 px-5 pt-4"
+        className={
+          sun
+            ? 'sun-glass mx-5 mt-4 flex flex-col gap-4 rounded-[18px] px-[18px] py-4'
+            : 'flex flex-col gap-4 px-5 pt-4'
+        }
         noValidate
         onSubmit={(e) => {
           e.preventDefault();
@@ -132,7 +140,7 @@ export default function CustomExercise() {
         {/* Errors sit outside the <label> so they don't become part of the field's name. */}
         <div>
           <label className="block">
-            <span className="t-label">{c.name}</span>
+            <span className={lab}>{c.name}</span>
             <input
               className="ll-input mt-1.5"
               value={v.name}
@@ -149,15 +157,15 @@ export default function CustomExercise() {
         </div>
 
         <fieldset>
-          <legend className="t-label">{c.primary}</legend>
+          <legend className={lab}>{c.primary}</legend>
           <div
             className="mt-1.5 flex flex-wrap gap-2"
             aria-describedby={err('primary') ? 'primary-err' : undefined}
           >
             {MUSCLE_GROUPS.map((m) => (
-              <ToggleChip key={m} on={v.primary === m} onClick={() => set({ primary: m as MuscleGroup })}>
+              <Toggle key={m} soft on={v.primary === m} onClick={() => set({ primary: m as MuscleGroup })}>
                 {en.muscles[m]}
-              </ToggleChip>
+              </Toggle>
             ))}
           </div>
           {err('primary') && (
@@ -168,11 +176,12 @@ export default function CustomExercise() {
         </fieldset>
 
         <fieldset>
-          <legend className="t-label">{c.secondary}</legend>
+          <legend className={lab}>{c.secondary}</legend>
           <div className="mt-1.5 flex flex-wrap gap-2">
             {MUSCLE_GROUPS.filter((m) => m !== v.primary).map((m) => (
-              <ToggleChip
+              <Toggle
                 key={m}
+                soft
                 on={v.secondary.includes(m)}
                 onClick={() =>
                   set({
@@ -183,13 +192,13 @@ export default function CustomExercise() {
                 }
               >
                 {en.muscles[m]}
-              </ToggleChip>
+              </Toggle>
             ))}
           </div>
         </fieldset>
 
         <label className="block">
-          <span className="t-label">{c.equipment}</span>
+          <span className={lab}>{c.equipment}</span>
           <select
             className="ll-input mt-1.5"
             value={v.gear}
@@ -209,7 +218,7 @@ export default function CustomExercise() {
 
         <div>
           <label className="block">
-            <span className="t-label">{c.loadType}</span>
+            <span className={lab}>{c.loadType}</span>
             <select
               className="ll-input mt-1.5"
               value={v.loadType ?? ''}
@@ -236,7 +245,7 @@ export default function CustomExercise() {
         </div>
 
         <div>
-          <span className="t-label">{c.role}</span>
+          <span className={lab}>{c.role}</span>
           <SegmentedControl<Role>
             className="mt-1.5"
             label={c.role}
@@ -250,7 +259,7 @@ export default function CustomExercise() {
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-[15px] font-semibold">{c.unilateral}</span>
+          <span className={sun ? 'text-[16px]' : 'text-[15px] font-semibold'}>{c.unilateral}</span>
           <Switch
             checked={v.unilateral}
             onChange={(unilateral) => set({ unilateral })}
@@ -260,7 +269,7 @@ export default function CustomExercise() {
 
         {v.loadType && v.loadType !== 'bodyweight' && v.loadType !== 'timed' && (
           <div>
-            <span className="t-label">{c.increment}</span>
+            <span className={lab}>{c.increment}</span>
             <Stepper
               id="increment"
               value={Math.round(toDisplay(v.incrementKg, units) * 10) / 10}
@@ -275,7 +284,7 @@ export default function CustomExercise() {
         )}
 
         <label className="block">
-          <span className="t-label">{c.notes}</span>
+          <span className={lab}>{c.notes}</span>
           <textarea
             className="ll-input mt-1.5 min-h-24"
             value={v.notes}

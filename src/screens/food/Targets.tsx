@@ -4,6 +4,8 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { Sheet } from '@/components/Sheet';
 import { Switch } from '@/components/Switch';
 import { Button } from '@/components/Button';
+import { Icon } from '@/components/Icon';
+import { useDesign } from '@/app/design';
 import { toast } from '@/components/Toast';
 import { en } from '@/copy/en';
 import { getRawSetting, setRawSetting } from '@/db/settings';
@@ -18,6 +20,7 @@ import { defaultPhase, FOOD_KEYS, useFoodTargets, useToday, type FoodTargets } f
 import { BigNumber, Choices, Cta, FieldRow, FoodHeader, Label, RoundStepper, TextLink } from './ui';
 
 const t = en.food.targets;
+const s = en.sun.food.targets;
 const n = (v: number) => Math.round(v).toLocaleString('en');
 type Macro = 'protein' | 'carbs' | 'fat';
 type SheetKind = 'weight' | 'height' | 'activity' | 'goal' | 'micros' | Macro | null;
@@ -47,6 +50,8 @@ export function targetReason(x: FoodTargets): string {
 /**
  * F05 Targets (PRD-1.2 FR-TGT-1..4, FR-TGT-6): the coach's calorie and macro pick with its reason,
  * and the inputs it comes from. Weight, height, sex and age are shared with LiftLog (FR-SHR-1).
+ * The Rising Sun look (FR-DSN-11, mockup F05) shows the same on glass: the calorie number as the
+ * hero card, the macros as one list, the inputs as another.
  */
 export default function Targets() {
   const today = useToday();
@@ -58,6 +63,7 @@ export default function Targets() {
     overrides: (await getRawSetting<MacroOverrides>(FOOD_KEYS.overrides)) ?? {},
   }));
   const [sheet, setSheet] = useState<SheetKind>(null);
+  const sun = useDesign() === 'sun';
   if (!profile || !weighIns || !settings) return null;
   const units = profile.units;
   const lastKg = [...weighIns].sort((a, b) => a.date.localeCompare(b.date)).pop()?.kg ?? null;
@@ -70,9 +76,9 @@ export default function Targets() {
     return (
       <main className="pb-10">
         <FoodHeader title={t.title} />
-        <div className="px-6 pt-8">
-          <p className="text-[15px]">{t.noWeight}</p>
-          <Cta className="mt-6" onClick={() => setSheet('weight')}>
+        <div className={sun ? 'sun-glass mx-5 mt-4 rounded-[18px] p-[18px]' : 'px-6 pt-8'}>
+          <p className={sun ? 'text-[16px]' : 'text-[15px]'}>{t.noWeight}</p>
+          <Cta className={sun ? 'mt-4' : 'mt-6'} onClick={() => setSheet('weight')}>
             {t.logWeight}
           </Cta>
         </div>
@@ -97,6 +103,163 @@ export default function Targets() {
       </p>
     </button>
   );
+
+  const sheets = (
+    <>
+      {weightSheet}
+      <HeightSheet open={sheet === 'height'} onClose={close} cm={profile.heightCm ?? null} />
+      <ActivitySheet open={sheet === 'activity'} onClose={close} value={profile.activity ?? null} />
+      <GoalSheet
+        open={sheet === 'goal'}
+        onClose={close}
+        phase={phase}
+        rate={rate}
+        fallback={defaultPhase(profile.goal)}
+      />
+      <Sheet open={sheet === 'micros'} onClose={close} title={t.microsTitle}>
+        <ul className="border-t border-rule">
+          {MICROS.map((k) => (
+            <li
+              key={k}
+              className="flex min-h-12 items-center justify-between border-b border-rule text-[15px]"
+            >
+              <span>{en.food.micros[k]}</span>
+              <span className="font-mono">
+                {targets.micros[k].kind === 'limit'
+                  ? `< ${n(targets.micros[k].value)}`
+                  : targets.micros[k].value.toLocaleString('en')}{' '}
+                {MICRO_UNITS[k]}
+                {targets.micros[k].kind === 'limit' && <span className="text-ink2"> · {t.limit}</span>}
+              </span>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-4 text-[13px] text-ink2">{t.microsSource}</p>
+      </Sheet>
+      {(['protein', 'carbs', 'fat'] as const).map((k) => (
+        <MacroSheet
+          key={k}
+          macro={k}
+          open={sheet === k}
+          onClose={close}
+          value={targets.macros[k]}
+          overrides={settings.overrides}
+        />
+      ))}
+    </>
+  );
+  const reset = async () => {
+    await setRawSetting(FOOD_KEYS.overrides, {});
+    toast(t.resetDone);
+  };
+
+  if (sun) {
+    const needsBodyStats = !profile.sex || profile.sex === 'unspecified' || !profile.birthYear;
+    return (
+      <main className="px-0 pb-[calc(24px+env(safe-area-inset-bottom))]">
+        <FoodHeader title={t.title} />
+        <div className="px-5">
+          <section className="sun-glass mt-4 rounded-[18px] px-[18px] py-4" aria-label={t.kcalLabel}>
+            <p className="text-[15px] text-ink2">{t.kcalLabel}</p>
+            <p className="sun-display mt-1 break-words text-[54px]" data-testid="target-kcal">
+              {n(targets.macros.kcal)}
+            </p>
+            <p className="mt-1.5 text-[14px] text-ink2" data-testid="target-reason">
+              {targetReason(targets)}
+            </p>
+            {defaults.length > 0 && (
+              <p className="mt-1.5 text-[13px] text-ink2">
+                {t.defaults(defaults.map((d) => t.defaultNames[d]).join(', '))}
+              </p>
+            )}
+          </section>
+
+          <section className="sun-glass mt-3 overflow-hidden rounded-[14px]" aria-label={s.macros}>
+            {(['protein', 'carbs', 'fat'] as const).map((k) => (
+              <button
+                key={k}
+                type="button"
+                className="sun-list-row"
+                aria-label={`${en.food.macros[k]} ${targets.macros[k]} ${en.food.units.g}`}
+                onClick={() => setSheet(k)}
+              >
+                <span>{en.food.macros[k]}</span>
+                <span className="flex shrink-0 items-center gap-1 tabular-nums">
+                  {targets.macros[k]} {en.food.units.g}
+                  {targets.macros.overridden.includes(k) && <span className="text-ink2"> · {t.edited}</span>}
+                  <Icon name="chevronRight" size={16} className="text-ink2" />
+                </span>
+              </button>
+            ))}
+            <FieldRow
+              label={
+                <>
+                  {en.food.micros.fibre}
+                  <span className="block text-[13px] text-ink2">{s.fibreNote}</span>
+                </>
+              }
+              value={`${targets.macros.fibre} ${en.food.units.g}`}
+              onClick={() => setSheet('micros')}
+            />
+          </section>
+
+          <section className="sun-glass mt-3 overflow-hidden rounded-[14px]" aria-label={s.inputs}>
+            <FieldRow
+              label={t.weight}
+              value={lastKg === null ? t.notSet : `${displayNumber(lastKg, units)} ${units}`}
+              onClick={() => setSheet('weight')}
+            />
+            <FieldRow
+              label={t.height}
+              value={profile.heightCm ? `${profile.heightCm} ${t.heightUnit}` : t.notSet}
+              muted={!profile.heightCm}
+              onClick={() => setSheet('height')}
+            />
+            <FieldRow
+              label={t.activity}
+              value={profile.activity ? t.activities[profile.activity].name : t.notSet}
+              muted={!profile.activity}
+              onClick={() => setSheet('activity')}
+            />
+            <FieldRow
+              label={t.goal}
+              value={t.phaseValue(t.phases[phase], phase === 'maintain' ? '' : String(rate))}
+              onClick={() => setSheet('goal')}
+            />
+            {needsBodyStats && (
+              <Link to="/progress/body-stats" className="sun-list-row !text-ink">
+                <span>{t.bodyStats}</span>
+                <span className="flex shrink-0 items-center gap-1 font-semibold text-accent-text">
+                  {t.bodyStatsAdd}
+                  <Icon name="chevronRight" size={16} className="text-ink2" />
+                </span>
+              </Link>
+            )}
+            <FieldRow
+              label={t.micros}
+              value={t.microsCount(MICROS.length)}
+              muted
+              onClick={() => setSheet('micros')}
+            />
+            <div className="sun-list-row !pr-2.5">
+              <span className="min-w-0">{t.carbCycling}</span>
+              <Switch
+                checked={settings.cycling}
+                label={t.carbCycling}
+                onChange={(v) => void setRawSetting(FOOD_KEYS.carbCycling, v)}
+              />
+            </div>
+            <p className="border-t border-rule px-4 py-3 text-[13px] text-ink2">{t.disclaimer}</p>
+          </section>
+
+          <Button variant="secondary" className="mt-3 w-full" onClick={() => void reset()}>
+            {t.resetMacro}
+          </Button>
+        </div>
+        {sheets}
+      </main>
+    );
+  }
 
   return (
     <main className="pb-10">
@@ -173,57 +336,11 @@ export default function Targets() {
 
         <div className="mt-6 flex items-center justify-between gap-3">
           <span className="text-[13px] text-ink2">{t.disclaimer}</span>
-          <TextLink
-            onClick={async () => {
-              await setRawSetting(FOOD_KEYS.overrides, {});
-              toast(t.resetDone);
-            }}
-          >
-            {t.reset}
-          </TextLink>
+          <TextLink onClick={() => void reset()}>{t.reset}</TextLink>
         </div>
       </div>
 
-      {weightSheet}
-      <HeightSheet open={sheet === 'height'} onClose={close} cm={profile.heightCm ?? null} />
-      <ActivitySheet open={sheet === 'activity'} onClose={close} value={profile.activity ?? null} />
-      <GoalSheet
-        open={sheet === 'goal'}
-        onClose={close}
-        phase={phase}
-        rate={rate}
-        fallback={defaultPhase(profile.goal)}
-      />
-      <Sheet open={sheet === 'micros'} onClose={close} title={t.microsTitle}>
-        <ul className="border-t border-rule">
-          {MICROS.map((k) => (
-            <li
-              key={k}
-              className="flex min-h-12 items-center justify-between border-b border-rule text-[15px]"
-            >
-              <span>{en.food.micros[k]}</span>
-              <span className="font-mono">
-                {targets.micros[k].kind === 'limit'
-                  ? `< ${n(targets.micros[k].value)}`
-                  : targets.micros[k].value.toLocaleString('en')}{' '}
-                {MICRO_UNITS[k]}
-                {targets.micros[k].kind === 'limit' && <span className="text-ink2"> · {t.limit}</span>}
-              </span>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-4 text-[13px] text-ink2">{t.microsSource}</p>
-      </Sheet>
-      {(['protein', 'carbs', 'fat'] as const).map((k) => (
-        <MacroSheet
-          key={k}
-          macro={k}
-          open={sheet === k}
-          onClose={close}
-          value={targets.macros[k]}
-          overrides={settings.overrides}
-        />
-      ))}
+      {sheets}
     </main>
   );
 }

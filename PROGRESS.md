@@ -22,6 +22,8 @@ Resume file. If the session resets, read this, then `docs/PLAN.md`, then the cur
 
 - [x] **Wrap-up**: docs/reports/FINAL.md, TODO-FOR-PRANAV.md complete (8 steps), LICENSES.md, D77–D78
 
+- [x] **M13–M16 Rising Sun look** (branch m13-rising-sun, opt-in in Settings → Look; classic is the default): report docs/reports/M13-M16.md (572 unit, e2e 180 on 4 projects). M12 (combined coach) is still open.
+
 ## Next
 - Nothing planned. Possible v1.1: supersets (FR-WRK-15), dataset photos (FR-LIB-7), iOS build if an Apple account appears
 

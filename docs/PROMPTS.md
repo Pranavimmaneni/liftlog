@@ -149,16 +149,19 @@ Read its answer. If a proposed resolution is wrong, correct it in one message. T
 
 ---
 
-## M13: Rising Sun, part 1
+## M13–M16: Rising Sun
 
-**Phone checks (M13)** (first: Settings → Look → Rising Sun)
+**Phone checks (Rising Sun)** (first: Settings → Look → Rising Sun)
 1. Pixel and iPhone, light and dark: Today shows the sun at the bottom, the workout card (muscle map, month dots) and the Food card (four rings). Tap the month: the dates appear.
-2. Scroll Today and the workout list on the Pixel. If the frosted cards make scrolling stutter, switch off Settings → Frosted glass and compare.
-3. Start a workout and log a set: the rest ring appears on the same screen. Tap Easy / Solid / Hard, open "…" and try +15 s, then "Start set 2 now".
-4. Let a rest run to zero with the phone unlocked: you hear the alert and the ring says "Rest over".
-5. Read the small grey text on cards that cross the red and sage rings (Today's list, the logger's tiles). Say if anything is hard to read.
-6. Open Plan, Progress, Settings and Food: they have the new colours, without the sun, and nothing is cut off or overlapping.
-7. Switch back to Classic: everything looks exactly as before.
+2. Scroll Today, the workout list and the library on the Pixel. If the frosted cards make scrolling stutter, switch off Settings → Frosted glass and compare.
+3. Start a workout and log a set: the sun ripples and the rest ring appears on the same screen. Tap Easy / Solid / Hard, open "…" and try +15 s, then "Start set 2 now".
+4. Beat a previous best on a lift: the rings sweep the screen with "New record". Tap to dismiss it early.
+5. Let a rest run to zero with the phone unlocked: you hear the alert and the ring says "Rest over".
+6. Finish the workout: the summary celebrates once, and Share still makes the ticket image.
+7. Food: log a food (ripple). Reach your protein for the day (celebration, once). Check the diary's four bars, Add food, Create food, Targets, Review and Fasting in light and dark.
+8. Walk through Plan, the routine editor, Progress (Lifts, Body, History), the weekly review, Strength levels, Library, an exercise, Settings, My gym and Install. Say where a layout feels wrong or text is hard to read where a card crosses the red and sage rings.
+9. Turn on Reduce motion in the phone's settings and log a set: no rings; a record shows as a short message.
+10. Switch back to Classic: everything looks exactly as before.
 
 ---
 

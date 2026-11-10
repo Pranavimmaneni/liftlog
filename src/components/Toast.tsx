@@ -46,7 +46,7 @@ export function Toaster() {
 /** S26: every list has an empty state: one line of copy plus the next action. */
 export function EmptyState({ children, action }: { children: ReactNode; action?: ReactNode }) {
   return (
-    <div className="ll-card flex flex-col items-start gap-3 border-dashed px-4 py-4">
+    <div className="ll-empty ll-card flex flex-col items-start gap-3 border-dashed px-4 py-4">
       <p className="text-[15px] text-ink2">{children}</p>
       {action}
     </div>

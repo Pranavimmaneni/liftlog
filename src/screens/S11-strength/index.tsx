@@ -1,6 +1,10 @@
 import { Link, Navigate } from 'react-router';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { Chip } from '@/components/Chip';
+import { Icon } from '@/components/Icon';
+import { ScreenHeader } from '@/components/ScreenHeader';
+import { useDesign } from '@/app/design';
+import { MuscleMap } from '@/illustration/Pictogram';
 import { EmptyState } from '@/components/Toast';
 import { en } from '@/copy/en';
 import { useExerciseMap } from '@/db/catalog';
@@ -17,11 +21,108 @@ export default function Strength() {
   const profile = useProfile();
   const map = useExerciseMap();
   const s = en.strength;
+  const c = en.sun.progress.strength;
+  const sun = useDesign() === 'sun';
   if (!view || !profile || !map) return <main className="px-5 pt-4" />;
   if (view.needsBodyStats) return <Navigate to="/progress/body-stats?next=/progress/strength" replace />;
   const units = profile.units;
   const age = view.birthYear ? new Date().getFullYear() - view.birthYear : null;
   const shown = view.groups.filter((g) => g.result || g.machineOnly);
+
+  if (sun) {
+    const results = shown.filter((g) => g.result);
+    const muscles = [...new Set(results.flatMap((g) => map.get(g.result!.exerciseId)?.primary ?? []))];
+    const o = view.overall;
+    const stats = '/progress/body-stats?next=/progress/strength';
+    return (
+      <main className="pb-6">
+        <ScreenHeader title={s.title} backTo="/progress" />
+        <div className="px-5 pt-4">
+          <section className="sun-glass rounded-[18px] p-[18px]" aria-label={c.overall}>
+            <p className="text-[15px] text-ink2">{c.overall}</p>
+            <p className="sun-display mt-2 break-words text-[24px] uppercase">
+              {o ? `${o.band < 0 ? s.below : s.bands[o.band]}${o.plus ? '+' : ''}` : c.notYet}
+            </p>
+            <div className="mt-2 flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                {o && (
+                  <p className="text-[15px] font-medium">
+                    {o.next === null ? en.progress.strengthTop : en.progress.strengthNext(s.bands[o.next]!)}
+                  </p>
+                )}
+                <p className="mt-1 text-[14px] leading-snug text-ink2">{s.intro}</p>
+              </div>
+              {muscles.length > 0 && (
+                <MuscleMap
+                  primary={muscles}
+                  secondary={[]}
+                  label={c.basedOn}
+                  className="h-[92px] w-[114px] shrink-0"
+                />
+              )}
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Chip variant="soft">{s.sex[view.sex]}</Chip>
+              {age !== null && <Chip variant="soft">{s.age(age)}</Chip>}
+              {view.bodyweightKg !== null && (
+                <Chip variant="soft">
+                  {displayNumber(view.bodyweightKg, units)} {units}
+                </Chip>
+              )}
+              {isGuidelineSource(STANDARDS.source) && <Chip variant="dashed">{s.guideline}</Chip>}
+            </div>
+            {view.sex === 'unspecified' && <p className="mt-2 text-[13px] text-ink2">{s.unspecifiedNote}</p>}
+          </section>
+
+          {view.bodyweightKg === null ? (
+            <div className="mt-3">
+              <EmptyState
+                action={
+                  <Link to={stats} className="ll-link">
+                    {s.editStats}
+                  </Link>
+                }
+              >
+                {s.noBodyweight}
+              </EmptyState>
+            </div>
+          ) : results.length === 0 ? (
+            <div className="mt-3">
+              <EmptyState>{s.noLifts}</EmptyState>
+            </div>
+          ) : null}
+
+          {results.length > 0 && (
+            <section className="sun-glass mt-3 rounded-[14px] px-4">
+              {results.map((g) => (
+                <GroupRow key={g.id} group={g} ex={map.get(g.result!.exerciseId)} units={units} sun />
+              ))}
+            </section>
+          )}
+
+          {shown
+            .filter((g) => g.machineOnly)
+            .map((g) => (
+              <div key={g.id} className="sun-glass mt-3 rounded-[14px] px-4 py-3.5">
+                <h2 className="font-bold">{s.groups[g.id]}</h2>
+                <p className="mt-1 text-[14px] leading-snug text-ink2">
+                  {STANDARDS.machineOnlyMessage}{' '}
+                  {s.unlock(map.get(g.unlockExerciseId)?.name.toLowerCase() ?? '')}
+                </p>
+              </div>
+            ))}
+
+          <div className="sun-glass mt-3 overflow-hidden rounded-[14px]">
+            <p className="px-4 py-3 text-[14px] leading-snug text-ink2">{s.footer}</p>
+            <Link to={stats} className="sun-list-row border-t border-rule !text-ink">
+              <span className="font-medium">{s.editStats}</span>
+              <Icon name="chevronRight" size={16} className="text-ink2" />
+            </Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="px-5 pb-6 pt-4">
@@ -95,7 +196,17 @@ function etaText(e: Eta): string {
   return 'weeks' in e ? s.weeks(e.weeks) : s.months(e.months);
 }
 
-function GroupRow({ group, ex, units }: { group: StrengthGroup; ex: Exercise | undefined; units: Units }) {
+function GroupRow({
+  group,
+  ex,
+  units,
+  sun = false,
+}: {
+  group: StrengthGroup;
+  ex: Exercise | undefined;
+  units: Units;
+  sun?: boolean;
+}) {
   const s = en.strength;
   const r = group.result!;
   const reps = isRepsBenchmark(r.key);
@@ -103,6 +214,34 @@ function GroupRow({ group, ex, units }: { group: StrengthGroup; ex: Exercise | u
   const val = (v: number) =>
     reps ? s.bwReps(Math.round(v)) : `${displayNumber(v, units)} ${loadUnitLabel(lt, units)}`;
   const label = `${s.groups[group.id]}: ${r.level.reached < 0 ? s.below : s.bands[r.level.reached]}`;
+  if (sun) {
+    // One bar across the five bands (mockup HW1S11): filled as far as the lift has come.
+    const filled = r.level.next === null ? 1 : (r.level.segment + r.level.position) / s.bands.length;
+    return (
+      <div className="border-t border-rule py-3.5 first:border-t-0">
+        <div className="flex items-baseline justify-between gap-3">
+          <h2 className="font-bold">{s.groups[group.id]}</h2>
+          <p className="text-[15px] text-ink2">{r.level.reached < 0 ? s.below : s.bands[r.level.reached]}</p>
+        </div>
+        <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-soft" role="img" aria-label={label}>
+          <div className="h-full rounded-full bg-sage" style={{ width: `${Math.max(3, filled * 100)}%` }} />
+        </div>
+        <p className="mt-2 text-[13px] text-ink2">
+          {en.sun.progress.strength.best(ex?.name ?? '', val(r.best))}
+        </p>
+        <p className="text-[14px]">
+          {r.level.next === null || r.nextValue === null ? (
+            <b>{s.top}</b>
+          ) : (
+            <>
+              <b>{s.next(s.bands[r.level.next]!, val(r.nextValue))}</b>
+              <span className="text-ink2">{etaText(r.eta)}</span>
+            </>
+          )}
+        </p>
+      </div>
+    );
+  }
   return (
     <div className="border-b border-rule py-3.5 last:border-b-0">
       <div className="flex items-baseline justify-between gap-2">

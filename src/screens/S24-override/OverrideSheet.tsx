@@ -9,6 +9,7 @@ import { setOverride } from '@/db/workout';
 import type { Goal } from '@/engine/goal';
 import { fromDisplay, hasLoad, incrementIn, loadUnitLabel, toDisplay } from '@/engine/units';
 import type { Exercise, Units } from '@/engine/types';
+import { useDesign } from '@/app/design';
 
 /**
  * S24 override sheet (FR-PRG-8): edit the weight / reps / sets target for the next exposure, with the
@@ -31,7 +32,10 @@ export function OverrideSheet({
   overridden: boolean;
   units: Units;
 }) {
+  const sun = useDesign() === 'sun';
   const lt = exercise.loadType;
+  // Rising Sun (HW1S24): quiet 13 px field names over each stepper.
+  const lab = sun ? 'mb-1.5 block text-[13px] text-ink2' : 't-label';
   const toD = (kg: number | null) => (kg === null ? null : Math.round(toDisplay(kg, units) * 10) / 10);
   const [sets, setSets] = useState<number | null>(goal.sets);
   const [repMin, setRepMin] = useState<number | null>(goal.repMin);
@@ -83,12 +87,15 @@ export function OverrideSheet({
         </>
       }
     >
-      <p className="rounded-md bg-panel px-3 py-2 text-[14px]" data-testid="override-reason">
+      <p
+        className={sun ? 'text-[15px] leading-snug text-ink2' : 'rounded-md bg-panel px-3 py-2 text-[14px]'}
+        data-testid="override-reason"
+      >
         <b>{o.coach}</b> {formatReason(coachGoal.reason, units, lt)}
       </p>
-      <div className="mt-3 grid grid-cols-2 gap-2">
+      <div className={sun ? 'mt-4 grid grid-cols-2 gap-x-3 gap-y-3.5' : 'mt-3 grid grid-cols-2 gap-2'}>
         <label className="col-span-2">
-          <span className="t-label">{o.sets}</span>
+          <span className={lab}>{o.sets}</span>
           <Stepper
             id="ov-sets"
             value={sets}
@@ -102,8 +109,8 @@ export function OverrideSheet({
             srUnit="sets"
           />
         </label>
-        <label>
-          <span className="t-label">{o.repMin}</span>
+        <label className={sun ? 'col-span-2' : undefined}>
+          <span className={lab}>{o.repMin}</span>
           <Stepper
             id="ov-min"
             value={repMin}
@@ -117,8 +124,8 @@ export function OverrideSheet({
             srUnit="reps"
           />
         </label>
-        <label>
-          <span className="t-label">{o.repMax}</span>
+        <label className={sun ? 'col-span-2' : undefined}>
+          <span className={lab}>{o.repMax}</span>
           <Stepper
             id="ov-max"
             value={repMax}
@@ -134,7 +141,7 @@ export function OverrideSheet({
         </label>
         {hasLoad(lt) && (
           <label className="col-span-2">
-            <span className="t-label">{o.load}</span>
+            <span className={lab}>{o.load}</span>
             <Stepper
               id="ov-load"
               value={load}

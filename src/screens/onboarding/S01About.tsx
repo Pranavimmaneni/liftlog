@@ -1,11 +1,13 @@
 import { Button } from '@/components/Button';
 import { Icon } from '@/components/Icon';
 import { ToggleChip } from '@/components/Chip';
+import { Stepper } from '@/components/Stepper';
+import { useDesign } from '@/app/design';
 import { en } from '@/copy/en';
 import type { OnboardingDraft } from '@/db/repo';
 import { canNudge, coachCall, repsInReserve } from '@/engine/prescription';
 import { EXPERIENCES, GOAL_KINDS } from '@/engine/types';
-import { BottomCta, StepHeader, Title } from './shared';
+import { BottomCta, Pill, StepHeader, SunIntro, Title } from './shared';
 
 const range = ([a, b]: [number, number]) => (a === b ? `${a}` : `${a}–${b}`);
 
@@ -22,6 +24,101 @@ export function S01About({
   const call = coachCall(draft);
   const [rirLo, rirHi] = repsInReserve(call.effort);
   const set = (patch: Partial<OnboardingDraft>) => onChange({ ...draft, ...patch });
+  const sun = useDesign() === 'sun';
+  const s1 = en.onboarding.s1;
+  // Rising Sun (FR-DSN-10, HW1S01): one glass card of choices, the Coach's call on a second card.
+  if (sun)
+    return (
+      <main className="flex min-h-dvh flex-col">
+        <StepHeader step={1} name={s1.name} />
+        <section className="sun-glass mx-5 mt-3 rounded-[18px] p-[18px]">
+          <SunIntro id="exp-label" title={s1.title}>
+            {s1.body}
+          </SunIntro>
+          <div role="radiogroup" aria-labelledby="exp-label" className="mt-3 flex flex-col gap-2">
+            {EXPERIENCES.map((lvl) => {
+              const on = draft.experience === lvl;
+              const e = en.experience[lvl];
+              return (
+                <button
+                  key={lvl}
+                  type="button"
+                  role="radio"
+                  aria-checked={on}
+                  onClick={() => set({ experience: lvl, nudge: 0 })}
+                  className="sun-setup-choice"
+                >
+                  <span className="min-w-0 grow">
+                    <span className="block text-[16px] font-semibold">{e.name}</span>
+                    <span className="sun-setup-choice-sub">{e.desc}</span>
+                  </span>
+                  {on && <Icon name="check" size={18} strokeWidth={2.6} className="shrink-0" />}
+                </button>
+              );
+            })}
+          </div>
+
+          <h2 className="mt-5 text-[15px] font-bold" id="goal-label">
+            {s1.goal}
+          </h2>
+          <div role="group" aria-labelledby="goal-label" className="mt-2.5 flex flex-wrap gap-2">
+            {GOAL_KINDS.map((g) => (
+              <Pill key={g} on={draft.goal === g} onClick={() => set({ goal: g })}>
+                {en.goals[g]}
+              </Pill>
+            ))}
+          </div>
+
+          <h2 className="mt-5 text-[15px] font-bold">{s1.days}</h2>
+          <div className="mt-2.5">
+            <Stepper
+              id="days-per-week"
+              value={draft.daysPerWeek}
+              onChange={(d) => set({ daysPerWeek: d })}
+              step={1}
+              min={2}
+              max={6}
+              decimals={0}
+              unitLabel={en.sun.setup.onboarding.daysUnit}
+              srLabel={s1.days}
+              srUnit={en.sun.setup.onboarding.daysSpoken}
+            />
+          </div>
+        </section>
+
+        <section className="sun-glass mx-5 mt-3 rounded-[14px] p-4" aria-labelledby="coach-label">
+          <div aria-live="polite">
+            <h2 id="coach-label" className="text-[13px] font-semibold text-accent-text">
+              {s1.coach}
+            </h2>
+            <p className="mt-1 text-[16px] font-bold">
+              {s1.coachLine(range(call.sets), range(call.reps), range(call.rest))}
+            </p>
+            <p className="mt-0.5 text-[13px] text-ink2">{s1.rir(rirLo, rirHi)}</p>
+          </div>
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <Pill
+              on={draft.nudge === -1}
+              disabled={!canNudge(draft.experience, draft.nudge, -1)}
+              onClick={() => set({ nudge: draft.nudge === 1 ? 0 : -1 })}
+            >
+              {s1.easier}
+            </Pill>
+            <Pill
+              on={draft.nudge === 1}
+              disabled={!canNudge(draft.experience, draft.nudge, 1)}
+              onClick={() => set({ nudge: draft.nudge === -1 ? 0 : 1 })}
+            >
+              {s1.harder}
+            </Pill>
+          </div>
+        </section>
+
+        <BottomCta>
+          <Button onClick={onNext}>{s1.cta}</Button>
+        </BottomCta>
+      </main>
+    );
   return (
     <main className="flex min-h-dvh flex-col">
       <StepHeader step={1} name={en.onboarding.s1.name} />

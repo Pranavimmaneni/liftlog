@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { ExerciseThumb } from '@/illustration/Pictogram';
 import { en } from '@/copy/en';
 import type { Exercise } from '@/engine/types';
+import { useDesign } from '@/app/design';
 
 export function muscleName(m: string | undefined): string {
   return m ? (en.muscles[m] ?? m) : '';
@@ -16,7 +17,8 @@ export function exerciseMeta(e: Exercise): string {
 
 /**
  * S13 / picker row: thumbnail, name, mono meta line, optional alias line and a right slot.
- * Dimmed with a "Not in gym" tag when unavailable (FR-LIB-5).
+ * Dimmed with a "Not in gym" tag when unavailable (FR-LIB-5). Rising Sun (FR-DSN-10): body type at
+ * 16 / 13 px on the card, min 52 px.
  */
 export function ExerciseRow({
   exercise,
@@ -35,7 +37,29 @@ export function ExerciseRow({
   onClick?: () => void;
   thumbClass?: string;
 }) {
-  const body = (
+  const sun = useDesign() === 'sun';
+  const body = sun ? (
+    <>
+      <ExerciseThumb exercise={exercise} className={`h-10 w-[52px] ${dimmed ? 'opacity-45' : ''}`} />
+      <span className="min-w-0 grow">
+        <span
+          className={`block break-words text-[16px] font-semibold leading-tight ${dimmed ? 'text-ink2' : ''}`}
+        >
+          {exercise.name}
+        </span>
+        <span className="mt-0.5 block text-[13px] leading-snug text-ink2">
+          {meta ?? exerciseMeta(exercise)}
+        </span>
+        {alias && <span className="mt-0.5 block text-[13px] italic text-ink2">{en.library.also(alias)}</span>}
+      </span>
+      {dimmed && (
+        <span className="ll-chip shrink-0" data-variant="soft">
+          {en.library.notInGym}
+        </span>
+      )}
+      {right}
+    </>
+  ) : (
     <>
       <ExerciseThumb exercise={exercise} className={`${thumbClass} ${dimmed ? 'opacity-45' : ''}`} />
       {/* Dimmed rows keep text at full contrast (NFR-A11Y-1); only the picture fades. */}
@@ -56,9 +80,11 @@ export function ExerciseRow({
       {right}
     </>
   );
-  const cls = 'flex w-full items-center gap-3 border-b border-rule px-3 py-2 text-left last:border-b-0';
+  const cls = sun
+    ? 'flex min-h-[56px] w-full items-center gap-3 border-b border-rule px-3 py-2 text-left text-ink last:border-b-0'
+    : 'flex w-full items-center gap-3 border-b border-rule px-3 py-2 text-left last:border-b-0';
   return onClick ? (
-    <button type="button" className={`${cls} min-h-[72px]`} onClick={onClick}>
+    <button type="button" className={`${cls} ${sun ? '' : 'min-h-[72px]'}`} onClick={onClick}>
       {body}
     </button>
   ) : (

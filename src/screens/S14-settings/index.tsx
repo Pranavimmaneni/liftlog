@@ -8,7 +8,7 @@ import { Switch } from '@/components/Switch';
 import { Icon } from '@/components/Icon';
 import { en } from '@/copy/en';
 import { applyTheme } from '@/app/theme';
-import { setDesign, setGlass, useLook, type Design } from '@/app/design';
+import { setDesign, setGlass, useDesign, useLook, type Design } from '@/app/design';
 import { setSetting, useSettings, type ThemePref } from '@/db/settings';
 import { saveProfile, useGym, useProfile } from '@/db/repo';
 import { formatClock } from '@/engine/timer';
@@ -30,7 +30,18 @@ function Row({
   onClick?: () => void;
   right?: React.ReactNode;
 }) {
-  const inner = (
+  // Rising Sun (FR-DSN-10, HW1S14): 52 px rows, 16 px label, 13 px sub-line, the value on the right.
+  const sun = useDesign() === 'sun';
+  const inner = sun ? (
+    <>
+      <span className="min-w-0 grow py-1">
+        <span className="block text-[16px] font-medium text-ink">{title}</span>
+        {sub && <span className="block text-[13px] leading-snug text-ink2">{sub}</span>}
+      </span>
+      {value && <span className="shrink-0 text-[15px] tabular-nums text-ink">{value}</span>}
+      {right ?? <Icon name="chevronRight" size={16} className="shrink-0 text-ink2" />}
+    </>
+  ) : (
     <>
       <span className="min-w-0 grow">
         <span className="block text-[15px] font-semibold text-ink">{title}</span>
@@ -55,6 +66,23 @@ function Row({
   return <div className="ll-row">{inner}</div>;
 }
 
+/** A list group: a labelled card in the classic look, a glass card named for screen readers in Rising Sun. */
+function Group({ label, children }: { label: string; children: React.ReactNode }) {
+  const sun = useDesign() === 'sun';
+  if (sun)
+    return (
+      <section className="ll-card mx-5 mt-3" aria-label={label}>
+        {children}
+      </section>
+    );
+  return (
+    <>
+      <SectionLabel>{label}</SectionLabel>
+      <div className="ll-card mx-5">{children}</div>
+    </>
+  );
+}
+
 /** S14 Settings (FR-SET-1…4, FR-DATA-1…5). */
 export default function Settings() {
   const settings = useSettings();
@@ -73,46 +101,48 @@ export default function Settings() {
   return (
     <main className="pb-[calc(24px+env(safe-area-inset-bottom))]">
       <ScreenHeader title={en.common.settings} backTo="/" />
-      <SectionLabel>{s.appearance}</SectionLabel>
-      <div className="px-5">
-        <SegmentedControl<ThemePref>
-          label={s.appearance}
-          value={settings.theme}
-          onChange={setTheme}
-          options={[
-            { value: 'system', label: en.theme.system },
-            { value: 'paper', label: sun ? en.theme.light : en.theme.paper },
-            { value: 'iron', label: sun ? en.theme.dark : en.theme.iron },
-          ]}
-        />
-      </div>
-
-      {/* FR-DSN-1: the Rising Sun look is opt-in until it is approved (D124). */}
-      <SectionLabel>{en.look.title}</SectionLabel>
-      <div className="px-5">
-        <SegmentedControl<Design>
-          label={en.look.title}
-          value={look.design}
-          onChange={(d) => void setDesign(d)}
-          options={[
-            { value: 'classic', label: en.look.classic },
-            { value: 'sun', label: en.look.sun },
-          ]}
-        />
-        <p className="mt-2 text-[13px] text-ink2">{en.look.note}</p>
-      </div>
-      {sun && (
-        <div className="ll-card mx-5 mt-3">
-          <Row
-            title={en.look.glass}
-            sub={en.look.glassSub}
-            right={<Switch checked={look.glass} onChange={(v) => void setGlass(v)} label={en.look.glass} />}
+      {/* One element in both looks, so switching the look keeps the control (and focus) in place. */}
+      <div className={sun ? 'sun-glass sun-setup-group mx-5 mt-4 rounded-[14px]' : undefined}>
+        <SectionLabel>{s.appearance}</SectionLabel>
+        <div className="px-5">
+          <SegmentedControl<ThemePref>
+            label={s.appearance}
+            value={settings.theme}
+            onChange={setTheme}
+            options={[
+              { value: 'system', label: en.theme.system },
+              { value: 'paper', label: sun ? en.theme.light : en.theme.paper },
+              { value: 'iron', label: sun ? en.theme.dark : en.theme.iron },
+            ]}
           />
         </div>
-      )}
 
-      <SectionLabel>{s.training}</SectionLabel>
-      <div className="ll-card mx-5">
+        {/* FR-DSN-1: the Rising Sun look is opt-in until it is approved (D124). */}
+        <SectionLabel>{en.look.title}</SectionLabel>
+        <div className="px-5">
+          <SegmentedControl<Design>
+            label={en.look.title}
+            value={look.design}
+            onChange={(d) => void setDesign(d)}
+            options={[
+              { value: 'classic', label: en.look.classic },
+              { value: 'sun', label: en.look.sun },
+            ]}
+          />
+          <p className="mt-2 text-[13px] text-ink2">{en.look.note}</p>
+        </div>
+        {sun && (
+          <div className="mt-3 border-t border-rule">
+            <Row
+              title={en.look.glass}
+              sub={en.look.glassSub}
+              right={<Switch checked={look.glass} onChange={(v) => void setGlass(v)} label={en.look.glass} />}
+            />
+          </div>
+        )}
+      </div>
+
+      <Group label={s.training}>
         <Row
           title={s.units}
           value={profile?.units ?? 'kg'}
@@ -147,9 +177,15 @@ export default function Settings() {
           }
         />
         <label className="ll-row">
-          <span className="grow text-[15px] font-semibold">{s.weekStart}</span>
+          <span className={sun ? 'grow text-[16px] font-medium' : 'grow text-[15px] font-semibold'}>
+            {s.weekStart}
+          </span>
           <select
-            className="min-h-11 rounded-md border-[1.5px] border-line bg-card px-2 font-mono text-[13px] font-semibold"
+            className={
+              sun
+                ? 'min-h-11 max-w-[50%] rounded-[12px] border border-hairline bg-soft px-2.5 text-[15px] font-semibold text-ink'
+                : 'min-h-11 rounded-md border-[1.5px] border-line bg-card px-2 font-mono text-[13px] font-semibold'
+            }
             value={settings.weekStart}
             onChange={(e) => void setSetting('weekStart', Number(e.target.value))}
           >
@@ -160,10 +196,9 @@ export default function Settings() {
             ))}
           </select>
         </label>
-      </div>
+      </Group>
 
-      <SectionLabel>{s.you}</SectionLabel>
-      <div className="ll-card mx-5">
+      <Group label={s.you}>
         <Row
           title={s.profile}
           sub={
@@ -187,17 +222,24 @@ export default function Settings() {
         />
         <Row title={s.bodyStats} sub={s.bodyStatsSub} to="/progress/body-stats" />
         <Row title={en.library.open} sub={en.library.openSub} to="/library" />
-      </div>
+      </Group>
 
-      <SectionLabel>{s.data}</SectionLabel>
+      {!sun && <SectionLabel>{s.data}</SectionLabel>}
       <DataSection />
 
-      <div className="flex items-center justify-between gap-4 px-5 pt-5">
-        <span className="t-mono text-[11px] uppercase text-ink2">{s.footer(__APP_VERSION__)}</span>
-        <Link to="/install" className="ll-link">
-          {s.installHelp}
-        </Link>
-      </div>
+      {sun ? (
+        <section className="ll-card mx-5 mt-3" aria-label={en.sun.setup.settings.about}>
+          <Row title={s.installHelp} to="/install" />
+          <p className="px-4 py-3.5 text-[13px] text-ink2">{s.footer(__APP_VERSION__)}</p>
+        </section>
+      ) : (
+        <div className="flex items-center justify-between gap-4 px-5 pt-5">
+          <span className="t-mono text-[11px] uppercase text-ink2">{s.footer(__APP_VERSION__)}</span>
+          <Link to="/install" className="ll-link">
+            {s.installHelp}
+          </Link>
+        </div>
+      )}
 
       <Sheet open={sheet === 'units'} onClose={() => setSheet(null)} title={s.units}>
         <SegmentedControl<Units>

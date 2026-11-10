@@ -74,6 +74,8 @@ test.describe('M13 Rising Sun look', () => {
     await expectNoSidewaysScroll(page);
     await expectNoAxeViolations(page);
     await log.click();
+    // FR-DSN-8: a logged set ripples the sun.
+    await expect(page.getByTestId('echo-ripple')).toBeAttached();
 
     // FR-DSN-7 Rest: ring countdown, effort question, "Start set 2 now".
     await expect(page.getByRole('timer')).toBeVisible();
@@ -99,15 +101,40 @@ test.describe('M13 Rising Sun look', () => {
     await expect(page.getByText(/1 of \d+ sets/)).toBeVisible();
   });
 
-  test('FR-DSN-1: screens not rebuilt yet stay accessible in the new colours and type', async ({ page }) => {
+  test('FR-DSN-10 / FR-DSN-11: every main screen is accessible in the new look, at 360 px', async ({
+    page,
+  }) => {
+    test.setTimeout(240_000); // 18 screens with an axe pass each; WebKit is slow (D58)
     await useSun(page);
+    await page.setViewportSize({ width: 360, height: 740 });
     await onboard(page);
-    for (const route of ['/plan', '/progress', '/library', '/food', '/food/targets']) {
+    const routes = [
+      '/plan',
+      '/plan/edit/0',
+      '/progress',
+      '/progress/review',
+      '/progress/strength',
+      '/progress/body-stats',
+      '/library',
+      '/library/new',
+      '/settings',
+      '/settings/gym',
+      '/settings/profile',
+      '/install',
+      '/food',
+      '/food/add',
+      '/food/new',
+      '/food/targets',
+      '/food/review',
+      '/food/fasting',
+    ];
+    for (const route of routes) {
       await page.goto(route);
       await expect(page.getByRole('heading').first()).toBeVisible();
-      await expect(page.getByTestId('sun-backdrop')).toHaveCount(0);
-      // At the end of the page floating bars rest in the flow, so none covers a row (the Diary's
-      // Log food bar can overlap a meal's Add link mid-scroll in either look; M14 rebuilds it).
+      // FR-DSN-3: the sun is behind every screen.
+      await expect(page.getByTestId('sun-backdrop')).toHaveCount(1);
+      await expectNoSidewaysScroll(page);
+      // At the end of the page floating bars rest in the flow, so none covers a row.
       await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
       await expectNoAxeViolations(page);
     }

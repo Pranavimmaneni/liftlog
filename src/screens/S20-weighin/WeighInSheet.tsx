@@ -4,6 +4,8 @@ import { Stepper } from '@/components/Stepper';
 import { Button } from '@/components/Button';
 import { toast } from '@/components/Toast';
 import { en } from '@/copy/en';
+import { useDesign } from '@/app/design';
+import { ripple } from '@/app/echo';
 import { saveWeighIn } from '@/db/repo';
 import { dateKey } from '@/engine/week';
 import { fromDisplay, toDisplay } from '@/engine/units';
@@ -26,6 +28,7 @@ export function WeighInSheet({
     lastKg === null ? (units === 'kg' ? 75 : 165) : Math.round(toDisplay(lastKg, units) * 10) / 10;
   const [value, setValue] = useState<number | null>(start);
   const [date, setDate] = useState(dateKey(Date.now()));
+  const sun = useDesign() === 'sun';
   useEffect(() => {
     if (open) {
       setValue(start);
@@ -42,6 +45,7 @@ export function WeighInSheet({
           disabled={value === null || value <= 0}
           onClick={async () => {
             await saveWeighIn(date, fromDisplay(value!, units));
+            ripple(); // FR-DSN-8; a no-op in the classic look
             toast(en.weighIn.saved);
             onClose();
           }}
@@ -57,7 +61,7 @@ export function WeighInSheet({
         step={step}
         min={20}
         max={units === 'kg' ? 400 : 880}
-        unitLabel={units}
+        unitLabel={sun ? en.sun.progress.weighIn.unit(units, step) : units}
         srLabel={en.weighIn.label}
         srUnit={units === 'kg' ? 'kilograms' : 'pounds'}
       />

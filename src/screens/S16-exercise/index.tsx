@@ -3,6 +3,7 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { Button } from '@/components/Button';
 import { Chip } from '@/components/Chip';
+import { Icon } from '@/components/Icon';
 import { LineChart } from '@/components/Chart';
 import { ScreenHeader, SectionLabel } from '@/components/ScreenHeader';
 import { Sheet } from '@/components/Sheet';
@@ -24,6 +25,7 @@ import { bodyweightOn } from '@/engine/load';
 import { isAvailable, presetGym } from '@/engine/suggest';
 import { displayNumber, formatLoad, hasLoad, toDisplay } from '@/engine/units';
 import { dateKey } from '@/engine/week';
+import { useDesign } from '@/app/design';
 
 /** S16 exercise detail (from Library). */
 export default function ExerciseDetail() {
@@ -34,6 +36,7 @@ export default function ExerciseDetail() {
   const profile = useProfile();
   const routine = useActiveRoutine();
   const activeId = useActiveSessionId();
+  const sun = useDesign() === 'sun';
   const [addOpen, setAddOpen] = useState(false);
   const [swapOpen, setSwapOpen] = useState<null | number>(null);
   const [swapPick, setSwapPick] = useState(false);
@@ -83,6 +86,263 @@ export default function ExerciseDetail() {
   const lt = ex.loadType;
   const d = en.detail;
   const sessions = routine?.sessions ?? [];
+
+  const sheets = (
+    <>
+      <Sheet open={addOpen} onClose={() => setAddOpen(false)} title={d.add}>
+        {sessions.length === 0 && <p className="text-[15px] text-ink2">{en.home.noRoutine}</p>}
+        <div className="flex flex-col gap-2">
+          {sessions.map((s) => (
+            <Button
+              key={s.id}
+              variant="secondary"
+              disabled={s.items.some((i) => i.exerciseId === ex.id)}
+              onClick={async () => {
+                await updateRoutineSessions(
+                  routine!.id,
+                  sessions.map((x) =>
+                    x.id === s.id
+                      ? { ...x, items: [...x.items, { exerciseId: ex.id, order: x.items.length }] }
+                      : x,
+                  ),
+                );
+                setAddOpen(false);
+                toast(en.routine.fixed(ex.name, s.name));
+              }}
+            >
+              {s.name}
+            </Button>
+          ))}
+        </div>
+      </Sheet>
+
+      <Sheet
+        open={swapOpen !== null}
+        onClose={() => (setSwapOpen(null), setSwapPick(false))}
+        title={d.swapInto}
+      >
+        {!swapPick ? (
+          <div className="flex flex-col gap-2">
+            {sessions.map((s, i) => (
+              <Button key={s.id} variant="secondary" onClick={() => (setSwapOpen(i), setSwapPick(true))}>
+                {s.name}
+              </Button>
+            ))}
+          </div>
+        ) : (
+          <>
+            <p className={sun ? 'mb-2 text-[14px] text-ink2' : 't-label mb-2'}>{d.replaceWhich}</p>
+            <div className="flex flex-col gap-2">
+              {(sessions[swapOpen ?? 0]?.items ?? [])
+                .slice()
+                .sort((a, b) => a.order - b.order)
+                .map((it) => (
+                  <Button
+                    key={it.exerciseId}
+                    variant="secondary"
+                    disabled={it.exerciseId === ex.id}
+                    onClick={async () => {
+                      const target = sessions[swapOpen!]!;
+                      await updateRoutineSessions(
+                        routine!.id,
+                        sessions.map((x) =>
+                          x.id === target.id
+                            ? {
+                                ...x,
+                                items: x.items.map((y) =>
+                                  y.exerciseId === it.exerciseId ? { ...y, exerciseId: ex.id } : y,
+                                ),
+                              }
+                            : x,
+                        ),
+                      );
+                      setSwapOpen(null);
+                      setSwapPick(false);
+                      toast(d.swapped(map!.get(it.exerciseId)?.name ?? '', ex.name));
+                    }}
+                  >
+                    {map?.get(it.exerciseId)?.name ?? it.exerciseId}
+                  </Button>
+                ))}
+            </div>
+          </>
+        )}
+      </Sheet>
+
+      <Sheet
+        open={delOpen}
+        tone="danger"
+        onClose={() => setDelOpen(false)}
+        title={d.deleteTitle(ex.name)}
+        footer={
+          <Button
+            variant="destructive"
+            onClick={async () => {
+              await deleteCustomExercise(ex.id);
+              setDelOpen(false);
+              navigate('/library', { replace: true });
+            }}
+          >
+            {en.common.delete}
+          </Button>
+        }
+      >
+        <p className="text-[15px]">{d.deleteBody}</p>
+      </Sheet>
+    </>
+  );
+
+  // FR-DSN-10 (HW1S16): picture and muscles on a hero card, the actions, how-to, history as a list.
+  if (sun) {
+    const t = en.sun.plan;
+    const best = stats?.top;
+    const row = 'sun-list-row text-[16px]';
+    return (
+      <main className="pb-[calc(24px+env(safe-area-inset-bottom))]">
+        <ScreenHeader title={ex.name} backTo="/library" />
+        <div className="px-5">
+          <section className="sun-glass sun-picto mt-4 rounded-[18px] px-[18px] py-4">
+            <div className="flex items-center justify-center gap-3.5">
+              {hasPose && (
+                <Pictogram poseId={ex.poseId!} animate label={ex.name} className="h-auto w-[58%] min-w-0" />
+              )}
+              <MuscleMap
+                primary={ex.primary}
+                secondary={ex.secondary}
+                className={hasPose ? 'h-[104px] w-[34%] min-w-0' : 'h-[150px] w-full'}
+              />
+            </div>
+            <p className="mt-2 text-center text-[14px] leading-snug text-ink2">
+              {t.about(
+                list(ex.primary.map(muscleName)),
+                list(ex.secondary.map(muscleName)).toLowerCase(),
+                ex.equipment,
+              )}
+            </p>
+            {ex.aliases.length > 0 && (
+              <p className="mt-1 text-center text-[13px] italic text-ink2">
+                {en.library.also(ex.aliases.join(', '))}
+              </p>
+            )}
+            <p className="mt-2.5 flex justify-center">
+              <Chip variant={inGym ? 'soft' : 'outline-red'}>{inGym ? d.inGym : en.library.notInGym}</Chip>
+            </p>
+          </section>
+
+          <div className="mt-3 flex flex-col gap-2.5">
+            {activeId && (
+              <Button
+                variant="secondary"
+                onClick={async () => {
+                  await addToSession(activeId, ex.id);
+                  navigate(`/workout/${ex.id}`);
+                }}
+              >
+                {d.addToday}
+              </Button>
+            )}
+            <div className="grid grid-cols-2 gap-2.5">
+              <Button variant="secondary" className="!h-[52px]" onClick={() => setSwapOpen(-1)}>
+                {d.swapInto}
+              </Button>
+              <Button className="!h-[52px] !text-[15px]" onClick={() => setAddOpen(true)}>
+                {d.add}
+              </Button>
+            </div>
+          </div>
+
+          <section className="sun-glass mt-3 rounded-[18px] px-[18px] py-4" aria-labelledby="ex-how">
+            <h2 id="ex-how" className="text-[15px] font-bold">
+              {d.howTo}
+            </h2>
+            <ol className="mt-2 list-decimal space-y-1.5 pl-5 text-[15px] leading-normal">
+              {ex.instructions.map((x, i) => (
+                <li key={i}>{x}</li>
+              ))}
+            </ol>
+            {ex.notes && <p className="mt-3 rounded-[12px] bg-soft px-3 py-2 text-[14px]">{ex.notes}</p>}
+          </section>
+
+          <section className="sun-glass mt-3 rounded-[14px]" aria-labelledby="ex-history">
+            <h2 id="ex-history" className="px-4 pb-1 pt-3 text-[15px] font-bold">
+              {d.history}
+            </h2>
+            {!stats || stats.bySession.length === 0 ? (
+              <p className="px-4 pb-3.5 text-[15px] text-ink2">{d.noHistory}</p>
+            ) : (
+              <>
+                {best && (
+                  <>
+                    <p className={row}>
+                      <span>{d.best}</span>
+                      <span className="t-num text-right font-semibold">
+                        {hasLoad(lt) ? `${displayNumber(best.best!.s.loadKg, units)} ${units} × ` : ''}
+                        {best.best!.s.reps}
+                        <span className="block text-[13px] font-normal text-ink2">
+                          {shortDate(best.session.startedAt)}
+                        </span>
+                      </span>
+                    </p>
+                    <p className={row}>
+                      <span>{d.e1rmChart}</span>
+                      <span className="t-num font-semibold">
+                        {Math.round(toDisplay(best.best!.e, units))} {units}
+                      </span>
+                    </p>
+                  </>
+                )}
+                <div className="border-t border-rule px-4 py-3">
+                  <LineChart
+                    points={stats.chart.map((p) => ({ ...p, value: toDisplay(p.value, units) }))}
+                    unit={units}
+                    title={d.e1rmChart}
+                  />
+                </div>
+                <h3 className="border-t border-rule px-4 pb-1 pt-3 text-[13px] font-semibold text-ink2">
+                  {t.lastSessions}
+                </h3>
+                <ul>
+                  {[...stats.bySession]
+                    .reverse()
+                    .slice(0, 5)
+                    .map((b) => (
+                      <li key={b.session.id} className="border-b border-rule last:border-b-0">
+                        <Link to={`/progress/session/${b.session.id}`} className={row}>
+                          <span className="min-w-0">
+                            <span className="block break-words">
+                              {shortDate(b.session.startedAt)} · {b.session.name}
+                            </span>
+                            <span className="t-num block text-[13px] text-ink2">
+                              {hasLoad(lt) && b.sets[0]
+                                ? `${formatLoad(b.sets[0].loadKg, lt, units)} · `
+                                : ''}
+                              {b.sets.map((x) => x.reps).join('·')}
+                            </span>
+                          </span>
+                          <Icon name="chevronRight" size={18} className="shrink-0 text-ink2" />
+                        </Link>
+                      </li>
+                    ))}
+                </ul>
+              </>
+            )}
+          </section>
+
+          {ex.isCustom && !ex.deleted && (
+            <div className="mt-3 grid grid-cols-2 gap-2.5">
+              <Link to={`/library/${ex.id}/edit`} className="ll-btn" data-variant="secondary">
+                {en.common.edit}
+              </Link>
+              <Button variant="secondary" className="!text-accent" onClick={() => setDelOpen(true)}>
+                {en.common.delete}
+              </Button>
+            </div>
+          )}
+        </div>
+        {sheets}
+      </main>
+    );
+  }
 
   return (
     <main className="pb-[calc(24px+env(safe-area-inset-bottom))]">
@@ -217,106 +477,7 @@ export default function ExerciseDetail() {
         </div>
       )}
 
-      <Sheet open={addOpen} onClose={() => setAddOpen(false)} title={d.add}>
-        {sessions.length === 0 && <p className="text-[15px] text-ink2">{en.home.noRoutine}</p>}
-        <div className="flex flex-col gap-2">
-          {sessions.map((s) => (
-            <Button
-              key={s.id}
-              variant="secondary"
-              disabled={s.items.some((i) => i.exerciseId === ex.id)}
-              onClick={async () => {
-                await updateRoutineSessions(
-                  routine!.id,
-                  sessions.map((x) =>
-                    x.id === s.id
-                      ? { ...x, items: [...x.items, { exerciseId: ex.id, order: x.items.length }] }
-                      : x,
-                  ),
-                );
-                setAddOpen(false);
-                toast(en.routine.fixed(ex.name, s.name));
-              }}
-            >
-              {s.name}
-            </Button>
-          ))}
-        </div>
-      </Sheet>
-
-      <Sheet
-        open={swapOpen !== null}
-        onClose={() => (setSwapOpen(null), setSwapPick(false))}
-        title={d.swapInto}
-      >
-        {!swapPick ? (
-          <div className="flex flex-col gap-2">
-            {sessions.map((s, i) => (
-              <Button key={s.id} variant="secondary" onClick={() => (setSwapOpen(i), setSwapPick(true))}>
-                {s.name}
-              </Button>
-            ))}
-          </div>
-        ) : (
-          <>
-            <p className="t-label mb-2">{d.replaceWhich}</p>
-            <div className="flex flex-col gap-2">
-              {(sessions[swapOpen ?? 0]?.items ?? [])
-                .slice()
-                .sort((a, b) => a.order - b.order)
-                .map((it) => (
-                  <Button
-                    key={it.exerciseId}
-                    variant="secondary"
-                    disabled={it.exerciseId === ex.id}
-                    onClick={async () => {
-                      const target = sessions[swapOpen!]!;
-                      await updateRoutineSessions(
-                        routine!.id,
-                        sessions.map((x) =>
-                          x.id === target.id
-                            ? {
-                                ...x,
-                                items: x.items.map((y) =>
-                                  y.exerciseId === it.exerciseId ? { ...y, exerciseId: ex.id } : y,
-                                ),
-                              }
-                            : x,
-                        ),
-                      );
-                      setSwapOpen(null);
-                      setSwapPick(false);
-                      toast(d.swapped(map!.get(it.exerciseId)?.name ?? '', ex.name));
-                    }}
-                  >
-                    {map?.get(it.exerciseId)?.name ?? it.exerciseId}
-                  </Button>
-                ))}
-            </div>
-          </>
-        )}
-      </Sheet>
-
-      <Sheet
-        open={delOpen}
-        tone="danger"
-        onClose={() => setDelOpen(false)}
-        title={d.deleteTitle(ex.name)}
-        footer={
-          <Button
-            variant="destructive"
-            onClick={async () => {
-              await deleteCustomExercise(ex.id);
-              setDelOpen(false);
-              navigate('/library', { replace: true });
-            }}
-          >
-            {en.common.delete}
-          </Button>
-        }
-      >
-        <p className="text-[15px]">{d.deleteBody}</p>
-      </Sheet>
+      {sheets}
     </main>
   );
 }

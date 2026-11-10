@@ -13,6 +13,7 @@ import { prescribe } from '@/engine/prescription';
 import type { Exercise, ProfileLike } from '@/engine/types';
 import { ExercisePicker } from '../S13-library/ExercisePicker';
 import { SwapSheet } from '../S23-swap/SwapSheet';
+import { useDesign } from '@/app/design';
 
 function move<T>(list: T[], from: number, to: number): T[] {
   const out = [...list];
@@ -33,6 +34,7 @@ export function RoutineBuilder({
   profile,
   initialTab = 0,
   coverageCtx,
+  showTitle = true,
 }: {
   splitName: string;
   sessions: RoutineSession[];
@@ -42,7 +44,10 @@ export function RoutineBuilder({
   initialTab?: number;
   /** FR-RTN-3: shows the coverage card when the gym and training days are known. */
   coverageCtx?: { gym: GymLike; daysPerWeek: number; limitations: string[] };
+  /** False when the host's header already names the screen (Plan > Edit routine, Rising Sun). */
+  showTitle?: boolean;
 }) {
+  const sun = useDesign() === 'sun';
   const [tab, setTab] = useState(Math.min(initialTab, Math.max(0, sessions.length - 1)));
   const [adding, setAdding] = useState(false);
   const [swapping, setSwapping] = useState<number | null>(null);
@@ -95,6 +100,152 @@ export function RoutineBuilder({
     : -1;
 
   const swapEx = swapping !== null ? (exercises.get(ids[swapping]!) ?? null) : null;
+
+  const onFix = (si: number, exerciseId: string) => {
+    onChange(
+      sessions.map((s, i) =>
+        i === si ? { ...s, items: [...s.items, { exerciseId, order: s.items.length }] } : s,
+      ),
+    );
+    toast(en.routine.fixed(exercises.get(exerciseId)?.name ?? '', sessions[si]?.name ?? ''));
+  };
+  const sheets = (
+    <>
+      <ExercisePicker
+        open={adding}
+        title={cur ? en.library.pickFor(cur.name) : en.routine.addExercise}
+        exclude={ids}
+        onClose={() => setAdding(false)}
+        onPick={(e) => {
+          setAdding(false);
+          setIds([...ids, e.id]);
+        }}
+      />
+      <SwapSheet
+        open={swapping !== null}
+        current={swapEx}
+        exclude={ids}
+        profileOverride={{ ...profile, limitations: coverageCtx?.limitations ?? [] }}
+        gymOverride={coverageCtx?.gym}
+        onClose={() => setSwapping(null)}
+        onChoose={(e) => {
+          if (swapping !== null) setIds(ids.map((x, i) => (i === swapping ? e.id : x)));
+          setSwapping(null);
+        }}
+        onRemove={() => {
+          if (swapping !== null) setIds(ids.filter((_, i) => i !== swapping));
+          setSwapping(null);
+        }}
+      />
+    </>
+  );
+
+  if (sun)
+    return (
+      <>
+        {/* FR-DSN-10 (HW1S04): the wide display face wraps instead of widening the page. */}
+        {showTitle && (
+          <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 px-5 pt-5">
+            <h1 className="sun-title min-w-0 break-words">{en.routine.title}</h1>
+            <span className="text-[15px] text-ink2">{splitName}</span>
+          </div>
+        )}
+
+        <div
+          role="tablist"
+          aria-label={en.routine.sessionTabs}
+          className="flex gap-1.5 overflow-x-auto px-5 pb-1 pt-3.5"
+        >
+          {sessions.map((s, i) => (
+            <button
+              key={s.id}
+              role="tab"
+              type="button"
+              aria-selected={i === tab}
+              onClick={(e) => {
+                setTab(i);
+                e.currentTarget.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
+              }}
+              className="sun-pill sun-plan-pill sun-plan-tab shrink-0 grow"
+            >
+              {s.name}
+            </button>
+          ))}
+        </div>
+
+        <div className="sun-glass mx-5 mt-2 rounded-[14px]" role="tabpanel" aria-label={cur?.name}>
+          {ids.length === 0 && <p className="px-4 py-4 text-[15px] text-ink2">{en.routine.empty}</p>}
+          <ul>
+            {ids.map((id, i) => {
+              const ex = exercises.get(id);
+              if (!ex) return null;
+              const p = prescribe(profile, ex.role);
+              const dragging = drag?.from === i;
+              return (
+                <li
+                  key={id}
+                  className={`relative flex min-h-[56px] items-center gap-2 border-b border-rule py-1.5 pl-1 pr-1.5 ${
+                    dragging ? 'sun-plan-dragging' : ''
+                  } ${dropAt === i && !dragging ? 'border-t-2 border-t-accent' : ''}`}
+                  style={dragging ? { transform: `translateY(${drag!.dy}px)` } : undefined}
+                >
+                  <button
+                    ref={(el) => {
+                      handles.current[i] = el;
+                    }}
+                    type="button"
+                    aria-label={`${en.routine.drag(ex.name)}. ${en.common.moveUp} / ${en.common.moveDown}`}
+                    className="flex h-12 w-11 shrink-0 cursor-grab touch-none items-center justify-center rounded-full text-ink2"
+                    onKeyDown={onKey(i)}
+                    onPointerDown={onDown(i)}
+                    onPointerMove={onMove}
+                    onPointerUp={onUp}
+                    onPointerCancel={() => setDrag(null)}
+                  >
+                    <Icon name="drag" />
+                  </button>
+                  <ExerciseThumb exercise={ex} className="h-10 w-[48px]" />
+                  <span className="min-w-0 grow">
+                    <span className="block break-words text-[16px] font-semibold leading-tight">
+                      {ex.name}
+                    </span>
+                    <span className="mt-0.5 block text-[13px] leading-snug text-ink2">
+                      {muscleName(ex.primary[0])} · {p.sets} × {p.repMin}–{p.repMax}
+                    </span>
+                  </span>
+                  <button
+                    type="button"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-ink"
+                    aria-label={en.routine.swap(ex.name)}
+                    onClick={() => setSwapping(i)}
+                  >
+                    <Icon name="swap" size={22} />
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+          <button
+            type="button"
+            onClick={() => setAdding(true)}
+            className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-b-[14px] text-[15px] font-semibold text-accent-text"
+          >
+            <Icon name="plus" size={18} /> {en.routine.addExercise}
+          </button>
+        </div>
+
+        {coverageCtx && (
+          <CoverageCard
+            sessions={allIds}
+            exercises={exercises}
+            profile={{ ...profile, ...coverageCtx }}
+            gym={coverageCtx.gym}
+            onFix={onFix}
+          />
+        )}
+        {sheets}
+      </>
+    );
 
   return (
     <>
@@ -202,43 +353,10 @@ export function RoutineBuilder({
           exercises={exercises}
           profile={{ ...profile, ...coverageCtx }}
           gym={coverageCtx.gym}
-          onFix={(si, exerciseId) => {
-            onChange(
-              sessions.map((s, i) =>
-                i === si ? { ...s, items: [...s.items, { exerciseId, order: s.items.length }] } : s,
-              ),
-            );
-            toast(en.routine.fixed(exercises.get(exerciseId)?.name ?? '', sessions[si]?.name ?? ''));
-          }}
+          onFix={onFix}
         />
       )}
-
-      <ExercisePicker
-        open={adding}
-        title={cur ? en.library.pickFor(cur.name) : en.routine.addExercise}
-        exclude={ids}
-        onClose={() => setAdding(false)}
-        onPick={(e) => {
-          setAdding(false);
-          setIds([...ids, e.id]);
-        }}
-      />
-      <SwapSheet
-        open={swapping !== null}
-        current={swapEx}
-        exclude={ids}
-        profileOverride={{ ...profile, limitations: coverageCtx?.limitations ?? [] }}
-        gymOverride={coverageCtx?.gym}
-        onClose={() => setSwapping(null)}
-        onChoose={(e) => {
-          if (swapping !== null) setIds(ids.map((x, i) => (i === swapping ? e.id : x)));
-          setSwapping(null);
-        }}
-        onRemove={() => {
-          if (swapping !== null) setIds(ids.filter((_, i) => i !== swapping));
-          setSwapping(null);
-        }}
-      />
+      {sheets}
     </>
   );
 }

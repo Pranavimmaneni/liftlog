@@ -115,8 +115,11 @@
 [data-design='sun'] .text-accent {
   color: var(--ll-accentText);
 }
-[data-design='sun'] .\!text-accent {
-  color: var(--ll-accentText) !important;
+/* An !important utility beats unlayered CSS, but loses to !important in an earlier layer. */
+@layer base {
+  [data-design='sun'] .\!text-accent {
+    color: var(--ll-accentText) !important;
+  }
 }
 [data-design='sun'] .bg-accent {
   background-color: var(--ll-btn);
@@ -172,11 +175,12 @@
   font-weight: 600;
   font-size: 15px;
 }
+/* Filled, as in the delete confirm (HW1S26b). */
 [data-design='sun'] .ll-btn[data-variant='destructive'] {
   height: 58px;
-  border: 1.5px solid var(--ll-accentText);
-  background: var(--ll-card);
-  color: var(--ll-accentText);
+  border: 1.5px solid var(--ll-ink);
+  background: var(--ll-btn);
+  color: var(--ll-btnInk);
   font-weight: 700;
   font-size: 17px;
 }
@@ -239,6 +243,20 @@
   border-style: dashed;
 }
 
+/* Empty state (S26a): a centred glass card with the one next action. */
+[data-design='sun'] .ll-empty {
+  align-items: center;
+  gap: 12px;
+  padding: 18px;
+  border-style: solid;
+  border-radius: 18px;
+  text-align: center;
+}
+[data-design='sun'] .ll-empty > p {
+  color: var(--ll-ink);
+  font-size: 16px;
+}
+
 /* ---------- rows, fields ---------- */
 [data-design='sun'] .ll-row {
   min-height: 52px;
@@ -291,7 +309,7 @@
   min-height: 38px;
 }
 [data-design='sun'] .ll-seg-item[aria-pressed='true'],
-[data-design='sun'] .ll-section-item[aria-current='page'] {
+[data-design='sun'] .ll-section-item[data-on='true'] {
   background: var(--ll-ink);
   color: var(--ll-paper);
 }
