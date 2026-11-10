@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router';
 import { useActiveSessionId } from '@/app/session-model';
 import { platform } from '@/platform';
+import { useDesign } from '@/app/design';
 import { RestSheet, RestWatcher } from '../S25-timer/RestTimer';
 
 /**
@@ -11,6 +12,7 @@ import { RestSheet, RestWatcher } from '../S25-timer/RestTimer';
 export default function WorkoutLayout() {
   const activeId = useActiveSessionId();
   const [held, setHeld] = useState<boolean | null>(null);
+  const sun = useDesign() === 'sun';
   useEffect(() => {
     if (!activeId) return;
     void platform.keepAwake(true).then(setHeld);
@@ -27,7 +29,8 @@ export default function WorkoutLayout() {
     >
       <Outlet context={{ sessionId: activeId, wakeLock: held }} />
       <RestWatcher />
-      <RestSheet />
+      {/* FR-DSN-7: in the Rising Sun look the logger shows the rest state itself. */}
+      {!sun && <RestSheet />}
     </div>
   );
 }

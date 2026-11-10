@@ -1,125 +1,56 @@
-import { useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { useState } from 'react';
+import { Link } from 'react-router';
 import { Button, LinkButton } from '@/components/Button';
 import { Chip } from '@/components/Chip';
 import { Icon } from '@/components/Icon';
 import { ExerciseThumb } from '@/illustration/Pictogram';
-import { muscleName } from '@/components/ExerciseRow';
 import { en } from '@/copy/en';
 import { SectionSwitch } from '@/components/SectionSwitch';
 import { lastWeekday, list, monthName, shortDate, weekdayDate } from '@/copy/format';
-import { db } from '@/db/schema';
-import { useExerciseMap } from '@/db/catalog';
-import { useSettings } from '@/db/settings';
-import { upNextOf, useActiveRoutine, useProfile, useQueue } from '@/db/repo';
-import { goalFromHistory, historyFor, startSession } from '@/db/workout';
-import { useActiveSessionId } from '@/app/session-model';
-import { useDeload } from '@/db/deload';
 import { DeloadBanner } from '@/components/DeloadBanner';
-import { INTENSITY } from '@/engine/data';
-import { estimateMinutes } from '@/engine/summary';
-import { rotationOrder } from '@/engine/rotation';
-import { addDays, dateKey, monthGrid, startOfWeek, weekNumber, weekRange } from '@/engine/week';
+import { dateKey } from '@/engine/week';
 import { displayNumber } from '@/engine/units';
-import { platform } from '@/platform';
+import { useDesign } from '@/app/design';
 import { WeighInSheet } from '../S20-weighin/WeighInSheet';
-import { useBackupNudge, useMotivation } from '@/db/motivation';
 import { BackupNudgeBanner, HeaderChips, InstallBanner, QuestCard } from './Motivation';
+import { useHomeData } from './data';
+import { ReviewReady } from './ReviewReady';
+import { HomeSun } from './HomeSun';
 
-const GOING_UP = new Set(['up', 'less_assist', 'more_reps']);
+/** S05 Today tab. The Rising Sun look has its own layout over the same data (FR-DSN-4). */
+export default function Home() {
+  return useDesign() === 'sun' ? <HomeSun /> : <HomeClassic />;
+}
 
 /** S05 Home / Today tab: up next, this week, the month, weigh-in (FR-RTN-4, FR-RTN-5, FR-WRK-1). */
-export default function Home() {
-  const navigate = useNavigate();
-  const profile = useProfile();
-  const routine = useActiveRoutine();
-  const queue = useQueue();
-  const settings = useSettings();
-  const exMap = useExerciseMap();
-  const activeId = useActiveSessionId();
-  const deload = useDeload();
-  const motivation = useMotivation();
-  const nudge = useBackupNudge();
+function HomeClassic() {
+  const h = useHomeData();
   const [weighIn, setWeighIn] = useState(false);
-  const [starting, setStarting] = useState(false);
-  const now = Date.now();
-
-  const next = upNextOf(routine, queue);
-  const nextIds = useMemo(
-    () =>
-      next && routine
-        ? [...routine.sessions[next.sessionIndex]!.items]
-            .sort((a, b) => a.order - b.order)
-            .map((i) => i.exerciseId)
-        : [],
-    [next, routine],
-  );
-
-  const data = useLiveQuery(async () => {
-    const finished = (await db.sessions.filter((s) => s.endedAt !== undefined).toArray()).sort(
-      (a, b) => a.startedAt - b.startedAt,
-    );
-    const bws = await db.bodyweights.orderBy('date').toArray();
-    const history = await historyFor(nextIds);
-    return { finished, lastBw: bws[bws.length - 1] ?? null, history };
-  }, [nextIds.join(',')]);
-
-  const preview = useMemo(() => {
-    if (!exMap || !profile || !data) return null;
-    const exs = nextIds.map((id) => exMap.get(id)).filter((e) => !!e);
-    const goals = exs.map((e) => goalFromHistory(e!, data.history, profile));
-    const sets = goals.reduce((n, g) => n + g.sets, 0);
-    const minutes = estimateMinutes(
-      exs.map((e, i) => ({ role: e!.role, sets: goals[i]!.sets })),
-      INTENSITY.secondsPerSetIncludingRest,
-    );
-    const muscles = [...new Set(exs.map((e) => muscleName(e!.primary[0]).toLowerCase()))].slice(0, 4);
-    const up = goals.filter((g) => GOING_UP.has(g.reason.code)).length;
-    const lastSame = next
-      ? [...data.finished].reverse().find((s) => s.routineSessionId === next.session.id)
-      : undefined;
-    return { exs: exs as NonNullable<(typeof exs)[number]>[], sets, minutes, muscles, up, lastSame };
-  }, [exMap, profile, data, nextIds, next]);
-
-  const lastSameMeter = useLiveQuery(async () => {
-    const s = preview?.lastSame;
-    if (!s) return null;
-    const sets = await db.sets.where('sessionId').equals(s.id).toArray();
-    const work = sets.filter((x) => x.kind === 'work');
-    return { done: work.filter((x) => x.goalMet).length, total: work.length, at: s.startedAt };
-  }, [preview?.lastSame?.id]);
-
-  if (profile === undefined || routine === undefined) return null;
-  const units = profile?.units ?? 'kg';
-
-  // This week (FR-RTN-5): planned = days per week; tiles follow the rotation order.
-  const [wStart, wEnd] = weekRange(now, settings.weekStart);
-  const doneThisWeek = (data?.finished ?? []).filter((s) => s.startedAt >= wStart && s.startedAt < wEnd);
-  const doneIds = new Set(doneThisWeek.map((s) => s.routineSessionId));
-  const order = routine && queue ? rotationOrder(routine, queue) : [];
-  const planned = profile?.daysPerWeek ?? order.length;
-
-  const sessionDays = new Set((data?.finished ?? []).map((s) => dateKey(s.startedAt)));
-  const grid = monthGrid(now, settings.weekStart);
-  const today = new Date(now);
-
-  const start = async () => {
-    if (activeId) return navigate('/workout');
-    if (!routine || !next) return;
-    setStarting(true);
-    // FR-WRK-1: the tap unlocks audio (FR-PLT-3) and requests wake lock (FR-PLT-2).
-    platform.unlockAudio();
-    void platform.keepAwake(true);
-    await startSession({
-      routineId: routine.id,
-      routineSessionId: next.session.id,
-      name: next.session.name,
-      exerciseIds: nextIds,
-      deload: deload?.thisWeek,
-    });
-    navigate('/workout');
-  };
+  if (!h) return null;
+  const {
+    routine,
+    settings,
+    activeId,
+    deload,
+    motivation,
+    nudge,
+    starting,
+    now,
+    next,
+    nextIds,
+    data,
+    preview,
+    lastSameMeter,
+    units,
+    doneThisWeek,
+    doneIds,
+    order,
+    planned,
+    sessionDays,
+    grid,
+    today,
+    start,
+  } = h;
 
   return (
     <main className="px-5 pt-[14px]">
@@ -317,35 +248,5 @@ export default function Home() {
         units={units}
       />
     </main>
-  );
-}
-
-/**
- * FR-REV-1: last week's review is announced on Home for the first two days of the new week (D62),
- * when last week had at least one session.
- */
-function ReviewReady({
-  finished,
-  weekStart,
-  now,
-}: {
-  finished: { startedAt: number }[] | undefined;
-  weekStart: number;
-  now: number;
-}) {
-  if (!finished?.length) return null;
-  const thisWeek = startOfWeek(now, weekStart);
-  const lastWeek = addDays(thisWeek, -7);
-  if (now - thisWeek >= 2 * 86_400_000) return null;
-  if (!finished.some((s) => s.startedAt >= lastWeek && s.startedAt < thisWeek)) return null;
-  const n = weekNumber(lastWeek, finished[0]!.startedAt, weekStart);
-  return (
-    <Link
-      to="/progress/review"
-      className="ll-card mt-3 flex min-h-12 items-center justify-between gap-2 px-3.5 py-2.5 text-ink no-underline"
-    >
-      <span className="text-[15px] font-bold">{en.review.ready(n)}</span>
-      <Icon name="chevronRight" size={18} />
-    </Link>
   );
 }
