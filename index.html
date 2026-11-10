@@ -26,6 +26,23 @@
         background: #151412;
         color: #efe6d4;
       }
+      /* Rising Sun look (FR-DSN-1): workout light and dark, then food light and dark. */
+      html[data-design='sun'] {
+        background: #f3f1ea;
+        color: #0d0d0c;
+      }
+      html[data-design='sun'][data-theme='iron'] {
+        background: #0b0b0a;
+        color: #f3f1ea;
+      }
+      html[data-design='sun'][data-section='food'] {
+        background: #e6ede3;
+        color: #12201a;
+      }
+      html[data-design='sun'][data-section='food'][data-theme='iron'] {
+        background: #12201a;
+        color: #eef2e8;
+      }
       .ll-boot {
         min-height: 100dvh;
         display: flex;

@@ -9,6 +9,15 @@ const PATHS = {
   check: <path d="M5 12l5 5 9-10" />,
   plus: <path d="M12 5v14M5 12h14" />,
   minus: <path d="M5 12h14" />,
+  // Rising Sun tab icons (handoff mockups).
+  target: (
+    <>
+      <circle cx="12" cy="12" r="8" />
+      <circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none" />
+    </>
+  ),
+  bars: <path d="M6 19v-8M12 19V5M18 19v-6" />,
+  note: <path d="M6 4h12v16H6zM9 9h6M9 13h6" />,
   close: <path d="M6 6l12 12M18 6L6 18" />,
   gear: (
     <>

@@ -114,7 +114,7 @@ export function ExerciseThumb({
   const hasPose = !!poseDef(exercise.poseId);
   return (
     <div
-      className={`flex shrink-0 items-center justify-center overflow-hidden rounded bg-panel ${className}`}
+      className={`ll-thumb flex shrink-0 items-center justify-center overflow-hidden rounded bg-panel ${className}`}
       aria-hidden="true"
     >
       {hasPose ? (

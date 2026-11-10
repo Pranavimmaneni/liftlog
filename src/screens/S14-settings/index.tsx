@@ -8,6 +8,7 @@ import { Switch } from '@/components/Switch';
 import { Icon } from '@/components/Icon';
 import { en } from '@/copy/en';
 import { applyTheme } from '@/app/theme';
+import { setDesign, setGlass, useLook, type Design } from '@/app/design';
 import { setSetting, useSettings, type ThemePref } from '@/db/settings';
 import { saveProfile, useGym, useProfile } from '@/db/repo';
 import { formatClock } from '@/engine/timer';
@@ -60,6 +61,8 @@ export default function Settings() {
   const profile = useProfile();
   const gym = useGym();
   const [sheet, setSheet] = useState<null | 'units' | 'rest'>(null);
+  const look = useLook();
+  const sun = look.design === 'sun';
   const s = en.settings;
 
   const setTheme = (t: ThemePref) => {
@@ -78,11 +81,35 @@ export default function Settings() {
           onChange={setTheme}
           options={[
             { value: 'system', label: en.theme.system },
-            { value: 'paper', label: en.theme.paper },
-            { value: 'iron', label: en.theme.iron },
+            { value: 'paper', label: sun ? en.theme.light : en.theme.paper },
+            { value: 'iron', label: sun ? en.theme.dark : en.theme.iron },
           ]}
         />
       </div>
+
+      {/* FR-DSN-1: the Rising Sun look is opt-in until it is approved (D124). */}
+      <SectionLabel>{en.look.title}</SectionLabel>
+      <div className="px-5">
+        <SegmentedControl<Design>
+          label={en.look.title}
+          value={look.design}
+          onChange={(d) => void setDesign(d)}
+          options={[
+            { value: 'classic', label: en.look.classic },
+            { value: 'sun', label: en.look.sun },
+          ]}
+        />
+        <p className="mt-2 text-[13px] text-ink2">{en.look.note}</p>
+      </div>
+      {sun && (
+        <div className="ll-card mx-5 mt-3">
+          <Row
+            title={en.look.glass}
+            sub={en.look.glassSub}
+            right={<Switch checked={look.glass} onChange={(v) => void setGlass(v)} label={en.look.glass} />}
+          />
+        </div>
+      )}
 
       <SectionLabel>{s.training}</SectionLabel>
       <div className="ll-card mx-5">
